@@ -1,0 +1,48 @@
+# Text files
+*.cs		text eol=lf
+*.c		text eol=lf
+*.h		text eol=lf
+*.cpp		text eol=lf
+*.hpp		text eol=lf
+*.java		text eol=lf
+*.rb		text eol=lf
+*.py		text eol=lf
+*.conf		text eol=lf
+*.css		text eol=lf
+*.gradle	text eol=lf
+*.html		text eol=lf
+*.importorder	text eol=lf
+*.java		text eol=lf
+*.js		text eol=lf
+*.json		text eol=lf
+*.md		text eol=lf
+*.pl		text eol=lf
+*.prefs		text eol=lf
+*.properties	text eol=lf
+*.py		text eol=lf
+*.rb		text eol=lf
+*.sh		text eol=lf
+*.sql		text eol=lf
+*.txt		text eol=lf
+*.xaml		text eol=lf
+*.yaml		text eol=lf
+*.yml		text eol=lf
+*.*xml		text eol=lf
+*.*manifest	text eol=lf
+
+# Windows text files
+*.bat		text eol=crlf
+*.cmd		text eol=crlf
+
+# Binaries
+*.csv		binary
+*.class		binary
+*.jar		binary
+*.war		binary
+*.exe		binary
+*.xlsx		binary
+*.pptx		binary
+*.tar		binary
+*.gz		binary
+*.bz2		binary
+*.xz		binary
