@@ -37,20 +37,12 @@ namespace SimpleCalendar.WPF.Services
         }
     }
 
-    public sealed class DayItemService
+    public class DayItemService
     {
-        public static DayItemService Instance { get; } = new DayItemService();
-
         private readonly DayType[] dayTypes = new DayType[DayItem.DAYS_IN_WEEK];
-
         private readonly DateMap map = new();
 
-        private DayItemService()
-        {
-            InitDayTypes();
-        }
-
-        private void InitDayTypes()
+        public DayItemService()
         {
             for (int i = 0; i < dayTypes.Length; i++)
             {

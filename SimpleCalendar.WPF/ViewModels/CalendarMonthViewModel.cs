@@ -7,10 +7,7 @@ namespace SimpleCalendar.WPF.ViewModels
 {
     public partial class CalendarMonthViewModel : ObservableObject
     {
-#if DEBUG
-        private static int NextId = 0;
-        public int Id = ++NextId;
-#endif
+        private readonly DaysOfMonthService daysOfMonthService;
 
         public CurrentMonthViewModel CurrentMonthViewModel { get; init; }
 
@@ -48,72 +45,22 @@ namespace SimpleCalendar.WPF.ViewModels
         private void UpdateDerivedProperties(YearMonth baseYearMonth)
         {
             _yearMonth = baseYearMonth.AddMonths(Offset);
-            _days = GetDays(_yearMonth);
+            _days = daysOfMonthService.GetDays(_yearMonth);
             OnPropertyChanged(nameof(YearMonth));
             OnPropertyChanged(nameof(Days));
         }
 
-        // for design mode only
-        public CalendarMonthViewModel() : this(new CurrentMonthViewModel()) { }
-
-        public CalendarMonthViewModel(CurrentMonthViewModel currentMonthViewModel)
+        public CalendarMonthViewModel(DaysOfMonthService daysOfMonthService, CurrentMonthViewModel currentMonthViewModel)
         {
+            this.daysOfMonthService = daysOfMonthService;
             CurrentMonthViewModel = currentMonthViewModel;
             CurrentMonthViewModel.PropertyChanged += CurrentMonthViewModel_PropertyChanged;
             _yearMonth = currentMonthViewModel.BaseYearMonth;
             _offset = 0;
-            _days = GetDays(_yearMonth);
+            _days = daysOfMonthService.GetDays(_yearMonth);
             OnPropertyChanged(nameof(YearMonth));
             OnPropertyChanged(nameof(Offset));
             OnPropertyChanged(nameof(Days));
-        }
-
-        private static readonly Dictionary<int, Dictionary<int, DayItem[][]>> _daysCache = [];
-
-        private static DayItem[][] GetDays(YearMonth yearMonth)
-        {
-            lock (_daysCache)
-            {
-                var year = yearMonth.Year;
-                var month = yearMonth.Month;
-                if (!_daysCache.TryGetValue(year, out Dictionary<int, DayItem[][]>? dss))
-                {
-                    dss = _daysCache[year] = [];
-                }
-                if (!dss.TryGetValue(month, out DayItem[][]? ds))
-                {
-                    ds = dss[month] = new DayItem[DayItem.MAX_WEEKS_IN_MONTH][];
-                    for (int i = 0; i < ds.Length; i++)
-                    {
-                        ds[i] = new DayItem[DayItem.DAYS_IN_WEEK];
-                    }
-                    FillDays(year, month, ds);
-                }
-                return ds;
-            }
-        }
-
-        private static void FillDays(int year, int month, DayItem[][] days)
-        {
-            DateOnly firstDay = new(year, month, 1);
-            int firstDayOfWeek = (int) firstDay.DayOfWeek;
-            int daysInMonth = DateTime.DaysInMonth(year, month);
-            int day = -firstDayOfWeek;
-            for (int w = 0; w < DayItem.MAX_WEEKS_IN_MONTH; w++)
-            {
-                for (int dow = 0; dow < DayItem.DAYS_IN_WEEK; dow++)
-                {
-                    day++;
-                    if (1 <= day && day <= daysInMonth)
-                    {
-                        days[w][dow] = DayItemService.Instance.GetDayItem(year, month, day, dow);
-                    }
-                    else
-                    {
-                        days[w][dow] = DayItem.EMPTY;
-                    }
-                }
-            }
         }
     }
 }

@@ -1,4 +1,6 @@
+using SimpleCalendar.WPF;
 using SimpleCalendar.WPF.Models;
+using SimpleCalendar.WPF.Services;
 using SimpleCalendar.WPF.ViewModels;
 
 namespace SimpleCalendar.Tests
@@ -6,9 +8,23 @@ namespace SimpleCalendar.Tests
     public class UnitTestVM
     {
         [Fact]
+        public void TestSR()
+        {
+            var dis = ServiceRegistry.GetService<DayItemService>();
+            Assert.NotNull(dis);
+            var doms = ServiceRegistry.GetService<DaysOfMonthService>();
+            Assert.NotNull(dis);
+            var curMon = ServiceRegistry.GetService<CurrentMonthViewModel>();
+            Assert.NotNull(curMon);
+            var calMon = ServiceRegistry.GetService<CalendarMonthViewModel>();
+            Assert.NotNull(calMon);
+        }
+
+        [Fact]
         public void Test1()
         {
-            var vm = new CalendarMonthViewModel();
+            var vm = ServiceRegistry.GetService<CalendarMonthViewModel>();
+            Assert.NotNull(vm);
             vm.CurrentMonthViewModel.BaseYearMonth = new(2024, 1);
             vm.Offset = 3;
             Assert.Equal(2024, vm.YearMonth.Year);

@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using SimpleCalendar.WPF.Services;
 using SimpleCalendar.WPF.ViewModels;
 
 namespace SimpleCalendar.WPF
@@ -13,8 +14,10 @@ namespace SimpleCalendar.WPF
             ioc = Ioc.Default;
             ioc.ConfigureServices(
                 new ServiceCollection()
+                .AddSingleton<DayItemService>()
+                .AddSingleton<DaysOfMonthService>()
                 .AddSingleton<CurrentMonthViewModel>()
-                .AddTransient(provider => new CalendarMonthViewModel(provider.GetService<CurrentMonthViewModel>()!))
+                .AddTransient<CalendarMonthViewModel>()
                 .BuildServiceProvider());
         }
 
