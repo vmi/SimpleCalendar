@@ -70,6 +70,8 @@ WPF / MVVM / Visual Studio 2022
     * [\[WPF\]*とAutoの違いをきちんと把握しておらずミスった話](https://qiita.com/nori0__/items/dbdc4aa4bec0f71857ca)
     * [Set multibinding for a xaml element in code behind](https://stackoverflow.com/questions/5559397/set-multibinding-for-a-xaml-element-in-code-behind)
         * コードビハインドでマルチバインディングを実装。条件が複雑だと、コードとXAMLにとっちらかるよりコードの集約した方がよさそう?
+    * [XAML サービス](https://learn.microsoft.com/ja-jp/dotnet/desktop/xaml-services/)
+        * 何が書いてあるのかよくわかっていないが、そのうち必要になるかもということでメモ。
 * VS拡張機能
     * [XAMLのコード整形を簡単にする方法【Visual Studio】](https://lifetime-engineer.com/xaml-code-formatting/)
 * [XAMLデザイナ専用ViewModelコンストラクタの作り方](https://qiita.com/soi/items/17a78140cb032a4fed8c)
