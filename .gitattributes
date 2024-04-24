@@ -35,7 +35,7 @@
 *.cmd		text eol=crlf
 
 # Binaries
-*.csv		binary
+*.csv		binary diff=diff
 *.class		binary
 *.jar		binary
 *.war		binary
