@@ -33,4 +33,10 @@
 * 変更点
     * 曜日毎のスタイル設定を外部化するのに合わせて、DayTypeを見直し。
 
+2024-04-25
+----------
+
+* [C# - GetEncodingなどでshift_jisを指定すると例外が発生する](https://www.curict.com/item/72/72d5fb2.html)
+    * なん……だと……!?
+
 以上

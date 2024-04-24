@@ -81,4 +81,25 @@ namespace SimpleCalendar.WPF.Models
             Label = label;
         }
     }
+
+    public class HolydaysModel
+    {
+
+    }
+
+    public class SpecialdaysModel
+    {
+
+    }
+
+    public class DaysOfWeekModel
+    {
+        private readonly DayType[] dayTypes = new DayType[DayItem.DAYS_IN_WEEK];
+
+        public DayType this[int i]
+        {
+            get => dayTypes[i];
+            private set { }
+        }
+    }
 }
