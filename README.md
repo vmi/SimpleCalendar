@@ -30,6 +30,7 @@ WPFアプリケーション作成の習作として作成したもの。
 TODO
 ----
 
+* 曜日の部分も色を変える
 * マウスカーソル位置の日付の色変え
 * 祝祭日対応
     * サイトからCSVを取ってきて設定情報ディレクトリに保存する
@@ -55,25 +56,22 @@ TODO
 参考資料および現時点での知見
 ============================
 
-C# 自体
+C# 言語
 -------
 
 * [C#で文字列の中に変数を埋め込む](https://qiita.com/YoshijiGates/items/3e88a8aee51001014ed7)
 * `null` と `default` の使い分けがわからない。(資料求む)
 
-WPF / MVVM / Visual Studio 2022
--------------------------------
+WPF/XAML
+--------
 
-* WPF
-    * [WPF4.5入門](https://blog.okazuki.jp/entry/20130102/1357124042)
-        * ブックマークだけしてまだ読んでない(^^;
-    * [\[WPF\]*とAutoの違いをきちんと把握しておらずミスった話](https://qiita.com/nori0__/items/dbdc4aa4bec0f71857ca)
-    * [Set multibinding for a xaml element in code behind](https://stackoverflow.com/questions/5559397/set-multibinding-for-a-xaml-element-in-code-behind)
-        * コードビハインドでマルチバインディングを実装。条件が複雑だと、コードとXAMLにとっちらかるよりコードの集約した方がよさそう?
-    * [XAML サービス](https://learn.microsoft.com/ja-jp/dotnet/desktop/xaml-services/)
-        * 何が書いてあるのかよくわかっていないが、そのうち必要になるかもということでメモ。
-* VS拡張機能
-    * [XAMLのコード整形を簡単にする方法【Visual Studio】](https://lifetime-engineer.com/xaml-code-formatting/)
+* [WPF4.5入門](https://blog.okazuki.jp/entry/20130102/1357124042)
+    * ブックマークだけしてまだ読んでない(^^;
+* [\[WPF\]*とAutoの違いをきちんと把握しておらずミスった話](https://qiita.com/nori0__/items/dbdc4aa4bec0f71857ca)
+* [Set multibinding for a xaml element in code behind](https://stackoverflow.com/questions/5559397/set-multibinding-for-a-xaml-element-in-code-behind)
+    * コードビハインドでマルチバインディングを実装。条件が複雑だと、コードとXAMLにとっちらかるよりコードの集約した方がよさそう?
+* [XAML サービス](https://learn.microsoft.com/ja-jp/dotnet/desktop/xaml-services/)
+    * 何が書いてあるのかよくわかっていないが、そのうち必要になるかもということでメモ。
 * [XAMLデザイナ専用ViewModelコンストラクタの作り方](https://qiita.com/soi/items/17a78140cb032a4fed8c)
     * DIと組み合わせる場合は以下の「制御の反転 (MVVMツールキット)」の項も参照のこと。
 * [WPFプロジェクトでリソースを正しく参照する](https://qiita.com/satodayo/items/b28cac887a6c34709682)
@@ -88,18 +86,15 @@ WPF / MVVM / Visual Studio 2022
 * 添付ビヘイビア: WPFのコンポーネントを機能拡張する際、直接継承するのではなく、添付ビヘイビアを実装して既存コンポーネントに添付(attach)する方式で実現することができる。
     * [View を支える添付プロパティ](https://qiita.com/kawasawa/items/36c18fdb512cc1bcbd54)
     * [添付ビヘイビアを作る](https://sourcechord.hatenablog.com/entry/2014/03/15/171857)
-* MVVM
-    * [\[C#\]WPFでのMVVMについてサンプルアプリからまとめ](https://zenn.dev/naminodarie/articles/c9617df5ca879f)
-        * アウトラインを把握するのにかなり参考になった。
-    * [MVVM Toolkit の概要](https://learn.microsoft.com/ja-jp/dotnet/communitytoolkit/mvvm/)
-    * [CommunityToolkit.Mvvm V8 入門](https://qiita.com/kk-river/items/d974b02f6c4010433a9e)
-    * [NET用 MVVM Toolkit v8でMVVMコードを短く](https://qiita.com/hqf00342/items/d12bb669d1ac6fed6ab6)
-* 設定ファイルの扱い
-    * [アプリケーション設定の管理 (.NET)](https://learn.microsoft.com/ja-jp/visualstudio/ide/managing-application-settings-dotnet?view=vs-2022)
-        * いろいろ試行錯誤してみたが、あくまでユーザーに不可視の情報を永続化するための仕組みであり、ユーザーが設定ファイルを直接変更するようなユースケースは想定していない模様。後者を実現するための標準的な方法は無さそうなので、自前で実装するかNuGetパッケージの導入を検討する。
-        * あと、WPFアプリ内では動作するが、xUnitで外部から呼び出すと正しく動かなかった。pack URIと類似の問題があるかも? (根拠なし)
-    * [\[C#/WPF\]Setting.settingを使用して、簡易的にアプリの設定値を保存/読出しする](https://qiita.com/tera1707/items/2ebc0e5c48dc5226f60c)
 
+MVVM
+----
+
+* [\[C#\]WPFでのMVVMについてサンプルアプリからまとめ](https://zenn.dev/naminodarie/articles/c9617df5ca879f)
+    * アウトラインを把握するのにかなり参考になった。
+* [MVVM Toolkit の概要](https://learn.microsoft.com/ja-jp/dotnet/communitytoolkit/mvvm/)
+* [CommunityToolkit.Mvvm V8 入門](https://qiita.com/kk-river/items/d974b02f6c4010433a9e)
+* [NET用 MVVM Toolkit v8でMVVMコードを短く](https://qiita.com/hqf00342/items/d12bb669d1ac6fed6ab6)
 
 C# の依存性注入 (DI/Dependency Injection)
 -----------------------------------------
@@ -120,6 +115,14 @@ C# の依存性注入 (DI/Dependency Injection)
         * 引数の数が同じである解決可能なコンストラクタが複数ある場合は実行時エラーが発生する。
         * 特定のコンストラクタを使用することを明示的に指示したい場合は、`AddXXX()`の引数にインスタンス化処理を行うラムダ式(`Action<T>`)を渡す。
 
+設定ファイルの扱い
+------------------
+
+* [アプリケーション設定の管理 (.NET)](https://learn.microsoft.com/ja-jp/visualstudio/ide/managing-application-settings-dotnet?view=vs-2022)
+    * いろいろ試行錯誤してみたが、あくまでユーザーに不可視の情報を永続化するための仕組みであり、ユーザーが設定ファイルを直接変更するようなユースケースは想定していない模様。後者を実現するための標準的な方法は無さそうなので、自前で実装するかNuGetパッケージの導入を検討する。
+    * あと、WPFアプリ内では動作するが、xUnitで外部から呼び出すと正しく動かなかった。pack URIと類似の問題があるかも? (根拠なし)
+* [\[C#/WPF\]Setting.settingを使用して、簡易的にアプリの設定値を保存/読出しする](https://qiita.com/tera1707/items/2ebc0e5c48dc5226f60c)
+
 インストーラ作成
 ----------------
 
@@ -132,5 +135,11 @@ C# の依存性注入 (DI/Dependency Injection)
     * ClickOnce: 最もシンプルにインストーラを作成可能? 得失については未調査。
         * プロジェクトを右クリック →「発行」で使用可能。「公開」ダイアログで「ClickOnce」を選択する。
         * 「発行」で公開ダイアログが表示されない場合は「公開」タブの「発行プロファイルの追加」をクリックする。
+
+Visual Studio 2022
+------------------
+
+* VS拡張機能
+    * [XAMLのコード整形を簡単にする方法【Visual Studio】](https://lifetime-engineer.com/xaml-code-formatting/)
 
 以上
