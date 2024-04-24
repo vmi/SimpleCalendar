@@ -90,6 +90,7 @@ WPF/XAML
 * 添付ビヘイビア: WPFのコンポーネントを機能拡張する際、直接継承するのではなく、添付ビヘイビアを実装して既存コンポーネントに添付(attach)する方式で実現することができる。
     * [View を支える添付プロパティ](https://qiita.com/kawasawa/items/36c18fdb512cc1bcbd54)
     * [添付ビヘイビアを作る](https://sourcechord.hatenablog.com/entry/2014/03/15/171857)
+* [WPF Tips集（～するには）](https://qiita.com/Kosen-amai/items/ba13012a4076054df255)
 
 MVVM
 ----
