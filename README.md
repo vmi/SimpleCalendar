@@ -120,8 +120,20 @@ C# の依存性注入 (DI/Dependency Injection)
 
 * [アプリケーション設定の管理 (.NET)](https://learn.microsoft.com/ja-jp/visualstudio/ide/managing-application-settings-dotnet?view=vs-2022)
     * いろいろ試行錯誤してみたが、あくまでユーザーに不可視の情報を永続化するための仕組みであり、ユーザーが設定ファイルを直接変更するようなユースケースは想定していない模様。後者を実現するための標準的な方法は無さそうなので、自前で実装するかNuGetパッケージの導入を検討する。
+        * こんな感じのパス名になる:
+            * `C:\Users\vmi\AppData\Local\vmi.jp\SimpleCalendar.WPF_Url_wfyd44drf50k3ptum5onbl55enlyeje0\1.0.0.0\user.config`
+        * アセンブリのバージョンが変わると格納先ディレクトリも変わるが、これは `Settings.Default.Upgrade()` でアップグレードできる模様。
+            * 参考: [前バージョンの設定を引き継ぐ方法（C#用メモ）](https://among-ev.hatenadiary.org/entry/20110219/1298120888)
     * あと、WPFアプリ内では動作するが、xUnitで外部から呼び出すと正しく動かなかった。pack URIと類似の問題があるかも? (根拠なし)
 * [\[C#/WPF\]Setting.settingを使用して、簡易的にアプリの設定値を保存/読出しする](https://qiita.com/tera1707/items/2ebc0e5c48dc5226f60c)
+* ユーザー設定ファイル用のディレクトリ情報を取得して自前で処理する場合
+    * [.NET TIPS Windowsのシステム・フォルダのパスを取得するには？](https://atmarkit.itmedia.co.jp/fdotnet/dotnettips/032spfolder/spfolder.html)
+        * 古い記事だが、基本は変わらないはず。
+        * [Environment クラス](https://learn.microsoft.com/ja-jp/dotnet/api/system.environment?view=net-8.0)
+            * [Environment.GetFolderPath メソッド](https://learn.microsoft.com/ja-jp/dotnet/api/system.environment.getfolderpath?view=net-8.0)
+            * [Environment.SpecialFolder 列挙型](https://learn.microsoft.com/ja-jp/dotnet/api/system.environment.specialfolder?view=net-8.0)
+    * 初回起動時に設定ファイルをコピーしたい場合は、アプリのパスも取得する必要がある。
+        * [【.Net】アプリのパスを取得する方法っていくつもあるけど何か違うの？【C#】](https://dokuro.moe/dot-net-what-is-difference-app-path-get-method/)
 
 インストーラ作成
 ----------------
