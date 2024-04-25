@@ -62,7 +62,7 @@ namespace SimpleCalendar.WPF.Models
         public DayItem GetDayItem(int year, int month, int day, int dow)
         {
             var date = new DateOnly(year, month, day);
-            return dateToDayItem[date] ?? new DayItem(day, (DayType) dow);
+            return dateToDayItem.TryGetValue(date, out var dayItem) ? dayItem : new DayItem(day, (DayType) dow);
         }
     }
 }
