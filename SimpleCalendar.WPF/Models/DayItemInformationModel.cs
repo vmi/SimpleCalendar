@@ -7,9 +7,6 @@ namespace SimpleCalendar.WPF.Models
         private readonly Dictionary<DayType, DayTypeStyle> dayTypeStyles = [];
         private readonly Dictionary<DateOnly, DayItem> dateToDayItem = [];
 
-        public Dictionary<DayType, DayTypeStyle> DayTypeStyles { get { return dayTypeStyles; } }
-        public Dictionary<DateOnly, DayItem> DateToDayItem {  get { return dateToDayItem; } }
-
         public void LoadSettings()
         {
             // 既存情報の消去
@@ -75,11 +72,7 @@ namespace SimpleCalendar.WPF.Models
         public DayItem GetDayItem(int year, int month, int day, int dow)
         {
             var date = new DateOnly(year, month, day);
-            if (!dateToDayItem.TryGetValue(date, out var dayItem))
-            {
-                dayItem = new DayItem(day, (DayType) dow);
-            }
-            return dayItem;
+            return dateToDayItem[date] ?? new DayItem(day, (DayType) dow);
         }
     }
 }

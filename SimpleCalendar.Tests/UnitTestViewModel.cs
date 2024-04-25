@@ -5,13 +5,15 @@ using SimpleCalendar.WPF.ViewModels;
 
 namespace SimpleCalendar.Tests
 {
-    public class UnitTestVM
+    public class UnitTestViewModel
     {
         [Fact]
         public void TestSR()
         {
-            var dis = ServiceRegistry.GetService<DayItemService>();
-            Assert.NotNull(dis);
+            var ss = ServiceRegistry.GetService<SettingsService>();
+            Assert.NotNull(ss);
+            var diim = ServiceRegistry.GetService<DayItemInformationModel>();
+            Assert.NotNull(diim);
             var doms = ServiceRegistry.GetService<DaysOfMonthModel>();
             Assert.NotNull(doms);
             var curMon = ServiceRegistry.GetService<CurrentMonthViewModel>();
