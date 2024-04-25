@@ -18,7 +18,7 @@ SPECIALDAY02,OrangeRed,,
 SPECIALDAY03,OrangeRed,,
 ,,,
 # 本日,,,
-Today,,LightSkyBlue,
+TODAY,,LightSkyBlue,
 ,,,
 # フォーカスのあるセル,,,
-Focus,,,Gray
+FOCUS,,,Gray

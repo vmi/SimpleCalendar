@@ -57,11 +57,6 @@ namespace SimpleCalendar.WPF.Models
         SPECIALDAY3,
     }
 
-    public record struct DayTypeStyle(
-        string? Foreground,
-        string? Background,
-        string? Border);
-
     public class DayItem
     {
         public const int DAYS_IN_WEEK = 7;

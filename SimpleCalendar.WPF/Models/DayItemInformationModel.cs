@@ -2,31 +2,21 @@ using SimpleCalendar.WPF.Services;
 
 namespace SimpleCalendar.WPF.Models
 {
-    public class DayItemInformationModel(SettingsService settingsService)
+    public class DayItemInformationModel
     {
-        private readonly Dictionary<DayType, DayTypeStyle> dayTypeStyles = [];
+        private readonly SettingsService settingsService;
         private readonly Dictionary<DateOnly, DayItem> dateToDayItem = [];
+
+        public DayItemInformationModel(SettingsService settingsService)
+        {
+            this.settingsService = settingsService;
+            LoadSettings();
+        }
 
         public void LoadSettings()
         {
             // 既存情報の消去
-            dayTypeStyles.Clear();
             dateToDayItem.Clear();
-
-            // スタイル情報の読み込み
-            settingsService.ReadCsvFile(settingsService.StylesCsv, csvLine =>
-            {
-                string dTypeName = csvLine[0];
-                if (String.IsNullOrEmpty(dTypeName))
-                {
-                    return;
-                }
-                DayType dType = Enum.Parse<DayType>(dTypeName);
-                string fg = csvLine[1];
-                string bg = csvLine[2];
-                string bd = csvLine[3];
-                dayTypeStyles[dType] = new DayTypeStyle(fg, bg, bd);
-            });
 
             // 祝祭日の読み込み
             settingsService.ReadCsvFile(settingsService.HolydaysCsv, csvLine =>

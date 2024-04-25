@@ -6,9 +6,11 @@ namespace SimpleCalendar.WPF.ViewModels
 {
     public partial class CalendarMonthViewModel : ObservableObject
     {
-        private readonly DaysOfMonthModel daysOfMonthService;
+        private readonly DaysOfMonthModel daysOfMonthModel;
 
         public CurrentMonthViewModel CurrentMonthViewModel { get; init; }
+
+        public DayLabelStyleViewModel DayLabelStyleViewModel { get; init; }
 
         [ObservableProperty]
         private int _offset;
@@ -44,15 +46,17 @@ namespace SimpleCalendar.WPF.ViewModels
         private void UpdateDerivedProperties(YearMonth baseYearMonth)
         {
             _yearMonth = baseYearMonth.AddMonths(Offset);
-            _days = daysOfMonthService.GetDays(_yearMonth);
+            _days = daysOfMonthModel.GetDays(_yearMonth);
             OnPropertyChanged(nameof(YearMonth));
             OnPropertyChanged(nameof(Days));
         }
 
-        public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthService, CurrentMonthViewModel currentMonthViewModel)
+        public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthService, CurrentMonthViewModel currentMonthViewModel, DayLabelStyleViewModel dayLabelStyleViewModel)
         {
-            this.daysOfMonthService = daysOfMonthService;
+            this.daysOfMonthModel = daysOfMonthService;
             CurrentMonthViewModel = currentMonthViewModel;
+            DayLabelStyleViewModel = dayLabelStyleViewModel;
+
             CurrentMonthViewModel.PropertyChanged += CurrentMonthViewModel_PropertyChanged;
             _yearMonth = currentMonthViewModel.BaseYearMonth;
             _offset = 0;

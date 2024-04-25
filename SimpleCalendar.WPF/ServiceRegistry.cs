@@ -18,6 +18,7 @@ namespace SimpleCalendar.WPF
                 .AddSingleton<SettingsService>()
                 .AddSingleton<DayItemInformationModel>()
                 .AddSingleton<DaysOfMonthModel>()
+                .AddSingleton<DayLabelStyleViewModel>()
                 .AddSingleton<CurrentMonthViewModel>()
                 .AddTransient<CalendarMonthViewModel>()
                 .BuildServiceProvider());

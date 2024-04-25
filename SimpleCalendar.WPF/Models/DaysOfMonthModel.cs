@@ -1,5 +1,3 @@
-using SimpleCalendar.WPF.Services;
-
 namespace SimpleCalendar.WPF.Models
 {
     public class DaysOfMonthModel(DayItemInformationModel dayIteminformationModel)
