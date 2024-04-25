@@ -13,7 +13,7 @@ namespace SimpleCalendar.Tests
             var dis = ServiceRegistry.GetService<DayItemService>();
             Assert.NotNull(dis);
             var doms = ServiceRegistry.GetService<DaysOfMonthService>();
-            Assert.NotNull(dis);
+            Assert.NotNull(doms);
             var curMon = ServiceRegistry.GetService<CurrentMonthViewModel>();
             Assert.NotNull(curMon);
             var calMon = ServiceRegistry.GetService<CalendarMonthViewModel>();
