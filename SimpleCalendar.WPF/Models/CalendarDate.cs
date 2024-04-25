@@ -4,7 +4,7 @@ namespace SimpleCalendar.WPF.Models
     {
         public static YearMonth ThisMonth()
         {
-            var now = DateTime.Now;
+            DateTime now = DateTime.Now;
             return new(now.Year, now.Month);
         }
 
@@ -41,14 +41,26 @@ namespace SimpleCalendar.WPF.Models
 
     public enum DayType
     {
-        EMPTY,
-        WEEKDAY,
-        SATURDAY,
-        SUNDAY,
-        WEEKDAY_OFF,
+        EMPTY = -1,
+
+        SUNDAY,    // = 0 - DayOfWeek Enum (https://learn.microsoft.com/ja-jp/dotnet/api/system.dayofweek?view=net-8.0)
+        MONDAY,    // = 1
+        TUESDAY,   // = 2
+        WEDNESDAY, // = 3
+        THURSDAY,  // = 4
+        FRIDAY,    // = 5
+        SATURDAY,  // = 6
+
         HOLIDAY,
-        SPECIALDAY,
+        SPECIALDAY1,
+        SPECIALDAY2,
+        SPECIALDAY3,
     }
+
+    public record struct DayTypeStyle(
+        string? Foreground,
+        string? Background,
+        string? Border);
 
     public class DayItem
     {
@@ -79,27 +91,6 @@ namespace SimpleCalendar.WPF.Models
             }
             DayType = dayType;
             Label = label;
-        }
-    }
-
-    public class HolydaysModel
-    {
-
-    }
-
-    public class SpecialdaysModel
-    {
-
-    }
-
-    public class DaysOfWeekModel
-    {
-        private readonly DayType[] dayTypes = new DayType[DayItem.DAYS_IN_WEEK];
-
-        public DayType this[int i]
-        {
-            get => dayTypes[i];
-            private set { }
         }
     }
 }

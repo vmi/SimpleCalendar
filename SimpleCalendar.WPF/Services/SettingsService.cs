@@ -1,17 +1,17 @@
 using Csv;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleCalendar.WPF.Services
 {
     public class SettingsService
     {
+        private const string STYLES_CSV = "styles.csv";
+        private const string HOLYDAYS_CSV = "syukujitsu.csv";
+        private const string SPECIALDAYS_CSV = "specialdays.csv";
+
         public static string UserSettingBaseDir { get; set; }
-        public static string AppName {  get; set; }
+        public static string AppName { get; set; }
 
         static SettingsService()
         {
@@ -23,7 +23,7 @@ namespace SimpleCalendar.WPF.Services
             // ApplicationData = %HOMEDRIVE%%HOMEPATH%\AppData\Roaming - デバイス間で共有する(アカウントに紐付く)情報を格納する
             // LocalApplicationData = %HOMEDRIVE%%HOMEPATH%\AppData\Local - デバイス固有の情報を格納する
             UserSettingBaseDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var asmName = typeof(App).Assembly.GetName();
+            System.Reflection.AssemblyName asmName = typeof(App).Assembly.GetName();
             AppName = asmName.Name!; // nullになることはないと思うんだが、ほんとに大丈夫?
         }
 
@@ -42,16 +42,20 @@ namespace SimpleCalendar.WPF.Services
             cp932 = Encoding.GetEncoding(932);
         }
 
+        public string StylesCsv { get; } = STYLES_CSV;
+        public string HolydaysCsv { get; } = HOLYDAYS_CSV;
+        public string SpecialDaysCsv { get; } = SPECIALDAYS_CSV;
+
         public string InitSettings(string name)
         {
             if (!Directory.Exists(userSettingsDir))
             {
                 Directory.CreateDirectory(userSettingsDir);
             }
-            var userPath = Path.Combine(userSettingsDir, name);
+            string userPath = Path.Combine(userSettingsDir, name);
             if (!File.Exists(userPath))
             {
-                var origPath = Path.Combine(appDir, name);
+                string origPath = Path.Combine(appDir, name);
                 if (!File.Exists(origPath))
                 {
                     throw new FileNotFoundException("No initial configuration file", origPath);
@@ -63,16 +67,17 @@ namespace SimpleCalendar.WPF.Services
 
         public void ReadCsvFile(string name, Action<ICsvLine> handler)
         {
-            var userPath = InitSettings(name);
-            // BOMが付いていると、BOMの判定を優先する
-            using var sr = new StreamReader(userPath, cp932, true);
-            var opts = new CsvOptions()
+            string userPath = InitSettings(name);
+            // 読み込みのエンコーディングにデフォルトではCP932を用いるが、
+            // ファイルの先頭にBOMが付いているとBOMの判定結果を優先する
+            using StreamReader sr = new(userPath, cp932, true);
+            CsvOptions opts = new()
             {
                 HeaderMode = HeaderMode.HeaderPresent,
                 TrimData = true,
                 AllowNewLineInEnclosedFieldValues = true,
             };
-            foreach (var row in CsvReader.Read(sr, opts))
+            foreach (ICsvLine row in CsvReader.Read(sr, opts))
             {
                 handler(row);
             }

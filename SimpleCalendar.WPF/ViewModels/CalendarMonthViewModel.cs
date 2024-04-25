@@ -1,13 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using SimpleCalendar.WPF.Models;
-using SimpleCalendar.WPF.Services;
 using System.ComponentModel;
 
 namespace SimpleCalendar.WPF.ViewModels
 {
     public partial class CalendarMonthViewModel : ObservableObject
     {
-        private readonly DaysOfMonthService daysOfMonthService;
+        private readonly DaysOfMonthModel daysOfMonthService;
 
         public CurrentMonthViewModel CurrentMonthViewModel { get; init; }
 
@@ -50,7 +49,7 @@ namespace SimpleCalendar.WPF.ViewModels
             OnPropertyChanged(nameof(Days));
         }
 
-        public CalendarMonthViewModel(DaysOfMonthService daysOfMonthService, CurrentMonthViewModel currentMonthViewModel)
+        public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthService, CurrentMonthViewModel currentMonthViewModel)
         {
             this.daysOfMonthService = daysOfMonthService;
             CurrentMonthViewModel = currentMonthViewModel;

@@ -1,8 +1,8 @@
-using SimpleCalendar.WPF.Models;
+using SimpleCalendar.WPF.Services;
 
-namespace SimpleCalendar.WPF.Services
+namespace SimpleCalendar.WPF.Models
 {
-    public class DaysOfMonthService(DayItemService dayItemService)
+    public class DaysOfMonthModel(DayItemInformationModel dayIteminformationModel)
     {
         private readonly Dictionary<int, Dictionary<int, DayItem[][]>> _daysCache = [];
 
@@ -42,7 +42,7 @@ namespace SimpleCalendar.WPF.Services
                     day++;
                     if (1 <= day && day <= daysInMonth)
                     {
-                        days[w][dow] = dayItemService.GetDayItem(year, month, day, dow);
+                        days[w][dow] = dayIteminformationModel.GetDayItem(year, month, day, dow);
                     }
                     else
                     {
