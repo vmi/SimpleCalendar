@@ -65,6 +65,14 @@ C# 言語
 
 * [C#で文字列の中に変数を埋め込む](https://qiita.com/YoshijiGates/items/3e88a8aee51001014ed7)
 * `null` と `default` の使い分けがわからない。(資料求む)
+* [アクセス修飾子 (C# プログラミング ガイド)](https://learn.microsoft.com/ja-jp/dotnet/csharp/programming-guide/classes-and-structs/access-modifiers)
+* [Encodingクラスで扱えるエンコーディング名は？［C#／VB］](https://atmarkit.itmedia.co.jp/ait/articles/0304/11/news004.html)
+    * [shift_jis](https://www.iana.org/assignments/charset-reg/shift_jis)と[windows-31J(CP932, MS932とも)](https://www.iana.org/assignments/charset-reg/windows-31J)ではUnicodeマッピングが異なる([shift_jisの場合](https://unicode.org/Public/MAPPINGS/OBSOLETE/EASTASIA/JIS/SHIFTJIS.TXT)、[windows-31Jの場合](https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT))ので、Java等の他言語では同一視すると不具合の要因になるのだが、C#の世界では同じものになっている模様。(.NET CoreアプリをWindows以外の環境に持っていくと不具合が出るかもしれない?(※要検証))
+    * [C# - GetEncodingなどでshift_jisを指定すると例外が発生する](https://www.curict.com/item/72/72d5fb2.html)
+        * 罠に注意。(事前に `Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);` が必要)
+* [StreamReader クラス](https://learn.microsoft.com/ja-jp/dotnet/api/system.io.streamreader?view=net-7.0) (.NET8の日本語版ドキュメントがないので.NET7版)
+    * [StreamReader(Stream, Encoding, Boolean)](https://learn.microsoft.com/ja-jp/dotnet/api/system.io.streamreader.-ctor?view=net-7.0#system-io-streamreader-ctor(system-io-stream-system-text-encoding-system-boolean))
+        * Encodingに`shift_jis`(もしくはコードページ932)を指定しつつ、第3引数をtrueにすると、BOM付きUTF-8を自動判定してくれる。
 
 WPF/XAML
 --------
@@ -91,6 +99,7 @@ WPF/XAML
     * [View を支える添付プロパティ](https://qiita.com/kawasawa/items/36c18fdb512cc1bcbd54)
     * [添付ビヘイビアを作る](https://sourcechord.hatenablog.com/entry/2014/03/15/171857)
 * [WPF Tips集（～するには）](https://qiita.com/Kosen-amai/items/ba13012a4076054df255)
+* [コントロールのスタイルを作成する方法 (WPF .NET)](https://learn.microsoft.com/ja-jp/dotnet/desktop/wpf/controls/how-to-create-apply-style?view=netdesktop-8.0)
 
 MVVM
 ----

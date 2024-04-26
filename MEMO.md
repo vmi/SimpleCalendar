@@ -39,4 +39,9 @@
 * [C# - GetEncodingなどでshift_jisを指定すると例外が発生する](https://www.curict.com/item/72/72d5fb2.html)
     * なん……だと……!?
 
+2024-04-26
+----------
+
+* ModelとViewModelとServiceの設計にあたってのポリシーがよくわからない。識者求む(´･ω･`)
+
 以上
