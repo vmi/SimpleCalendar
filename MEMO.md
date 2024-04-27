@@ -53,5 +53,8 @@
     * MainWindow.xamlのみで発生する。CalendarMonthView.xamlでは発生しない。
         * エラーメッセージをよく見ると、CalendarMonthView.xamlのSourceでは絶対パスでファイルを指定している(先頭に「/」を付けている)のに、メッセージではパス名の先頭に「/」が付いていない。
             * Sourceを相対パス指定に変更するとエラー解消。おそらくUserControlでResourceDictionaryを外部化すると同様の問題が発生すると思われる。
+* 既存の実装だとマウスオーバー関するトリガーの条件設定がいろいろ複雑化するので、DayLabelにIsDayTypeEmptyを足してMultiTriggerにすることでシンプル化した。
+    * 合わせて、DayLabel.DayTypeとDayOfWeekLabel.DayOfWeekをstringからenumに変更。(これでインテリセンスが効くはず)
+        * DayOfWeekLabel.DayOfWeek設定時、自動的にContentを設定。(国際化を入れるのが面倒なので、直接日本語文字列を設定)
 
 以上
