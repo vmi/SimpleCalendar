@@ -16,6 +16,23 @@ namespace SimpleCalendar.WPF
             CalendarRoot.Loaded += CalendarRoot_Loaded;
             MouseLeftButtonDown += MainWindow_MouseLeftButtonDown;
             LocationChanged += MainWindow_LocationChanged;
+            MouseWheel += MainWindow_MouseWheel;
+        }
+
+        private void MainWindow_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (DataContext is CurrentMonthViewModel curMon)
+            {
+                var delta = e.Delta;
+                if (delta < 0 )
+                {
+                    curMon.NextLineCommand.Execute(null);
+                }
+                else if (delta > 0 )
+                {
+                    curMon.PrevLineCommand.Execute(null);
+                }
+            }
         }
 
         private void MainWindow_LocationChanged(object? sender, EventArgs e)
