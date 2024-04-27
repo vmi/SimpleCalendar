@@ -20,6 +20,7 @@ WPFアプリケーション作成の習作として作成したもの。
         * 右クリックメニュー
     * 既存コントロールの拡張
     * ユーザーコントロール(UserControl)の作成
+    * ResouceDictionaryの外部ファイル化
 * MVVM
     * ViewとViewModelの連携 (ViewModelとModelの連携はまだ)
         * 依存プロパティの作り方
@@ -32,9 +33,9 @@ WPFアプリケーション作成の習作として作成したもの。
 TODO
 ----
 
-* 曜日の部分も色を変える
-* マウスカーソル位置の日付の色変え
-* 祝祭日対応
+* ☑️ ~~曜日の部分も色を変える~~
+* ☑️ ~~マウスカーソル位置の日付の色変え~~
+* ☑️ ~~祝祭日対応~~
     * サイトからCSVを取ってきて設定情報ディレクトリに保存する
 * 設定画面を作る
 * ユーザーのディレクトリで設定情報の保存と取得を行う
@@ -43,7 +44,7 @@ TODO
         * 年月日指定情報
             * ウィークデイの休日設定 (曜日指定)
             * 年月日固定の日
-            * 以下の機能はデータ構造や処理がえらく複雑化することが想定された(=「シンプル」から外れる)ので対応しないことに決定
+            * ⚠ 以下の機能はデータ構造や処理がえらく複雑化することが想定された(=「シンプル」から外れる)ので対応しないことに決定
                 * ~~週毎の予定日 (曜日、開始日orNULL、終了日orNULL)~~
                 * ~~月毎の予定日 (日or第x週、開始日orNULL、終了日orNULL)~~
                 * ~~年毎の予定日 (月/日、開始日orNULL、終了日orNULL)~~
@@ -79,6 +80,9 @@ WPF/XAML
 
 * [WPF4.5入門](https://blog.okazuki.jp/entry/20130102/1357124042)
     * ブックマークだけしてまだ読んでない(^^;
+* [連載：WPF入門](https://atmarkit.itmedia.co.jp/ait/series/2794/)
+    * [第4回 WPFの「リソース、スタイル、テンプレート」を習得しよう](https://atmarkit.itmedia.co.jp/ait/articles/1009/07/news096.html)
+        * [VS2022] UserControlでResouceDictionaryを外部ファイル化した場合、UserControl定義側のSouce指定で絶対パスを指定すると、UserControl使用側のXAMLデザイナーで「XDG0003 リソース 'ResourceDictionaryファイル名' を検索できません。」というエラーが出て表示されない。実行時は正常で、VSのデザイン画面のみエラーとなる。Source指定を相対パスで行えばエラーにならない。
 * [\[WPF\]*とAutoの違いをきちんと把握しておらずミスった話](https://qiita.com/nori0__/items/dbdc4aa4bec0f71857ca)
 * [Set multibinding for a xaml element in code behind](https://stackoverflow.com/questions/5559397/set-multibinding-for-a-xaml-element-in-code-behind)
     * コードビハインドでマルチバインディングを実装。条件が複雑だと、コードとXAMLにとっちらかるよりコードの集約した方がよさそう?

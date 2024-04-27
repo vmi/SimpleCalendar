@@ -44,4 +44,14 @@
 
 * ModelとViewModelとServiceの設計にあたってのポリシーがよくわからない。識者求む(´･ω･`)
 
+2024-04-27
+----------
+
+* スタイルを動的に変更しようとすると実行時例外。
+    * StaticResouceで参照すると、スタイルがsealされて以後変更不可になる。DynamicResourceを使えばよいらしい。(未確認)
+* ResourceDictionaryを外部ファイル化すると、実行時は問題ないのに、VS2022のXAMLデザイナーでエラー(「XDG0003 リソース 'ResourceDictionaryファイル名' を検索できません。」)が発生する。
+    * MainWindow.xamlのみで発生する。CalendarMonthView.xamlでは発生しない。
+        * エラーメッセージをよく見ると、CalendarMonthView.xamlのSourceでは絶対パスでファイルを指定している(先頭に「/」を付けている)のに、メッセージではパス名の先頭に「/」が付いていない。
+            * Sourceを相対パス指定に変更するとエラー解消。おそらくUserControlでResourceDictionaryを外部化すると同様の問題が発生すると思われる。
+
 以上
