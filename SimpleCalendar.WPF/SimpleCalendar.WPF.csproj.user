@@ -18,5 +18,11 @@
     <Page Update="Views\CalendarMonthView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="MainWindowStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\CalendarMonthViewStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 </Project>

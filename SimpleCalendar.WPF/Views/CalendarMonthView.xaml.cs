@@ -31,6 +31,7 @@ namespace SimpleCalendar.WPF.Views
 
         private void CalendarMonthView_Loaded(object sender, RoutedEventArgs e)
         {
+            /*
             var dlStyles = ((CalendarMonthViewModel) DataContext).DayLabelStyleViewModel.DayLabelStyles;
             var baseStyle = new Style();
             var lStyle = new Style
@@ -107,6 +108,7 @@ namespace SimpleCalendar.WPF.Views
             baseStyle.Resources.Add(lStyle.TargetType, lStyle);
             baseStyle.Resources.Add(dlStyle.TargetType, dlStyle);
             DaysGrid.Style = baseStyle;
+            */
         }
     }
 }

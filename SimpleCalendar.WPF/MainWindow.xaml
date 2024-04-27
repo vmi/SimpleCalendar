@@ -15,19 +15,7 @@
         helper:DataContextHelper.DataContext="{x:Type viewmodel:CurrentMonthViewModel}"
         Activated="MainWindow_Activated">
     <Window.Resources>
-        <ResourceDictionary>
-            <Style TargetType="Window" x:Key="DefaultWindowStyle">
-                <Setter Property="WindowChrome.WindowChrome">
-                    <Setter.Value>
-                        <WindowChrome CaptionHeight="0"
-                                      CornerRadius="2"
-                                      GlassFrameThickness="0"
-                                      NonClientFrameEdges="None"
-                                      ResizeBorderThickness="3" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </ResourceDictionary>
+        <ResourceDictionary Source="MainWindowStyles.xaml" />
     </Window.Resources>
     <Grid helper:GridHelper.Margin="0,0,20,0" Name="CalendarRoot">
         <Grid.RowDefinitions>

@@ -11,15 +11,9 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
-            <Style x:Key="CalendarLabelStyle" TargetType="Label">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-            </Style>
-            <Style x:Key="DayLabel" TargetType="Label">
-                <Setter Property="HorizontalContentAlignment" Value="Center" />
-                <Setter Property="VerticalContentAlignment" Value="Center" />
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="Padding" Value="6,0" />
-            </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="CalendarMonthViewStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel Width="auto" Height="auto">
@@ -33,7 +27,7 @@
                 </TextBlock.Text>
             </TextBlock>
         </Label>
-        <Grid Name="DaysGrid">
+        <Grid Style="{DynamicResource Month}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
