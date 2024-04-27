@@ -48,7 +48,9 @@
 ----------
 
 * スタイルを動的に変更しようとすると実行時例外。
-    * StaticResouceで参照すると、スタイルがsealされて以後変更不可になる。DynamicResourceを使えばよいらしい。(未確認)
+    * StaticResouceで参照すると、スタイルがsealされて以後変更不可になる。 ~~DynamicResourceを使えばよいらしい。(未確認)~~ ⇒ ダメでした。そもそもスタイルが「使用」されている時点で内部構造を変更するのは不可の模様。
+        * TriggerのSetterでDayLabelStyleSettingsのプロパティにバインドする形でお茶を濁す。
+            * あんまり細かくスタイル指定をしたいという需要もないだろうし……。
 * ResourceDictionaryを外部ファイル化すると、実行時は問題ないのに、VS2022のXAMLデザイナーでエラー(「XDG0003 リソース 'ResourceDictionaryファイル名' を検索できません。」)が発生する。
     * MainWindow.xamlのみで発生する。CalendarMonthView.xamlでは発生しない。
         * エラーメッセージをよく見ると、CalendarMonthView.xamlのSourceでは絶対パスでファイルを指定している(先頭に「/」を付けている)のに、メッセージではパス名の先頭に「/」が付いていない。
