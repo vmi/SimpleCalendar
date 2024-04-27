@@ -19,5 +19,5 @@ SPECIALDAY03,OrangeRed,文字色
 # 本日,,
 TODAY,LightSkyBlue,背景色
 ,,
-# マウスカーソルのある日,,
-FOCUS,LightGreen,背景色
+# マウスカーソル下の日,,
+MOUSEOVER,LightGreen,背景色

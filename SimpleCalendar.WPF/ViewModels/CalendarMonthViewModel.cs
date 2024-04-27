@@ -8,9 +8,9 @@ namespace SimpleCalendar.WPF.ViewModels
     {
         private readonly DaysOfMonthModel daysOfMonthModel;
 
-        public CurrentMonthViewModel CurrentMonthViewModel { get; init; }
+        public CurrentMonthViewModel CurrentMonth { get; init; }
 
-        public DayLabelStyleViewModel DayLabelStyleViewModel { get; init; }
+        public DayLabelStyleSettingViewModel DayLabelStyleSetting { get; init; }
 
         [ObservableProperty]
         private int _offset;
@@ -25,10 +25,10 @@ namespace SimpleCalendar.WPF.ViewModels
 
         partial void OnOffsetChanged(int oldValue, int newValue)
         {
-            UpdateDerivedProperties(CurrentMonthViewModel.BaseYearMonth);
+            UpdateDerivedProperties(CurrentMonth.BaseYearMonth);
         }
 
-        private void CurrentMonthViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private void CurrentMonth_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is CurrentMonthViewModel curMonth)
             {
@@ -51,16 +51,16 @@ namespace SimpleCalendar.WPF.ViewModels
             OnPropertyChanged(nameof(Days));
         }
 
-        public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthService, CurrentMonthViewModel currentMonthViewModel, DayLabelStyleViewModel dayLabelStyleViewModel)
+        public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthModel, CurrentMonthViewModel currentMonth, DayLabelStyleSettingViewModel dayLabelStyleSetting)
         {
-            this.daysOfMonthModel = daysOfMonthService;
-            CurrentMonthViewModel = currentMonthViewModel;
-            DayLabelStyleViewModel = dayLabelStyleViewModel;
+            this.daysOfMonthModel = daysOfMonthModel;
+            CurrentMonth = currentMonth;
+            DayLabelStyleSetting = dayLabelStyleSetting;
 
-            CurrentMonthViewModel.PropertyChanged += CurrentMonthViewModel_PropertyChanged;
-            _yearMonth = currentMonthViewModel.BaseYearMonth;
+            CurrentMonth.PropertyChanged += CurrentMonth_PropertyChanged;
+            _yearMonth = currentMonth.BaseYearMonth;
             _offset = 0;
-            _days = daysOfMonthService.GetDays(_yearMonth);
+            _days = daysOfMonthModel.GetDays(_yearMonth);
             OnPropertyChanged(nameof(YearMonth));
             OnPropertyChanged(nameof(Offset));
             OnPropertyChanged(nameof(Days));

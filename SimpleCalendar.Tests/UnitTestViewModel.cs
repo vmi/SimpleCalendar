@@ -27,7 +27,7 @@ namespace SimpleCalendar.Tests
         {
             var vm = ServiceRegistry.GetService<CalendarMonthViewModel>();
             Assert.NotNull(vm);
-            vm.CurrentMonthViewModel.BaseYearMonth = new(2024, 1);
+            vm.CurrentMonth.BaseYearMonth = new(2024, 1);
             vm.Offset = 3;
             Assert.Equal(2024, vm.YearMonth.Year);
             Assert.Equal(4, vm.YearMonth.Month);

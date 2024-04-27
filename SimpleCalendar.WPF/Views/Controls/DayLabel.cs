@@ -94,7 +94,7 @@ namespace SimpleCalendar.WPF.Views.Controls
                 {
                     Converter = isTodayConverter
                 };
-                var curMon = calMon.CurrentMonthViewModel;
+                var curMon = calMon.CurrentMonth;
                 multiBinding.Bindings.Add(new Binding("Today") { Source = curMon });
                 multiBinding.Bindings.Add(new Binding("YearMonth") { Source = calMon });
                 multiBinding.Bindings.Add(new Binding(nameof(DayItem)) { Source = this });

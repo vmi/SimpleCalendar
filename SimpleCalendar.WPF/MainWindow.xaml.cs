@@ -1,4 +1,6 @@
 using SimpleCalendar.WPF.ViewModels;
+using SimpleCalendar.WPF.Views.Controls;
+using SimpleCalendar.WPF.Views.Helpers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,6 +12,7 @@ namespace SimpleCalendar.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
