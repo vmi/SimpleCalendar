@@ -56,5 +56,6 @@
 * 既存の実装だとマウスオーバー関するトリガーの条件設定がいろいろ複雑化するので、DayLabelにIsDayTypeEmptyを足してMultiTriggerにすることでシンプル化した。
     * 合わせて、DayLabel.DayTypeとDayOfWeekLabel.DayOfWeekをstringからenumに変更。(これでインテリセンスが効くはず)
         * DayOfWeekLabel.DayOfWeek設定時、自動的にContentを設定。(国際化を入れるのが面倒なので、直接日本語文字列を設定)
+* マウスホイールの回転に対応。InputBindingがマウスホイールの回転に未対応のため、コードビハインドで直接書く。
 
 以上
