@@ -1,5 +1,4 @@
 using SimpleCalendar.WPF.ViewModels;
-using SimpleCalendar.WPF.Views.Controls;
 using System.Windows;
 using System.Windows.Controls;
 

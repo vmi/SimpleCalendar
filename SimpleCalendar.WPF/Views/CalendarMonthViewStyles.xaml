@@ -5,9 +5,9 @@
     <Style x:Key="DayLabel" TargetType="Label">
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="4,0" />
-        <Setter Property="Padding" Value="2,0" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="6,0" />
     </Style>
     <Style x:Key="Month" TargetType="Grid">
         <Style.Resources>
@@ -16,6 +16,11 @@
                     <Trigger Property="DayOfWeek" Value="SUNDAY">
                         <Setter Property="Foreground" Value="Red" />
                     </Trigger>
+                    <Trigger Property="DayOfWeek" Value="MONDAY" />
+                    <Trigger Property="DayOfWeek" Value="TUESDAY" />
+                    <Trigger Property="DayOfWeek" Value="WEDNESDAY" />
+                    <Trigger Property="DayOfWeek" Value="THURSDAY" />
+                    <Trigger Property="DayOfWeek" Value="FRIDAY" />
                     <Trigger Property="DayOfWeek" Value="SATURDAY">
                         <Setter Property="Foreground" Value="Blue" />
                     </Trigger>
@@ -26,15 +31,24 @@
                     <Trigger Property="DayType" Value="SUNDAY">
                         <Setter Property="Foreground" Value="Red" />
                     </Trigger>
+                    <Trigger Property="DayType" Value="MONDAY" />
+                    <Trigger Property="DayType" Value="TUESDAY" />
+                    <Trigger Property="DayType" Value="WEDNESDAY" />
+                    <Trigger Property="DayType" Value="THURSDAY" />
+                    <Trigger Property="DayType" Value="FRIDAY" />
                     <Trigger Property="DayType" Value="SATURDAY">
                         <Setter Property="Foreground" Value="Blue" />
                     </Trigger>
                     <Trigger Property="IsToday" Value="True">
                         <Setter Property="Background" Value="LightSkyBlue" />
                     </Trigger>
-                    <Trigger Property="IsMouseOver" Value="True">
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver" Value="True" />
+                            <Condition Property="IsDayTypeEmpty" Value="False" />
+                        </MultiTrigger.Conditions>
                         <Setter Property="Background" Value="LightGreen" />
-                    </Trigger>
+                    </MultiTrigger>
                 </Style.Triggers>
             </Style>
         </Style.Resources>

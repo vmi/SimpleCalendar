@@ -22,24 +22,34 @@ namespace SimpleCalendar.WPF.Views.Controls
             if (d is DayLabel obj && e.NewValue is DayItem dayItem)
             {
                 obj.Content = dayItem.DayString;
-                obj.DayType = dayItem.DayType.ToString();
+                obj.DayType = dayItem.DayType;
+                obj.IsDayTypeEmpty = dayItem.DayType == DayType.EMPTY;
                 if (!string.IsNullOrEmpty(dayItem.Label))
                 {
                     obj.ToolTip = dayItem.Label;
                 }
-
             }
         }
 
         private static readonly DependencyPropertyKey DayTypePropertyKey = DependencyProperty.RegisterReadOnly(
             nameof(DayType),
-            typeof(string),
+            typeof(DayType),
             typeof(DayLabel),
             new UIPropertyMetadata());
 
         public static readonly DependencyProperty DayTypeProperty = DayTypePropertyKey.DependencyProperty;
 
-        public string DayType { get => (string) GetValue(DayTypeProperty); private set => SetValue(DayTypePropertyKey, value); }
+        public DayType DayType { get => (DayType) GetValue(DayTypeProperty); private set => SetValue(DayTypePropertyKey, value); }
+
+        private static readonly DependencyPropertyKey IsDayTypeEmptyPropertyKey = DependencyProperty.RegisterReadOnly(
+            nameof(IsDayTypeEmpty),
+            typeof(bool),
+            typeof(DayLabel),
+            new UIPropertyMetadata());
+
+        public static readonly DependencyProperty IsDayTypeEmptyProperty = IsDayTypeEmptyPropertyKey.DependencyProperty;
+
+        public bool IsDayTypeEmpty { get => (bool) GetValue(IsDayTypeEmptyProperty); private set => SetValue(IsDayTypeEmptyPropertyKey, value); }
 
         public static readonly DependencyProperty IsTodayProperty = DependencyProperty.Register(
             nameof(IsToday),
@@ -87,7 +97,7 @@ namespace SimpleCalendar.WPF.Views.Controls
                 var curMon = calMon.CurrentMonthViewModel;
                 multiBinding.Bindings.Add(new Binding("Today") { Source = curMon });
                 multiBinding.Bindings.Add(new Binding("YearMonth") { Source = calMon });
-                multiBinding.Bindings.Add(new Binding(nameof(DayItem)) { RelativeSource = new RelativeSource() { Mode = RelativeSourceMode.Self } });
+                multiBinding.Bindings.Add(new Binding(nameof(DayItem)) { Source = this });
                 SetBinding(IsTodayProperty, multiBinding);
             }
         }

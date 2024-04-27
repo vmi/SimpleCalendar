@@ -46,13 +46,13 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="0" Content="日" DayOfWeek="SUNDAY" />
-            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="1" Content="月" DayOfWeek="MONDAY" />
-            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="2" Content="火" DayOfWeek="TUESDAY" />
-            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="3" Content="水" DayOfWeek="WEDNESDAY" />
-            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="4" Content="木" DayOfWeek="THURSDAY" />
-            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="5" Content="金" DayOfWeek="FRIDAY" />
-            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="6" Content="土" DayOfWeek="SATURDAY" />
+            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="0" DayOfWeek="SUNDAY" />
+            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="1" DayOfWeek="MONDAY" />
+            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="2" DayOfWeek="TUESDAY" />
+            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="3" DayOfWeek="WEDNESDAY" />
+            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="4" DayOfWeek="THURSDAY" />
+            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="5" DayOfWeek="FRIDAY" />
+            <control:DayOfWeekLabel Grid.Row="0" Grid.Column="6" DayOfWeek="SATURDAY" />
             <control:DayLabel Grid.Row="1" Grid.Column="0" DayItem="{Binding Path='Days[0][0]'}" />
             <control:DayLabel Grid.Row="1" Grid.Column="1" DayItem="{Binding Path='Days[0][1]'}" />
             <control:DayLabel Grid.Row="1" Grid.Column="2" DayItem="{Binding Path='Days[0][2]'}" />
