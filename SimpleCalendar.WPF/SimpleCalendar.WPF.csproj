@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -12,6 +12,7 @@
     <Version>1.0.0</Version>
     <Authors>Motonori IWAMURO</Authors>
     <Company>vmi.jp</Company>
+    <ApplicationIcon>Resources\icon256.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,5 +26,17 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="icon256.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\icon256.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icon256.png" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 using SimpleCalendar.WPF.ViewModels;
 using SimpleCalendar.WPF.Views.Controls;
 using SimpleCalendar.WPF.Views.Helpers;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,6 +21,12 @@ namespace SimpleCalendar.WPF
             MouseLeftButtonDown += MainWindow_MouseLeftButtonDown;
             LocationChanged += MainWindow_LocationChanged;
             MouseWheel += MainWindow_MouseWheel;
+            StateChanged += MainWindow_StateChanged;
+        }
+
+        private void MainWindow_StateChanged(object? sender, EventArgs e)
+        {
+            Debug.WriteLine(WindowState);
         }
 
         private void MainWindow_MouseWheel(object sender, MouseWheelEventArgs e)

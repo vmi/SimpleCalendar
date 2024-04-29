@@ -1,0 +1,6 @@
+Shell_NotifyIcon
+LoadIconMetric
+HRESULT
+GetModuleHandle
+// MAKEINTRESOURCE
+// IDI_ICON

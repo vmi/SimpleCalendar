@@ -9,11 +9,12 @@
         mc:Ignorable="d"
         Title="Simple Calendar"
         WindowStyle="None"
-        ResizeMode="NoResize"
+        ResizeMode="CanMinimize"
         SizeToContent="WidthAndHeight"
         d:DataContext="{d:DesignInstance Type=viewmodel:CurrentMonthViewModel}"
         helper:DataContextHelper.DataContext="{x:Type viewmodel:CurrentMonthViewModel}"
-        Activated="MainWindow_Activated">
+        Activated="MainWindow_Activated"
+        Icon="/icon256.png">
     <Window.Resources>
         <ResourceDictionary Source="MainWindowStyles.xaml" />
     </Window.Resources>

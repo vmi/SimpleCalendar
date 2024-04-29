@@ -60,4 +60,17 @@
         * DayOfWeekLabel.DayOfWeek設定時、自動的にContentを設定。(国際化を入れるのが面倒なので、直接日本語文字列を設定)
 * マウスホイールの回転に対応。InputBindingがマウスホイールの回転に未対応のため、コードビハインドで直接書く。
 
+2024-04-28
+----------
+
+* 通知領域(タスクトレイ)への登録。
+    * WPFは未対応(!!)
+    * workaroundとして、Windows Formsを使用している例が大半だが、いくつか問題があるらしい。
+        * 参考: [タスクトレイ常駐アプリの実装 Tips＆Tricks（その２）](https://hnx8.hatenablog.com/entry/20131102/1383415896)
+    * WPFを使いながらWindows Formsへも依存するのは何か負けた気がするので、Win32APIを直接叩く方法を試行。
+        * [C#/Win32 P/Invoke Source Generator](https://github.com/microsoft/CsWin32)
+            * [\[C#\] CsWin32でWin32APIのプラットフォーム呼び出し(P/Invoke)コードを自動生成](https://qiita.com/radian-jp/items/a4509f9a44101fb2f30e)
+        * [C# Win32API完全入門](https://qiita.com/nekotadon/items/f376d17de85dfb84fbd5)
+    * [通知と通知領域](https://learn.microsoft.com/ja-jp/windows/win32/shell/notification-area)
+
 以上
