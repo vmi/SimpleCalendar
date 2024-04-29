@@ -1,6 +1,8 @@
 using NotifyIcon;
 using SimpleCalendar.WPF.Utilities;
 using SimpleCalendar.WPF.ViewModels;
+using SimpleCalendar.WPF.Views.Controls;
+using SimpleCalendar.WPF.Views.Helpers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
