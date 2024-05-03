@@ -72,5 +72,37 @@
             * [\[C#\] CsWin32でWin32APIのプラットフォーム呼び出し(P/Invoke)コードを自動生成](https://qiita.com/radian-jp/items/a4509f9a44101fb2f30e)
         * [C# Win32API完全入門](https://qiita.com/nekotadon/items/f376d17de85dfb84fbd5)
     * [通知と通知領域](https://learn.microsoft.com/ja-jp/windows/win32/shell/notification-area)
+        * [Shell_NotifyIconW 関数 (shellapi.h)](https://learn.microsoft.com/ja-jp/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw)
+        * [NOTIFYICONDATAW](https://learn.microsoft.com/ja-jp/windows/win32/api/shellapi/ns-shellapi-notifyicondataw)
+        * [NotificationIcon サンプル](https://learn.microsoft.com/ja-jp/windows/win32/shell/samples-notificationicon)
+            * [NotificationIcon.cpp](https://github.com/microsoft/Windows-classic-samples/blob/main/Samples/Win7Samples/winui/shell/appshellintegration/NotificationIcon/NotificationIcon.cpp)
+
+2024-04-29
+----------
+
+* WPFで独自イベントハンドラ: いくつかバリエーションがあるけどどれが適切なのかわからない……。
+    * [How to handle WndProc messages in WPF?](https://stackoverflow.com/questions/624367/how-to-handle-wndproc-messages-in-wpf)
+    * [PresentationSource.FromVisual(this) returns null value in WPF](https://stackoverflow.com/questions/11204251/presentationsource-fromvisualthis-returns-null-value-in-wpf)
+    * [WPFアプリケーションでウィンドウプロシージャをフックする](https://qiita.com/tricogimmick/items/86141bc33c0e06e9d2e9)
+* プロジェクトGUIDが欲しい。
+    * `*.sln`ファイルが書いてあるのがGUID?
+        * `Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleCalendar.WPF", "SimpleCalendar.WPF\SimpleCalendar.WPF.csproj", "{060F633E-8DB1-46D0-A1A4-9DCF5F9DB46C}"`
+            * 1つ目(`Project(...)`) ⇒ Visual Studioで規定されたプロジェクトタイプGUID
+                * [What are the project GUIDs in a Visual Studio solution file used for?](https://stackoverflow.com/questions/2327202/what-are-the-project-guids-in-a-visual-studio-solution-file-used-for)
+                * [Visual Studio Project Type Guids](https://github.com/JamesW75/visual-studio-project-type-guid)
+                    * オリジナル: [List of Visual Studio Project Type GUIDs](https://www.codeproject.com/Reference/720512/List-of-Visual-Studio-Project-Type-GUIDs)
+            * 2つ目(末尾にあるもの) ⇒ プロジェクトGUID
+                * [How do I programmatically get the GUID of an application in C# with .NET?](https://stackoverflow.com/questions/502303/how-do-i-programmatically-get-the-guid-of-an-application-in-c-sharp-with-net)
+    * [How to get project GUID in runtime of .netcore?](https://stackoverflow.com/questions/61071849/how-to-get-project-guid-in-runtime-of-netcore)
+        * .NET Coreでは、`*.sln`や`*.csproj`に記述されたプロジェクトGUIDはアセンブリには埋め込まれないらしい?
+            * 単にプログラム実行期間中だけのGUIDが欲しいだけなら、`Guid.NewGuid()`の結果をどこかに保存すればよい。
+
+2024-05-03
+----------
+
+* 通知領域(タスクトレイ)への登録その2。
+    * 通知領域への登録は、以下の2段階で行う必要がある。(詳細は前述の [NotificationIcon.cpp](https://github.com/microsoft/Windows-classic-samples/blob/main/Samples/Win7Samples/winui/shell/appshellintegration/NotificationIcon/NotificationIcon.cpp) を参照のこと。2段階必要なことに気付かず、`NIM_ADD | NIM_SETVERSION` で設定しようとしていた……)
+        1. `Shell_NotifyIcon(NIM_ADD, ...)` で諸々の情報を登録する。
+        2. `Shell_NotifyIcon(NIM_SETVERSION, ...)` で対応バージョンを昇格する。
 
 以上

@@ -105,6 +105,7 @@ WPF/XAML
 * [WPF Tips集（～するには）](https://qiita.com/Kosen-amai/items/ba13012a4076054df255)
 * [コントロールのスタイルを作成する方法 (WPF .NET)](https://learn.microsoft.com/ja-jp/dotnet/desktop/wpf/controls/how-to-create-apply-style?view=netdesktop-8.0)
 * [\[C#/WPF\] コンバーターの書き方](https://qiita.com/tera1707/items/47d1f1766cbe798b0c13)
+* WPFデザインモードの判定: [DesignerProperties.GetIsInDesignMode(DependencyObject) Method](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.designerproperties.getisindesignmode?view=windowsdesktop-8.0)
 
 MVVM
 ----
