@@ -1,8 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SimpleCalendar.WPF.Models;
 using SimpleCalendar.WPF.Services;
-using SimpleCalendar.WPF.Views.Controls;
 using System.Windows;
 using System.Windows.Media;
 

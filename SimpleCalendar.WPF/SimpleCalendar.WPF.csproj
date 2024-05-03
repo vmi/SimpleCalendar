@@ -13,6 +13,15 @@
     <Authors>Motonori IWAMURO</Authors>
     <Company>vmi.jp</Company>
     <ApplicationIcon>Resources\icon256.ico</ApplicationIcon>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,7 +42,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\icon256.ico" />
+    <EmbeddedResource Include="Resources\icon256.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NotifyIcon\NotifyIcon.csproj" />
   </ItemGroup>
 
   <ItemGroup>
