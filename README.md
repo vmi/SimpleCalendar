@@ -194,11 +194,7 @@ Visual Studio 2022
 オープンソースのアイコン集
 --------------------------
 
-* [Clarity Icons](https://v12.clarity.design/icons)
-    * [Getting started with Clarity Icons](https://v12.clarity.design/icons/get-started)
-        * [@clr/icons](https://www.npmjs.com/package/@clr/icons)
-            * ライセンスはMITでよい?
-            * [Clarity Angular](https://github.com/vmware-clarity/ng-clarity)
-            * [Clarity Core](https://github.com/vmware-clarity/core)
+* [iconify.design](https://icon-sets.iconify.design/)
+    * OSSライセンスのアイコンを集めたもの。
 
 以上
