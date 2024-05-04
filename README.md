@@ -29,6 +29,10 @@ WPFアプリケーション作成の習作として作成したもの。
 * MVVM Toolkit (Community Toolkits for .NET) の使い方
 * 依存性注入 (Dependency Injection)
 * xUnit (さわりだけ)
+* Windowsプラットフォーム操作
+    * CsWin32
+    * 通知領域 (タスクトレイ)
+    * WPFへの独自イベントハンドラの追加
 
 TODO
 ----
@@ -48,7 +52,7 @@ TODO
                 * ~~週毎の予定日 (曜日、開始日orNULL、終了日orNULL)~~
                 * ~~月毎の予定日 (日or第x週、開始日orNULL、終了日orNULL)~~
                 * ~~年毎の予定日 (月/日、開始日orNULL、終了日orNULL)~~
-        * 表示色
+        * ☑️ 表示色
             * ☑️ 曜日色
                 * ~~平日~~
                 * ☑️ 日, 月, 火, 水, 木, 金, 土
@@ -57,12 +61,13 @@ TODO
         * フォント名
         * フォントサイズ
 * 配布物生成対応
+* メニューにアイコンを付ける
 
 参考資料および現時点での知見
 ============================
 
-C# 言語
--------
+C#言語
+------
 
 * [C#で文字列の中に変数を埋め込む](https://qiita.com/YoshijiGates/items/3e88a8aee51001014ed7)
 * `null` と `default` の使い分けがわからない。(資料求む)
@@ -74,6 +79,17 @@ C# 言語
 * [StreamReader クラス](https://learn.microsoft.com/ja-jp/dotnet/api/system.io.streamreader?view=net-7.0) (.NET8の日本語版ドキュメントがないので.NET7版)
     * [StreamReader(Stream, Encoding, Boolean)](https://learn.microsoft.com/ja-jp/dotnet/api/system.io.streamreader.-ctor?view=net-7.0#system-io-streamreader-ctor(system-io-stream-system-text-encoding-system-boolean))
         * Encodingに`shift_jis`(もしくはコードページ932)を指定しつつ、第3引数をtrueにすると、BOM付きUTF-8を自動判定してくれる。
+
+Windowsプラットフォーム操作
+---------------------------
+
+* [C#/Win32 P/Invoke Source Generator](https://github.com/microsoft/CsWin32)
+* [通知と通知領域](https://learn.microsoft.com/ja-jp/windows/win32/shell/notification-area)
+    * [Shell_NotifyIconW 関数 (shellapi.h)](https://learn.microsoft.com/ja-jp/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw)
+    * [NOTIFYICONDATAW](https://learn.microsoft.com/ja-jp/windows/win32/api/shellapi/ns-shellapi-notifyicondataw)
+    * [NotificationIcon サンプル](https://learn.microsoft.com/ja-jp/windows/win32/shell/samples-notificationicon)
+        * [NotificationIcon.cpp](https://github.com/microsoft/Windows-classic-samples/blob/main/Samples/Win7Samples/winui/shell/appshellintegration/NotificationIcon/NotificationIcon.cpp)
+            * 通知アイコン登録時、`Shell_NotifyIcon(NIM_ADD, &nid);` の実行後に `nid.uVersion = NOTIFYICON_VERSION_4;` を設定してから `Shell_NotifyIcon(NIM_SETVERSION, &nid);` を実行していることに注意。
 
 WPF/XAML
 --------
@@ -174,5 +190,15 @@ Visual Studio 2022
 
 * VS拡張機能
     * [XAMLのコード整形を簡単にする方法【Visual Studio】](https://lifetime-engineer.com/xaml-code-formatting/)
+
+オープンソースのアイコン集
+--------------------------
+
+* [Clarity Icons](https://v12.clarity.design/icons)
+    * [Getting started with Clarity Icons](https://v12.clarity.design/icons/get-started)
+        * [@clr/icons](https://www.npmjs.com/package/@clr/icons)
+            * ライセンスはMITでよい?
+            * [Clarity Angular](https://github.com/vmware-clarity/ng-clarity)
+            * [Clarity Core](https://github.com/vmware-clarity/core)
 
 以上
