@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -38,7 +38,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="icon256.png" />
+    <Resource Include="Images/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -47,19 +49,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NotifyIcon\NotifyIcon.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="icon256.png" />
-  <ItemGroup>
-    <None Remove="icon256.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Resources\icon256.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="icon256.png" />
   </ItemGroup>
 </Project>

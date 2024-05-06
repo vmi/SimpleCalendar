@@ -14,7 +14,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodel:CurrentMonthViewModel}"
         helper:DataContextHelper.DataContext="{x:Type viewmodel:CurrentMonthViewModel}"
         Activated="MainWindow_Activated"
-        Icon="/icon256.png">
+        Icon="/Images/icon256.png">
     <Window.Resources>
         <ResourceDictionary Source="MainWindowStyles.xaml" />
     </Window.Resources>
@@ -58,7 +58,11 @@
     </Window.InputBindings>
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="終了" Name="Exit" Click="MenuItem_Click" />
+            <MenuItem Header="終了" Name="Exit" Click="MenuItem_Click">
+                <MenuItem.Icon>
+                    <Image Source="/Images/exit256.png" />
+                </MenuItem.Icon>
+            </MenuItem>
         </ContextMenu>
     </Window.ContextMenu>
 </Window>
