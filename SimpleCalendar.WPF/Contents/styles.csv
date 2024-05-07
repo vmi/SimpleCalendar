@@ -12,9 +12,9 @@ SATURDAY,Blue,文字色
 HOLIDAY,Magenta,文字色
 ,,
 # 特別日,,
-SPECIALDAY01,OrangeRed,文字色
-SPECIALDAY02,OrangeRed,文字色
-SPECIALDAY03,OrangeRed,文字色
+SPECIALDAY1,OrangeRed,文字色
+SPECIALDAY2,OrangeRed,文字色
+SPECIALDAY3,OrangeRed,文字色
 ,,
 # 本日,,
 TODAY,LightSkyBlue,背景色

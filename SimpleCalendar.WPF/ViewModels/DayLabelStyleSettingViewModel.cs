@@ -35,14 +35,14 @@ namespace SimpleCalendar.WPF.ViewModels
         private Brush _holidayBrush = Brushes.Magenta;
         public Brush HolidayBrush { get => _holidayBrush; private set => SetProperty(ref _holidayBrush, value); }
 
-        private Brush _specialday01Brush = Brushes.OrangeRed;
-        public Brush Specialday01Brush { get => _specialday01Brush; private set => SetProperty(ref _specialday01Brush, value); }
+        private Brush _specialday1Brush = Brushes.OrangeRed;
+        public Brush Specialday1Brush { get => _specialday1Brush; private set => SetProperty(ref _specialday1Brush, value); }
 
-        private Brush _specialday02Brush = Brushes.OrangeRed;
-        public Brush Specialday02Brush { get => _specialday02Brush; private set => SetProperty(ref _specialday02Brush, value); }
+        private Brush _specialday2Brush = Brushes.OrangeRed;
+        public Brush Specialday2Brush { get => _specialday2Brush; private set => SetProperty(ref _specialday2Brush, value); }
 
-        private Brush _specialday03Brush = Brushes.OrangeRed;
-        public Brush Specialday03Brush { get => _specialday03Brush; private set => SetProperty(ref _specialday03Brush, value); }
+        private Brush _specialday3Brush = Brushes.OrangeRed;
+        public Brush Specialday3Brush { get => _specialday3Brush; private set => SetProperty(ref _specialday3Brush, value); }
 
         private Brush _todayBrush = Brushes.LightSkyBlue;
         public Brush TodayBrush { get => _todayBrush; private set => SetProperty(ref _todayBrush, value); }
@@ -86,9 +86,9 @@ namespace SimpleCalendar.WPF.ViewModels
                     case "FRIDAY": FridayBrush = ToBrush(brushName, SystemColors.ControlTextBrush); break;
                     case "SATURDAY": SaturdayBrush = ToBrush(brushName, Brushes.Blue); break;
                     case "HOLIDAY": HolidayBrush = ToBrush(brushName, Brushes.Magenta); break;
-                    case "SPECIALDAY01": Specialday01Brush = ToBrush(brushName, Brushes.OrangeRed); break;
-                    case "SPECIALDAY02": Specialday02Brush = ToBrush(brushName, Brushes.OrangeRed); break;
-                    case "SPECIALDAY03": Specialday03Brush = ToBrush(brushName, Brushes.OrangeRed); break;
+                    case "SPECIALDAY1": Specialday1Brush = ToBrush(brushName, Brushes.OrangeRed); break;
+                    case "SPECIALDAY2": Specialday2Brush = ToBrush(brushName, Brushes.OrangeRed); break;
+                    case "SPECIALDAY3": Specialday3Brush = ToBrush(brushName, Brushes.OrangeRed); break;
                     case "TODAY": TodayBrush = ToBrush(brushName, Brushes.LightSkyBlue); break;
                     case "MOUSEOVER": MouseOverBrush = ToBrush(brushName, Brushes.LightGreen); break;
                     default: break;
