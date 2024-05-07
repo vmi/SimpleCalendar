@@ -69,11 +69,14 @@ namespace SimpleCalendar.WPF.Services
         public bool ReadCsvFile(string name, Action<ICsvLine> handler, Action<Exception>? error = null)
         {
             string userPath = InitSettings(name);
-            // 読み込みのエンコーディングにデフォルトではCP932を用いるが、
-            // ファイルの先頭にBOMが付いているとBOMの判定結果を優先する
             try
             {
-                using StreamReader sr = new(userPath, cp932, true);
+                // 他のプロセス(≒Excel)が対象ファイルを開いていてもエラーにならないよう、FileShare を指定。
+                // 参考: https://stackoverflow.com/a/898017
+                using FileStream fs = new(userPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                // 読み込みのエンコーディングにデフォルトではCP932を用いるが、
+                // ファイルの先頭にBOMが付いているとBOMの判定結果を優先する
+                using StreamReader sr = new(fs, cp932, true);
                 CsvOptions opts = new()
                 {
                     HeaderMode = HeaderMode.HeaderPresent,

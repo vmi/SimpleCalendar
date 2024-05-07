@@ -110,5 +110,6 @@
 
 * 諸々のバグ修正。
 * 「発行」したファイル群をzipにアーカイブする設定を追加。
+* Excelが設定ファイルを開いていても読み込めるよう対応。(参考: [How do I open an already opened file with a .net StreamReader?](https://stackoverflow.com/a/898017))
 
 以上
