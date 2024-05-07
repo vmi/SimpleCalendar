@@ -1,5 +1,6 @@
 using Csv;
 using System.IO;
+using System.Security.Permissions;
 using System.Text;
 
 namespace SimpleCalendar.WPF.Services
@@ -65,21 +66,30 @@ namespace SimpleCalendar.WPF.Services
             return userPath;
         }
 
-        public void ReadCsvFile(string name, Action<ICsvLine> handler)
+        public bool ReadCsvFile(string name, Action<ICsvLine> handler, Action<Exception>? error = null)
         {
             string userPath = InitSettings(name);
             // 読み込みのエンコーディングにデフォルトではCP932を用いるが、
             // ファイルの先頭にBOMが付いているとBOMの判定結果を優先する
-            using StreamReader sr = new(userPath, cp932, true);
-            CsvOptions opts = new()
+            try
             {
-                HeaderMode = HeaderMode.HeaderPresent,
-                TrimData = true,
-                AllowNewLineInEnclosedFieldValues = true,
-            };
-            foreach (ICsvLine row in CsvReader.Read(sr, opts))
+                using StreamReader sr = new(userPath, cp932, true);
+                CsvOptions opts = new()
+                {
+                    HeaderMode = HeaderMode.HeaderPresent,
+                    TrimData = true,
+                    AllowNewLineInEnclosedFieldValues = true,
+                };
+                foreach (ICsvLine row in CsvReader.Read(sr, opts))
+                {
+                    handler(row);
+                }
+                return true;
+            }
+            catch (IOException e)
             {
-                handler(row);
+                error?.Invoke(e);
+                return false;
             }
         }
     }
