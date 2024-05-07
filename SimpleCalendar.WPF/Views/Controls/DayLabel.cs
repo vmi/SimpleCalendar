@@ -26,6 +26,7 @@ namespace SimpleCalendar.WPF.Views.Controls
                 obj.IsDayTypeEmpty = dayItem.DayType == DayType.EMPTY;
                 if (!string.IsNullOrEmpty(dayItem.Label))
                 {
+                    ToolTipService.SetInitialShowDelay(obj, 0);
                     obj.ToolTip = dayItem.Label;
                 }
             }
