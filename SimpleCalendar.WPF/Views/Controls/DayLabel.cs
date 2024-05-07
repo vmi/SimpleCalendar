@@ -24,10 +24,14 @@ namespace SimpleCalendar.WPF.Views.Controls
                 obj.Content = dayItem.DayString;
                 obj.DayType = dayItem.DayType;
                 obj.IsDayTypeEmpty = dayItem.DayType == DayType.EMPTY;
-                if (!string.IsNullOrEmpty(dayItem.Label))
+                if (string.IsNullOrEmpty(dayItem.Label))
                 {
-                    ToolTipService.SetInitialShowDelay(obj, 0);
+                    obj.ToolTip = null;
+                }
+                else
+                {
                     obj.ToolTip = dayItem.Label;
+                    ToolTipService.SetInitialShowDelay(obj, 0);
                 }
             }
         }
