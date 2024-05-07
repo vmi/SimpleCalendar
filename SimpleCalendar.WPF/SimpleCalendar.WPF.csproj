@@ -50,4 +50,10 @@
   <ItemGroup>
     <ProjectReference Include="..\NotifyIcon\NotifyIcon.csproj" />
   </ItemGroup>
+
+  <!-- 「発行」したアプリケーションをzipにアーカイブする  -->
+  <Target Name="ZipOutputPath" AfterTargets="Publish">
+    <MakeDir Directories="$(MSBuildProjectDirectory)\..\publish"/>
+    <ZipDirectory Overwrite="true"  SourceDirectory="$(PublishDir)" DestinationFile="$(MSBuildProjectDirectory)\..\publish\SimpleCalendar.zip"/>
+  </Target>
 </Project>

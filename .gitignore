@@ -16,5 +16,6 @@ $*
 bin/
 obj/
 /tmp/
+/publish/
 
 *.user

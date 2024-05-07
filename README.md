@@ -192,6 +192,8 @@ Visual Studio 2022
 
 * VS拡張機能
     * [XAMLのコード整形を簡単にする方法【Visual Studio】](https://lifetime-engineer.com/xaml-code-formatting/)
+* [MSBuild の予約済みおよび既知のプロパティ](https://learn.microsoft.com/ja-jp/visualstudio/msbuild/msbuild-reserved-and-well-known-properties?view=vs-2022)
+    * [MSBuild reserved and well-known properties](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-reserved-and-well-known-properties?view=vs-2022)
 
 オープンソースのアイコン集
 --------------------------
