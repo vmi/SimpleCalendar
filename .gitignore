@@ -17,4 +17,4 @@ bin/
 obj/
 /tmp/
 
-/SimpleCalendar.WPF/icon256.png
+*.user
