@@ -64,14 +64,14 @@ namespace SimpleCalendar.WPF.ViewModels
         [RelayCommand]
         private void PrevPage()
         {
-            var pageCount = RowCount * ColumnCount;
+            int pageCount = RowCount * ColumnCount;
             BaseYearMonth = BaseYearMonth.AddMonths(-pageCount);
         }
 
         [RelayCommand]
         private void NextPage()
         {
-            var pageCount = RowCount * ColumnCount;
+            int pageCount = RowCount * ColumnCount;
             BaseYearMonth = BaseYearMonth.AddMonths(pageCount);
         }
     }

@@ -1,5 +1,5 @@
-using SimpleCalendar.WPF.Services;
 using System.Diagnostics;
+using SimpleCalendar.WPF.Services;
 
 namespace SimpleCalendar.Tests
 {

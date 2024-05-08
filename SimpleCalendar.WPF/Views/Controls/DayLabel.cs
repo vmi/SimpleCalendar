@@ -1,9 +1,9 @@
-using SimpleCalendar.WPF.Models;
-using SimpleCalendar.WPF.ViewModels;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using SimpleCalendar.WPF.Models;
+using SimpleCalendar.WPF.ViewModels;
 
 namespace SimpleCalendar.WPF.Views.Controls
 {
@@ -15,7 +15,7 @@ namespace SimpleCalendar.WPF.Views.Controls
             typeof(DayLabel),
             new UIPropertyMetadata(OnDayItemPropertyChanged));
 
-        public DayItem DayItem { get => (DayItem) GetValue(DayItemProperty); set => SetValue(DayItemProperty, value); }
+        public DayItem DayItem { get => (DayItem)GetValue(DayItemProperty); set => SetValue(DayItemProperty, value); }
 
         private static void OnDayItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -44,7 +44,7 @@ namespace SimpleCalendar.WPF.Views.Controls
 
         public static readonly DependencyProperty DayTypeProperty = DayTypePropertyKey.DependencyProperty;
 
-        public DayType DayType { get => (DayType) GetValue(DayTypeProperty); private set => SetValue(DayTypePropertyKey, value); }
+        public DayType DayType { get => (DayType)GetValue(DayTypeProperty); private set => SetValue(DayTypePropertyKey, value); }
 
         private static readonly DependencyPropertyKey IsDayTypeEmptyPropertyKey = DependencyProperty.RegisterReadOnly(
             nameof(IsDayTypeEmpty),
@@ -54,7 +54,7 @@ namespace SimpleCalendar.WPF.Views.Controls
 
         public static readonly DependencyProperty IsDayTypeEmptyProperty = IsDayTypeEmptyPropertyKey.DependencyProperty;
 
-        public bool IsDayTypeEmpty { get => (bool) GetValue(IsDayTypeEmptyProperty); private set => SetValue(IsDayTypeEmptyPropertyKey, value); }
+        public bool IsDayTypeEmpty { get => (bool)GetValue(IsDayTypeEmptyProperty); private set => SetValue(IsDayTypeEmptyPropertyKey, value); }
 
         public static readonly DependencyProperty IsTodayProperty = DependencyProperty.Register(
             nameof(IsToday),
@@ -62,7 +62,7 @@ namespace SimpleCalendar.WPF.Views.Controls
             typeof(DayLabel),
             new UIPropertyMetadata(false));
 
-        public bool IsToday { get => (bool) GetValue(IsTodayProperty); set => SetValue(IsTodayProperty, value); }
+        public bool IsToday { get => (bool)GetValue(IsTodayProperty); set => SetValue(IsTodayProperty, value); }
 
         private class IsTodayConverter : IMultiValueConverter
         {
@@ -99,7 +99,7 @@ namespace SimpleCalendar.WPF.Views.Controls
                 {
                     Converter = isTodayConverter
                 };
-                var curMon = calMon.CurrentMonth;
+                CurrentMonthViewModel curMon = calMon.CurrentMonth;
                 multiBinding.Bindings.Add(new Binding("Today") { Source = curMon });
                 multiBinding.Bindings.Add(new Binding("YearMonth") { Source = calMon });
                 multiBinding.Bindings.Add(new Binding(nameof(DayItem)) { Source = this });

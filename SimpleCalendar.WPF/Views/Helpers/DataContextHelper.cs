@@ -4,7 +4,7 @@ namespace SimpleCalendar.WPF.Views.Helpers
 {
     public class DataContextHelper
     {
-        public static Type GetDataContext(DependencyObject d) => (Type) d.GetValue(DataContextProperty);
+        public static Type GetDataContext(DependencyObject d) => (Type)d.GetValue(DataContextProperty);
         public static void SetDataContext(DependencyObject d, Type value) => d.SetValue(DataContextProperty, value);
         public static readonly DependencyProperty DataContextProperty = DependencyProperty.RegisterAttached(
             "DataContext",

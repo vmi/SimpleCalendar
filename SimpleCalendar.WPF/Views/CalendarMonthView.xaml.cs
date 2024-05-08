@@ -1,6 +1,6 @@
-using SimpleCalendar.WPF.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
+using SimpleCalendar.WPF.ViewModels;
 
 namespace SimpleCalendar.WPF.Views
 {
@@ -12,7 +12,7 @@ namespace SimpleCalendar.WPF.Views
             typeof(CalendarMonthView),
             new PropertyMetadata(0, OnOffsetPropertyChanged));
 
-        public int Offset { get => (int) GetValue(OffsetProperty); set => SetValue(OffsetProperty, value); }
+        public int Offset { get => (int)GetValue(OffsetProperty); set => SetValue(OffsetProperty, value); }
 
         private static void OnOffsetPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

@@ -21,13 +21,13 @@ namespace SimpleCalendar.WPF.Models
             // 祝祭日の読み込み
             settingsService.ReadCsvFile(settingsService.HolydaysCsv, csvLine =>
             {
-                var dateStr = csvLine[0];
-                if (String.IsNullOrEmpty(dateStr))
+                string dateStr = csvLine[0];
+                if (string.IsNullOrEmpty(dateStr))
                 {
                     return;
                 }
                 var date = DateOnly.Parse(dateStr);
-                var label = csvLine[1];
+                string label = csvLine[1];
                 DayItem dayItem = new(date.Day, DayType.HOLIDAY, label);
                 dateToDayItem.Add(date, dayItem);
             });
@@ -36,15 +36,15 @@ namespace SimpleCalendar.WPF.Models
             settingsService.ReadCsvFile(settingsService.SpecialDaysCsv, csvLine =>
             {
                 string dateStr = csvLine[0];
-                if (String.IsNullOrEmpty(dateStr))
+                if (string.IsNullOrEmpty(dateStr))
                 {
                     return;
                 }
                 var date = DateOnly.Parse(dateStr);
-                var dTypeStr = csvLine[1];
+                string dTypeStr = csvLine[1];
                 DayType dType = Enum.Parse<DayType>(dTypeStr);
-                var label = csvLine[2];
-                if (dateToDayItem.TryGetValue(date, out var prevDayItem))
+                string label = csvLine[2];
+                if (dateToDayItem.TryGetValue(date, out DayItem? prevDayItem))
                 {
                     // DayTypeの優先度は HOLIDAY < SPECIALDAY1 < SPECIALDAY2 < SPECIALDAY3 とする
                     if (dType < prevDayItem.DayType)
@@ -62,7 +62,7 @@ namespace SimpleCalendar.WPF.Models
         public DayItem GetDayItem(int year, int month, int day, int dow)
         {
             var date = new DateOnly(year, month, day);
-            return dateToDayItem.TryGetValue(date, out var dayItem) ? dayItem : new DayItem(day, (DayType) dow);
+            return dateToDayItem.TryGetValue(date, out DayItem? dayItem) ? dayItem : new DayItem(day, (DayType)dow);
         }
     }
 }

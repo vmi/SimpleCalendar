@@ -8,8 +8,8 @@ namespace SimpleCalendar.WPF.Models
         {
             lock (this)
             {
-                var year = yearMonth.Year;
-                var month = yearMonth.Month;
+                int year = yearMonth.Year;
+                int month = yearMonth.Month;
                 if (!_daysCache.TryGetValue(year, out Dictionary<int, DayItem[][]>? dss))
                 {
                     dss = _daysCache[year] = [];
@@ -30,7 +30,7 @@ namespace SimpleCalendar.WPF.Models
         private void FillDays(int year, int month, DayItem[][] days)
         {
             DateOnly firstDay = new(year, month, 1);
-            int firstDayOfWeek = (int) firstDay.DayOfWeek;
+            int firstDayOfWeek = (int)firstDay.DayOfWeek;
             int daysInMonth = DateTime.DaysInMonth(year, month);
             int day = -firstDayOfWeek;
             for (int w = 0; w < DayItem.MAX_WEEKS_IN_MONTH; w++)

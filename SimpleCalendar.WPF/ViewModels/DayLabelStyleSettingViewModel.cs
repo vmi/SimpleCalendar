@@ -1,8 +1,8 @@
+using System.Windows;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SimpleCalendar.WPF.Services;
-using System.Windows;
-using System.Windows.Media;
 
 namespace SimpleCalendar.WPF.ViewModels
 {
@@ -58,7 +58,7 @@ namespace SimpleCalendar.WPF.ViewModels
 
         private Brush ToBrush(string? brushName, Brush defaultBrush)
         {
-            if (!String.IsNullOrEmpty(brushName) && brushConverter.ConvertFromString(brushName) is Brush brush)
+            if (!string.IsNullOrEmpty(brushName) && brushConverter.ConvertFromString(brushName) is Brush brush)
             {
                 return brush;
             }
@@ -73,7 +73,7 @@ namespace SimpleCalendar.WPF.ViewModels
         {
             settingsService.ReadCsvFile(settingsService.StylesCsv, csvLine =>
             {
-                if (csvLine.ColumnCount == 0 || String.IsNullOrEmpty(csvLine[0])) { return; }
+                if (csvLine.ColumnCount == 0 || string.IsNullOrEmpty(csvLine[0])) { return; }
                 string dTypeName = csvLine[0].ToUpper();
                 string brushName = csvLine.ColumnCount >= 2 ? csvLine[1] ?? "" : "";
                 switch (dTypeName)

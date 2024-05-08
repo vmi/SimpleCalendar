@@ -1,12 +1,12 @@
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SimpleCalendar.WPF.Models;
-using System.ComponentModel;
 
 namespace SimpleCalendar.WPF.ViewModels
 {
     public partial class CalendarMonthViewModel : ObservableObject
     {
-        private readonly DaysOfMonthModel daysOfMonthModel;
+        private readonly DaysOfMonthModel _daysOfMonthModel;
 
         public CurrentMonthViewModel CurrentMonth { get; init; }
 
@@ -15,13 +15,9 @@ namespace SimpleCalendar.WPF.ViewModels
         [ObservableProperty]
         private int _offset;
 
-        private YearMonth _yearMonth;
+        public YearMonth YearMonth { get; private set; }
 
-        public YearMonth YearMonth { get => _yearMonth; }
-
-        private DayItem[][] _days;
-
-        public DayItem[][] Days { get => _days; }
+        public DayItem[][] Days { get; private set; }
 
         partial void OnOffsetChanged(int oldValue, int newValue)
         {
@@ -45,22 +41,22 @@ namespace SimpleCalendar.WPF.ViewModels
 
         private void UpdateDerivedProperties(YearMonth baseYearMonth)
         {
-            _yearMonth = baseYearMonth.AddMonths(Offset);
-            _days = daysOfMonthModel.GetDays(_yearMonth);
+            YearMonth = baseYearMonth.AddMonths(Offset);
+            Days = _daysOfMonthModel.GetDays(YearMonth);
             OnPropertyChanged(nameof(YearMonth));
             OnPropertyChanged(nameof(Days));
         }
 
         public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthModel, CurrentMonthViewModel currentMonth, DayLabelStyleSettingViewModel dayLabelStyleSetting)
         {
-            this.daysOfMonthModel = daysOfMonthModel;
+            _daysOfMonthModel = daysOfMonthModel;
             CurrentMonth = currentMonth;
             DayLabelStyleSetting = dayLabelStyleSetting;
 
             CurrentMonth.PropertyChanged += CurrentMonth_PropertyChanged;
-            _yearMonth = currentMonth.BaseYearMonth;
+            YearMonth = currentMonth.BaseYearMonth;
             _offset = 0;
-            _days = daysOfMonthModel.GetDays(_yearMonth);
+            Days = daysOfMonthModel.GetDays(YearMonth);
             OnPropertyChanged(nameof(YearMonth));
             OnPropertyChanged(nameof(Offset));
             OnPropertyChanged(nameof(Days));

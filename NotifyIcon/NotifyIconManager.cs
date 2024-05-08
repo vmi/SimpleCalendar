@@ -8,48 +8,37 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace NotifyIcon
 {
-    public class NotifyIconManager : IDisposable
+    public class NotifyIconManager(nint hwnd, uint id = 0, Guid? guid = null) : IDisposable
     {
         public const uint WM_APP = PInvoke.WM_APP;
 
-        private readonly HWND hwnd;
-        private readonly uint id;
-        private readonly Guid? guid;
-
         public bool IsAdded { get; private set; } = false;
 
-        private static readonly Action<nint> empty = (h) => { };
-        private static readonly Action<nint, uint, uint> empty3 = (h, x, y) => { };
+        private static readonly Action<nint> s_empty = (h) => { };
+        private static readonly Action<nint, uint, uint> s_empty3 = (h, x, y) => { };
 
-        public Action<nint> Select = empty;
-        public Action<nint> KeySelect = empty;
-        public Action<nint> BalloonShow = empty;
-        public Action<nint> BalloonHide = empty;
-        public Action<nint> BalloonTimeout = empty;
-        public Action<nint> BalloonUserClick = empty;
-        public Action<nint> PopupOpen = empty;
-        public Action<nint> PopupClose = empty;
-        public Action<nint, uint, uint> ContextMenu = empty3;
-
-        public NotifyIconManager(nint hwnd, uint id = 0, Guid? guid = null)
-        {
-            this.hwnd = (HWND) hwnd;
-            this.id = id;
-            this.guid = guid;
-        }
+        public Action<nint> Select = s_empty;
+        public Action<nint> KeySelect = s_empty;
+        public Action<nint> BalloonShow = s_empty;
+        public Action<nint> BalloonHide = s_empty;
+        public Action<nint> BalloonTimeout = s_empty;
+        public Action<nint> BalloonUserClick = s_empty;
+        public Action<nint> PopupOpen = s_empty;
+        public Action<nint> PopupClose = s_empty;
+        public Action<nint, uint, uint> ContextMenu = s_empty3;
 
         public bool Add(Icon icon, string? tip = null, uint? callbackMessage = null)
         {
             if (IsAdded) { return true; }
             var data = default(NOTIFYICONDATAW);
-            data.cbSize = (uint) Marshal.SizeOf<NOTIFYICONDATAW>();
-            data.hWnd = hwnd;
+            data.cbSize = (uint)Marshal.SizeOf<NOTIFYICONDATAW>();
+            data.hWnd = (HWND)hwnd;
             data.uID = id;
-            data.hIcon = (HICON) icon.Handle;
-            var flags = NOTIFY_ICON_DATA_FLAGS.NIF_ICON;
+            data.hIcon = (HICON)icon.Handle;
+            NOTIFY_ICON_DATA_FLAGS flags = NOTIFY_ICON_DATA_FLAGS.NIF_ICON;
             if (guid != null)
             {
-                data.guidItem = (Guid) guid;
+                data.guidItem = (Guid)guid;
                 flags |= NOTIFY_ICON_DATA_FLAGS.NIF_GUID;
             }
             if (tip != null)
@@ -59,7 +48,7 @@ namespace NotifyIcon
             }
             if (callbackMessage != null)
             {
-                data.uCallbackMessage = (uint) callbackMessage;
+                data.uCallbackMessage = (uint)callbackMessage;
                 flags |= NOTIFY_ICON_DATA_FLAGS.NIF_MESSAGE;
             }
             data.uFlags = flags;
@@ -67,7 +56,7 @@ namespace NotifyIcon
             if (!isAdded)
             {
                 Debug.WriteLine("Failed to register notification icon.");
-                return (IsAdded = false);
+                return IsAdded = false;
 
             }
             data.Anonymous.uVersion = PInvoke.NOTIFYICON_VERSION_4;
@@ -76,9 +65,9 @@ namespace NotifyIcon
             {
                 Delete();
                 Debug.WriteLine("Failed to set notification icon version to 4. Unregistered notification icon.");
-                return (IsAdded = false);
+                return IsAdded = false;
             }
-            return (IsAdded = true);
+            return IsAdded = true;
         }
 
         public bool Delete()
@@ -86,12 +75,12 @@ namespace NotifyIcon
             if (!IsAdded) { return false; }
             NOTIFY_ICON_MESSAGE msg = NOTIFY_ICON_MESSAGE.NIM_DELETE;
             var data = default(NOTIFYICONDATAW);
-            data.cbSize = (uint) Marshal.SizeOf<NOTIFYICONDATAW>();
-            data.hWnd = hwnd;
+            data.cbSize = (uint)Marshal.SizeOf<NOTIFYICONDATAW>();
+            data.hWnd = (HWND)hwnd;
             data.uID = id;
             if (guid != null)
             {
-                data.guidItem = (Guid) guid;
+                data.guidItem = (Guid)guid;
                 data.uFlags = NOTIFY_ICON_DATA_FLAGS.NIF_GUID;
             }
             return IsAdded = !PInvoke.Shell_NotifyIcon(msg, data);
@@ -103,12 +92,10 @@ namespace NotifyIcon
             GC.SuppressFinalize(this);
         }
 
-        private static uint LoWord(nint param) => (uint) (param & 0x0000FFFF);
-        private static uint HiWord(nint param) => (uint) (param >> 16);
+        private static uint LoWord(nint param) => (uint)(param & 0x0000FFFF);
+        private static uint HiWord(nint param) => (uint)(param >> 16);
 
-#pragma warning disable CA1822, IDE0060
         public void NotifyCallback(nint hwnd, nint wParam, nint lParam)
-#pragma warning restore CA1822, IDE0060
         {
             switch (LoWord(lParam))
             {

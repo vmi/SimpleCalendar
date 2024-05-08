@@ -10,22 +10,22 @@ namespace SimpleCalendar.Tests
         [Fact]
         public void TestSR()
         {
-            var ss = ServiceRegistry.GetService<SettingsService>();
+            SettingsService? ss = ServiceRegistry.GetService<SettingsService>();
             Assert.NotNull(ss);
-            var diim = ServiceRegistry.GetService<DayItemInformationModel>();
+            DayItemInformationModel? diim = ServiceRegistry.GetService<DayItemInformationModel>();
             Assert.NotNull(diim);
-            var doms = ServiceRegistry.GetService<DaysOfMonthModel>();
+            DaysOfMonthModel? doms = ServiceRegistry.GetService<DaysOfMonthModel>();
             Assert.NotNull(doms);
-            var curMon = ServiceRegistry.GetService<CurrentMonthViewModel>();
+            CurrentMonthViewModel? curMon = ServiceRegistry.GetService<CurrentMonthViewModel>();
             Assert.NotNull(curMon);
-            var calMon = ServiceRegistry.GetService<CalendarMonthViewModel>();
+            CalendarMonthViewModel? calMon = ServiceRegistry.GetService<CalendarMonthViewModel>();
             Assert.NotNull(calMon);
         }
 
         [Fact]
         public void Test1()
         {
-            var vm = ServiceRegistry.GetService<CalendarMonthViewModel>();
+            CalendarMonthViewModel? vm = ServiceRegistry.GetService<CalendarMonthViewModel>();
             Assert.NotNull(vm);
             vm.CurrentMonth.BaseYearMonth = new(2024, 1);
             vm.Offset = 3;

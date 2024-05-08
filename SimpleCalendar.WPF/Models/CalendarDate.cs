@@ -25,7 +25,7 @@ namespace SimpleCalendar.WPF.Models
 
         public YearMonth AddMonths(int months)
         {
-            return new(((DateOnly) this).AddMonths(months));
+            return new(((DateOnly)this).AddMonths(months));
         }
 
         public static implicit operator DateOnly(YearMonth yearMonth)

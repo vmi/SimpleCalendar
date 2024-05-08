@@ -6,7 +6,7 @@ namespace SimpleCalendar.WPF.Views.Helpers
 {
     public class GridHelper
     {
-        public static Thickness GetMargin(DependencyObject obj) => (Thickness) obj.GetValue(MarginProperty);
+        public static Thickness GetMargin(DependencyObject obj) => (Thickness)obj.GetValue(MarginProperty);
         public static void SetMargin(DependencyObject obj, Thickness value) { obj.SetValue(MarginProperty, value); obj.InvalidateProperty(MarginProperty); }
         public static readonly DependencyProperty MarginProperty = DependencyProperty.RegisterAttached(
             "Margin",
@@ -28,16 +28,16 @@ namespace SimpleCalendar.WPF.Views.Helpers
         {
             if (sender is Grid grid)
             {
-                var margin = GetMargin(grid);
+                Thickness margin = GetMargin(grid);
                 var rMargin = new Thickness(margin.Left, margin.Top, margin.Left, margin.Bottom); // margin for right edge
                 var bMargin = new Thickness(margin.Left, margin.Top, margin.Right, margin.Top); // margin for bottom edge
                 var rbMargin = new Thickness(margin.Left, margin.Top, margin.Left, margin.Top); // margin for right bottom corner
-                var rmax = grid.RowDefinitions.Count - 1;
-                var cmax = grid.ColumnDefinitions.Count - 1;
+                int rmax = grid.RowDefinitions.Count - 1;
+                int cmax = grid.ColumnDefinitions.Count - 1;
                 foreach (Control child in grid.Children.OfType<Control>())
                 {
-                    var r = Grid.GetRow(child);
-                    var c = Grid.GetColumn(child);
+                    int r = Grid.GetRow(child);
+                    int c = Grid.GetColumn(child);
                     if (r < rmax)
                     {
                         // not bottom

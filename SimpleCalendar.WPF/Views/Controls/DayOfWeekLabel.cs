@@ -1,6 +1,6 @@
-using SimpleCalendar.WPF.Models;
 using System.Windows;
 using System.Windows.Controls;
+using SimpleCalendar.WPF.Models;
 
 namespace SimpleCalendar.WPF.Views.Controls
 {
@@ -12,12 +12,12 @@ namespace SimpleCalendar.WPF.Views.Controls
             typeof(DayOfWeekLabel),
             new UIPropertyMetadata(DayType.EMPTY, OnDayOfWeekPropertyChanged));
 
-        public DayType DayOfWeek { get => (DayType) GetValue(DayOfWeekProperty); set => SetValue(DayOfWeekProperty, value); }
+        public DayType DayOfWeek { get => (DayType)GetValue(DayOfWeekProperty); set => SetValue(DayOfWeekProperty, value); }
         private static void OnDayOfWeekPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is DayOfWeekLabel obj)
             {
-                obj.Content = (DayType) e.NewValue switch
+                obj.Content = (DayType)e.NewValue switch
                 {
                     DayType.SUNDAY => "日",// TODO 国際化を検討
                     DayType.MONDAY => "月",

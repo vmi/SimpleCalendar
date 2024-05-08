@@ -112,4 +112,10 @@
 * 「発行」したファイル群をzipにアーカイブする設定を追加。
 * Excelが設定ファイルを開いていても読み込めるよう対応。(参考: [How do I open an already opened file with a .net StreamReader?](https://stackoverflow.com/a/898017))
 
+2024-05-08
+----------
+
+* `.editorconfig` を [dotnet/runtime](https://github.com/dotnet/runtime) からほぼそのまま取り込み。(ただし `file_header_template` は同プロジェクト固有なので削除)
+    * 「コードクリーンアップの実行」を実施 + メッセージでの指摘に対応。
+
 以上
