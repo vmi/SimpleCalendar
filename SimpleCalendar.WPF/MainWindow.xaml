@@ -13,7 +13,6 @@
         SizeToContent="WidthAndHeight"
         d:DataContext="{d:DesignInstance Type=viewmodel:CurrentMonthViewModel}"
         helper:DataContextHelper.DataContext="{x:Type viewmodel:CurrentMonthViewModel}"
-        Activated="MainWindow_Activated"
         Icon="/Images/icon256.png">
     <Window.Resources>
         <ResourceDictionary Source="MainWindowStyles.xaml" />

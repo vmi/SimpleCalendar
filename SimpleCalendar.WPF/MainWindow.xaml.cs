@@ -30,11 +30,12 @@ namespace SimpleCalendar.WPF
             InitializeComponent();
             Loaded += MainWindow_Loaded; // メインウィンドウ初期化時に通知領域にアイコンを登録
             Closed += MainWindow_Closed; // メインウィンドウクローズ時に通知領域からアイコンを削除
+            Activated += MainWindow_Activated; // アクティブ化時に「今日」を最新化する
             CalendarRoot.Loaded += CalendarRoot_Loaded; // 画面に表示されている「月」の行数および列数を登録
             MouseLeftButtonDown += MainWindow_MouseLeftButtonDown; // ウィンドウ自体を掴んで移動可能にする
             LocationChanged += MainWindow_LocationChanged; // 画面外に移動できないようにする(暫定実装)
             MouseWheel += MainWindow_MouseWheel; // マウスホイールの回転で画面を前後に移動させる (XAMLのInputBindingsがマウスホイールの回転に対応していない)
-            StateChanged += MainWindow_StateChanged; // 仮実装
+            StateChanged += MainWindow_StateChanged; // 最小化時にHide()を実行してタスクバーから見えなくする
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -61,9 +62,12 @@ namespace SimpleCalendar.WPF
             {
                 case WindowState.Normal:
                     WindowState = WindowState.Minimized;
-                    Hide();
                     break;
                 case WindowState.Minimized:
+                    if (DataContext is CurrentMonthViewModel curMon)
+                    {
+                        curMon.UpdateTodayCommand.Execute(null);
+                    }
                     Show();
                     WindowState = WindowState.Normal;
                     break;
@@ -95,7 +99,10 @@ namespace SimpleCalendar.WPF
 
         private void MainWindow_StateChanged(object? sender, EventArgs e)
         {
-            Debug.WriteLine(WindowState);
+            if (WindowState == WindowState.Minimized)
+            {
+                Hide();
+            }
         }
 
         private void MainWindow_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -159,13 +166,12 @@ namespace SimpleCalendar.WPF
             }
         }
 
-        private void MainWindow_Activated(object sender, EventArgs e)
+        private void MainWindow_Activated(object? sender, EventArgs e)
         {
             if (DataContext is CurrentMonthViewModel curMon)
             {
                 curMon.UpdateTodayCommand.Execute(null);
             }
-            AdjustWindowPosition(); // adjust the window position if the window is outside of the screen due to a change in the display connection.
         }
 
         private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
