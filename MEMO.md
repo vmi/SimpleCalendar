@@ -117,5 +117,6 @@
 
 * `.editorconfig` を [dotnet/runtime](https://github.com/dotnet/runtime) からほぼそのまま取り込み。(ただし `file_header_template` は同プロジェクト固有なので削除)
     * 「コードクリーンアップの実行」を実施 + メッセージでの指摘に対応。
+* 通知アイコンに設定するGUIDを固定。(毎回生成すると、タスクバーに表示するアイコンの選択画面で同じアプリが増殖する)
 
 以上

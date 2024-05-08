@@ -17,13 +17,14 @@ namespace SimpleCalendar.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly Guid s_guid = Guid.Parse("21BADA21-088D-42C7-9305-E31D796C799E");
+
         private const string ICON_NAME = "icon256.ico";
         private const uint WMAPP_NOTIFYCALLBACK = NotifyIconManager.WM_APP + 1;
 
         private NotifyIconManager? _notifyIconManager;
         private HwndSource? _source;
         private HwndSourceHook? _sourceHook;
-        private readonly Guid _guid = Guid.NewGuid();
 
         public MainWindow()
         {
@@ -48,7 +49,7 @@ namespace SimpleCalendar.WPF
                 return;
             }
             nint hwnd = new WindowInteropHelper(this).Handle;
-            _notifyIconManager = new(hwnd, guid: _guid);
+            _notifyIconManager = new(hwnd, guid: s_guid);
             _source = HwndSource.FromHwnd(hwnd);
             _sourceHook = new HwndSourceHook(WndProc);
             _source.AddHook(_sourceHook);
