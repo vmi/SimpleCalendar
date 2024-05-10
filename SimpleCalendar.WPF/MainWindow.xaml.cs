@@ -8,6 +8,7 @@ using System.Windows.Interop;
 using NotifyIcon;
 using SimpleCalendar.WPF.Utilities;
 using SimpleCalendar.WPF.ViewModels;
+using SimpleCalendar.WPF.Views;
 //using static System.Net.Mime.MediaTypeNames;
 
 namespace SimpleCalendar.WPF
@@ -25,6 +26,8 @@ namespace SimpleCalendar.WPF
         private NotifyIconManager? _notifyIconManager;
         private HwndSource? _source;
         private HwndSourceHook? _sourceHook;
+
+        private Window? _help;
 
         public MainWindow()
         {
@@ -186,6 +189,15 @@ namespace SimpleCalendar.WPF
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void Help_Click(object sender, RoutedEventArgs e)
+        {
+            if (_help == null || !_help.IsLoaded)
+            {
+                _help = new Help();
+            }
+            _help.Show();
         }
     }
 }

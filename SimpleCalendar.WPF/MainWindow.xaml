@@ -57,6 +57,11 @@
     </Window.InputBindings>
     <Window.ContextMenu>
         <ContextMenu>
+            <MenuItem Header="ヘルプ" Name="Help" Click="Help_Click">
+                <MenuItem.Icon>
+                    <Image Source="/Images/help256.png" />
+                </MenuItem.Icon>
+            </MenuItem>
             <MenuItem Header="終了" Name="Exit" Click="MenuItem_Click">
                 <MenuItem.Icon>
                     <Image Source="/Images/exit256.png" />

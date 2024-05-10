@@ -1,0 +1,68 @@
+<FlowDocument xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" ColumnWidth="400" FontSize="14" FontFamily="Yu Gothic">
+    <Section>
+        <Paragraph>
+            <Bold>
+                <Underline>Simple Calendar</Underline>
+            </Bold>
+        </Paragraph>
+        <Paragraph>
+            1年分のカレンダーを表示するだけのシンプルなアプリケーションです。
+        </Paragraph>
+    </Section>
+    <Section>
+        <Paragraph>
+            <Bold>操作</Bold>
+        </Paragraph>
+        <List>
+            <ListItem>
+                <Paragraph>
+                    <Bold>カーソルキー, Page Up, Page Down:</Bold>
+                    表示年月を移動します。</Paragraph>
+            </ListItem>
+            <ListItem>
+                <Paragraph>
+                    <Bold>Home:</Bold>
+                    表示年月を初期状態に戻します。(現在月が2行目の2列目に表示されます)</Paragraph>
+            </ListItem>
+            <ListItem>
+                <Paragraph>
+                    <Bold>マウスボタンの右クリック:</Bold>
+                    コンテクストメニューを表示します。</Paragraph>
+            </ListItem>
+            <ListItem>
+                <Paragraph>
+                    <Bold>通知領域アイコンのクリック:</Bold>
+                    クリックする度に、表示と非表示が切り替わります。</Paragraph>
+            </ListItem>
+        </List>
+    </Section>
+    <Section>
+        <Paragraph>
+            <Bold>
+                <Underline>設定ファイル</Underline>
+            </Bold>
+        </Paragraph>
+        <Paragraph>
+            %APPDATA%\SimpleCalender.WPF\ フォルダに以下の設定ファイルが格納されます。
+        </Paragraph>
+        <List>
+            <ListItem>
+                <Paragraph>
+                    <Bold>specialdays.csv:</Bold>
+                    カスタマイズ可能な特別日を設定できます。</Paragraph>
+            </ListItem>
+            <ListItem>
+                <Paragraph>
+                    <Bold>styles.csv:</Bold>
+                    曜日毎の表示色を設定できます。</Paragraph>
+            </ListItem>
+            <ListItem>
+                <Paragraph>
+                    <Bold>syukujitsu.csv:</Bold>
+                    日本の祝祭日です。最新化する場合は以下のURLから取得してください。<LineBreak />
+                    &#x3000;https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html<LineBreak />
+                    &#x3000;&#x3000;https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv</Paragraph>
+            </ListItem>
+        </List>
+    </Section>
+</FlowDocument>
