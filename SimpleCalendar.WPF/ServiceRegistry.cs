@@ -16,6 +16,7 @@ namespace SimpleCalendar.WPF
             s_ioc.ConfigureServices(
                 new ServiceCollection()
                 .AddSingleton<SettingsService>()
+                .AddSingleton<LocalConfigService>()
                 .AddSingleton<DayItemInformationModel>()
                 .AddSingleton<DayLabelStyleSettingViewModel>()
                 .AddSingleton<DaysOfMonthModel>()

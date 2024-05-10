@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using NotifyIcon;
+using SimpleCalendar.WPF.Services;
 using SimpleCalendar.WPF.Utilities;
 using SimpleCalendar.WPF.ViewModels;
 using SimpleCalendar.WPF.Views;
@@ -23,6 +24,7 @@ namespace SimpleCalendar.WPF
         private const string ICON_NAME = "icon256.ico";
         private const uint WMAPP_NOTIFYCALLBACK = NotifyIconManager.WM_APP + 1;
 
+        private readonly LocalConfigService _localConfigService;
         private NotifyIconManager? _notifyIconManager;
         private HwndSource? _source;
         private HwndSourceHook? _sourceHook;
@@ -31,6 +33,7 @@ namespace SimpleCalendar.WPF
 
         public MainWindow()
         {
+            _localConfigService = ServiceRegistry.GetService<LocalConfigService>()!;
             InitializeComponent();
             Loaded += MainWindow_Loaded; // メインウィンドウ初期化時に通知領域にアイコンを登録
             Closed += MainWindow_Closed; // メインウィンドウクローズ時に通知領域からアイコンを削除
@@ -127,7 +130,24 @@ namespace SimpleCalendar.WPF
 
         private void MainWindow_LocationChanged(object? sender, EventArgs e)
         {
-            AdjustWindowPosition();
+            switch (_localConfigService.LoadStatus)
+            {
+                case LoadStatus.NotLoaded:
+                    _localConfigService.Load(entry =>
+                    {
+                        Left = entry.Left;
+                        Top = entry.Top;
+                        Debug.WriteLine($"Loaded: ({Left}, {Top})");
+                    });
+                    break;
+                case LoadStatus.Loading:
+                    // no operation.
+                    break;
+                case LoadStatus.Loaded:
+                    AdjustWindowPosition();
+                    _localConfigService.Save(Left, Top);
+                    break;
+            }
         }
 
         private void AdjustWindowPosition()
