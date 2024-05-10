@@ -17,7 +17,7 @@ namespace SimpleCalendar.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly Guid s_guid = Guid.Parse("21BADA21-088D-42C7-9305-E31D796C799E");
+        private static readonly Guid s_guid = Guid.Parse("{060F633E-8DB1-46D0-A1A4-9DCF5F9DB46C}");
 
         private const string ICON_NAME = "icon256.ico";
         private const uint WMAPP_NOTIFYCALLBACK = NotifyIconManager.WM_APP + 1;

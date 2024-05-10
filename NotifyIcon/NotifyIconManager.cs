@@ -57,12 +57,12 @@ namespace NotifyIcon
             {
                 Debug.WriteLine("Failed to register notification icon.");
                 return IsAdded = false;
-
             }
             data.Anonymous.uVersion = PInvoke.NOTIFYICON_VERSION_4;
             isAdded = PInvoke.Shell_NotifyIcon(NOTIFY_ICON_MESSAGE.NIM_SETVERSION, data);
             if (!isAdded)
             {
+                IsAdded = true;
                 Delete();
                 Debug.WriteLine("Failed to set notification icon version to 4. Unregistered notification icon.");
                 return IsAdded = false;
@@ -83,7 +83,9 @@ namespace NotifyIcon
                 data.guidItem = (Guid)guid;
                 data.uFlags = NOTIFY_ICON_DATA_FLAGS.NIF_GUID;
             }
-            return IsAdded = !PInvoke.Shell_NotifyIcon(msg, data);
+            bool isDeleted = PInvoke.Shell_NotifyIcon(msg, data);
+            if (isDeleted) { IsAdded = false; }
+            return isDeleted;
         }
 
         public void Dispose()
