@@ -1,8 +1,4 @@
-using System.Diagnostics;
-using System.IO;
 using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Markup;
 
 namespace SimpleCalendar.WPF.Views
 {
@@ -14,6 +10,8 @@ namespace SimpleCalendar.WPF.Views
         public Help()
         {
             InitializeComponent();
+#if false
+            // ヘルプはxamlファイルに直接埋め込むよう変更。
             string appDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Contents");
             try
             {
@@ -26,6 +24,7 @@ namespace SimpleCalendar.WPF.Views
                 // TODO ヘルプファイルの読み込みに失敗したときの処理を追加
                 Debug.WriteLine($"ヘルプファイルの読み込みに失敗しました: {e}");
             }
+#endif
         }
     }
 }
