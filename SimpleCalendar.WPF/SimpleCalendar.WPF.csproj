@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -53,7 +53,7 @@
 
   <!-- 「発行」したアプリケーションをzipにアーカイブする  -->
   <Target Name="ZipOutputPath" AfterTargets="Publish">
-    <MakeDir Directories="$(MSBuildProjectDirectory)\..\publish"/>
-    <ZipDirectory Overwrite="true"  SourceDirectory="$(PublishDir)" DestinationFile="$(MSBuildProjectDirectory)\..\publish\SimpleCalendar.zip"/>
+    <MakeDir Directories="$(MSBuildProjectDirectory)\..\publish" />
+    <ZipDirectory Overwrite="true" SourceDirectory="$(PublishDir)" DestinationFile="$(MSBuildProjectDirectory)\..\publish\SimpleCalendar.zip" />
   </Target>
 </Project>

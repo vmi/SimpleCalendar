@@ -8,8 +8,8 @@ namespace SimpleCalendar.WPF.ViewModels
 {
     public partial class DayLabelStyleSettingViewModel : ObservableObject
     {
-        private readonly SettingsService settingsService;
-        private readonly BrushConverter brushConverter = new();
+        private readonly SettingsService _settingsService;
+        private readonly BrushConverter _brushConverter = new();
 
         private Brush _sundayBrush = Brushes.Red;
         public Brush SundayBrush { get => _sundayBrush; private set => SetProperty(ref _sundayBrush, value); }
@@ -52,13 +52,13 @@ namespace SimpleCalendar.WPF.ViewModels
 
         public DayLabelStyleSettingViewModel(SettingsService settingsService)
         {
-            this.settingsService = settingsService;
+            _settingsService = settingsService;
             LoadSetting();
         }
 
         private Brush ToBrush(string? brushName, Brush defaultBrush)
         {
-            if (!string.IsNullOrEmpty(brushName) && brushConverter.ConvertFromString(brushName) is Brush brush)
+            if (!string.IsNullOrEmpty(brushName) && _brushConverter.ConvertFromString(brushName) is Brush brush)
             {
                 return brush;
             }
@@ -71,7 +71,7 @@ namespace SimpleCalendar.WPF.ViewModels
         [RelayCommand]
         private void LoadSetting()
         {
-            settingsService.ReadCsvFile(settingsService.StylesCsv, csvLine =>
+            _settingsService.ReadCsvFile(_settingsService.StylesCsv, csvLine =>
             {
                 if (csvLine.ColumnCount == 0 || string.IsNullOrEmpty(csvLine[0])) { return; }
                 string dTypeName = csvLine[0].ToUpper();

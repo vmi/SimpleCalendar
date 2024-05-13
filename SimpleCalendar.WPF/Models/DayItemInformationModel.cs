@@ -4,22 +4,22 @@ namespace SimpleCalendar.WPF.Models
 {
     public class DayItemInformationModel
     {
-        private readonly SettingsService settingsService;
-        private readonly Dictionary<DateOnly, DayItem> dateToDayItem = [];
+        private readonly SettingsService _settingsService;
+        private readonly Dictionary<DateOnly, DayItem> _dateToDayItem = [];
 
         public DayItemInformationModel(SettingsService settingsService)
         {
-            this.settingsService = settingsService;
+            _settingsService = settingsService;
             LoadSettings();
         }
 
         public void LoadSettings()
         {
             // 既存情報の消去
-            dateToDayItem.Clear();
+            _dateToDayItem.Clear();
 
             // 祝祭日の読み込み
-            settingsService.ReadCsvFile(settingsService.HolydaysCsv, csvLine =>
+            _settingsService.ReadCsvFile(_settingsService.HolydaysCsv, csvLine =>
             {
                 string dateStr = csvLine[0];
                 if (string.IsNullOrEmpty(dateStr))
@@ -29,11 +29,11 @@ namespace SimpleCalendar.WPF.Models
                 var date = DateOnly.Parse(dateStr);
                 string label = csvLine[1];
                 DayItem dayItem = new(date.Day, DayType.HOLIDAY, label);
-                dateToDayItem.Add(date, dayItem);
+                _dateToDayItem.Add(date, dayItem);
             });
 
             // 特別日の読み込み
-            settingsService.ReadCsvFile(settingsService.SpecialDaysCsv, csvLine =>
+            _settingsService.ReadCsvFile(_settingsService.SpecialDaysCsv, csvLine =>
             {
                 string dateStr = csvLine[0];
                 if (string.IsNullOrEmpty(dateStr))
@@ -44,7 +44,7 @@ namespace SimpleCalendar.WPF.Models
                 string dTypeStr = csvLine[1];
                 DayType dType = Enum.Parse<DayType>(dTypeStr);
                 string label = csvLine[2];
-                if (dateToDayItem.TryGetValue(date, out DayItem? prevDayItem))
+                if (_dateToDayItem.TryGetValue(date, out DayItem? prevDayItem))
                 {
                     // DayTypeの優先度は HOLIDAY < SPECIALDAY1 < SPECIALDAY2 < SPECIALDAY3 とする
                     if (dType < prevDayItem.DayType)
@@ -55,14 +55,14 @@ namespace SimpleCalendar.WPF.Models
                     label = $"{prevDayItem.Label}\n{label}";
                 }
                 DayItem newDayItem = new(date.Day, dType, label);
-                dateToDayItem.Add(date, newDayItem);
+                _dateToDayItem.Add(date, newDayItem);
             });
         }
 
         public DayItem GetDayItem(int year, int month, int day, int dow)
         {
             var date = new DateOnly(year, month, day);
-            return dateToDayItem.TryGetValue(date, out DayItem? dayItem) ? dayItem : new DayItem(day, (DayType)dow);
+            return _dateToDayItem.TryGetValue(date, out DayItem? dayItem) ? dayItem : new DayItem(day, (DayType)dow);
         }
     }
 }
