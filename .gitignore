@@ -6,6 +6,8 @@
 .*.swp
 *.bak
 .*.bak
+*.orig
+.*.orig
 $*
 ~*
 .svn
