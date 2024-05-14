@@ -1,6 +1,5 @@
 using SimpleCalendar.WPF;
 using SimpleCalendar.WPF.Models;
-using SimpleCalendar.WPF.Services;
 using SimpleCalendar.WPF.ViewModels;
 
 namespace SimpleCalendar.Tests
@@ -10,8 +9,6 @@ namespace SimpleCalendar.Tests
         [Fact]
         public void TestSR()
         {
-            SettingsService? ss = ServiceRegistry.GetService<SettingsService>();
-            Assert.NotNull(ss);
             DayItemInformationModel? diim = ServiceRegistry.GetService<DayItemInformationModel>();
             Assert.NotNull(diim);
             DaysOfMonthModel? doms = ServiceRegistry.GetService<DaysOfMonthModel>();

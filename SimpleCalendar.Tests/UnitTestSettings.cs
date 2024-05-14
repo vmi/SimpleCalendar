@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using SimpleCalendar.WPF.Services;
+using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.Tests
 {
@@ -8,11 +8,10 @@ namespace SimpleCalendar.Tests
         [Fact]
         public void TestSettingsServce()
         {
-            SettingsService.UserSettingBaseDir = Path.GetFullPath(@".\Roaming");
-            SettingsService.AppName = $"{nameof(SimpleCalendar)}.{nameof(SimpleCalendar.Tests)}";
-            SettingsService s = new();
+            SettingFiles.UserSettingBaseDir = Path.GetFullPath(@".\Roaming");
+            SettingFiles.AppName = $"{nameof(SimpleCalendar)}.{nameof(SimpleCalendar.Tests)}";
             HashSet<string> act = [];
-            s.ReadCsvFile("styles.csv", csvLine =>
+            SettingFiles.Styles.ReadCsvFile(csvLine =>
             {
                 Debug.WriteLine($"Row=[{csvLine}]");
                 if (!string.IsNullOrEmpty(csvLine[0]))

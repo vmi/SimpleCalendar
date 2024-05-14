@@ -1,15 +1,13 @@
-using SimpleCalendar.WPF.Services;
+using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.WPF.Models
 {
     public class DayItemInformationModel
     {
-        private readonly SettingsService _settingsService;
         private readonly Dictionary<DateOnly, DayItem> _dateToDayItem = [];
 
-        public DayItemInformationModel(SettingsService settingsService)
+        public DayItemInformationModel()
         {
-            _settingsService = settingsService;
             LoadSettings();
         }
 
@@ -19,7 +17,7 @@ namespace SimpleCalendar.WPF.Models
             _dateToDayItem.Clear();
 
             // 祝祭日の読み込み
-            _settingsService.ReadCsvFile(_settingsService.HolidaysCsv, csvLine =>
+            SettingFiles.Holidays.ReadCsvFile(csvLine =>
             {
                 string dateStr = csvLine[0];
                 if (string.IsNullOrEmpty(dateStr))
@@ -33,7 +31,7 @@ namespace SimpleCalendar.WPF.Models
             });
 
             // 特別日の読み込み
-            _settingsService.ReadCsvFile(_settingsService.SpecialDaysCsv, csvLine =>
+            SettingFiles.Specialdays.ReadCsvFile(csvLine =>
             {
                 string dateStr = csvLine[0];
                 if (string.IsNullOrEmpty(dateStr))

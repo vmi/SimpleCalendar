@@ -2,25 +2,24 @@ using System.IO;
 using System.Text;
 using Csv;
 
-namespace SimpleCalendar.WPF.Services
+namespace SimpleCalendar.WPF.Utilities
 {
-    public class SettingsService
+    public class SettingFiles(bool isLocal, params string[] filenames)
     {
-        private const string STYLES_CSV = "styles.csv";
-        private const string HOLIDAYS_CSV = "syukujitsu.csv";
-        private const string SPECIALDAYS_CSV = "specialdays.csv";
-        private const string CONFIG_CSV = "config.csv";
+        public static readonly SettingFiles Styles = new(false, "styles.csv");
+        public static readonly SettingFiles Holidays = new(false, "syukujitsu.csv", "syukujitsu.csv.header");
+        public static readonly SettingFiles Specialdays = new(false, "specialdays.csv");
+        public static readonly SettingFiles Config = new(true, "config.csv");
 
         public static string UserSettingBaseDir { get; set; }
         public static string LocalSettingBaseDir { get; set; }
         public static string AppName { get; set; }
+        public static string AppBaseDir { get; set; }
 
-        static SettingsService()
+        private static readonly Encoding s_cp932;
+
+        static SettingFiles()
         {
-            // Unicode系以外のエンコーディングを使用する場合は必須
-            // 参考: https://www.curict.com/item/72/72d5fb2.html
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
             // ユーザー設定基点ディレクトリ
             // ApplicationData = %HOMEDRIVE%%HOMEPATH%\AppData\Roaming - デバイス間で共有する(アカウントに紐付く)情報を格納する
             // LocalApplicationData = %HOMEDRIVE%%HOMEPATH%\AppData\Local - デバイス固有の情報を格納する
@@ -28,58 +27,56 @@ namespace SimpleCalendar.WPF.Services
             LocalSettingBaseDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             System.Reflection.AssemblyName asmName = typeof(App).Assembly.GetName();
             AppName = asmName.Name!; // nullになることはないと思うんだが、ほんとに大丈夫?
-        }
+            AppBaseDir = AppDomain.CurrentDomain.BaseDirectory;
 
-        private readonly string _userSettingsDir;
-        private readonly string _localSettingsDir;
-        private readonly string _appDir;
-        private readonly Encoding _cp932;
-
-        public SettingsService()
-        {
-            // ユーザー設定ディレクトリ
-            _userSettingsDir = Path.Combine(UserSettingBaseDir, AppName);
-            _localSettingsDir = Path.Combine(LocalSettingBaseDir, AppName);
-            // アプリケーションディレクトリ
-            _appDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Contents");
+            // Unicode系以外のエンコーディングを使用する場合は必須
+            // 参考: https://www.curict.com/item/72/72d5fb2.html
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             // コードページ932 (=WIndows-31J, CP932, MS932)
             // ※事前にEncoding.RegisterProvider(...)を実行しておくこと(静的コンストラクタ内参照)
-            _cp932 = Encoding.GetEncoding(932);
+            s_cp932 = Encoding.GetEncoding(932);
         }
 
-        public string StylesCsv { get; } = STYLES_CSV;
-        public string HolidaysCsv { get; } = HOLIDAYS_CSV;
-        public string SpecialDaysCsv { get; } = SPECIALDAYS_CSV;
-        public string ConfigCSV { get; } = CONFIG_CSV;
+        private bool _isInitialized = false;
 
-        private string SettingsDir(bool isLocal)
-        {
-            return isLocal ? _localSettingsDir : _userSettingsDir;
-        }
+        public string SettingDir => Path.Combine(isLocal ? LocalSettingBaseDir : UserSettingBaseDir, AppName);
+        private static string ContentDir => Path.Combine(AppBaseDir, "Contents");
 
-        public string InitSettings(string name, bool isLocal)
+        public string SettingPath(int n = 0) => Path.Combine(SettingDir, filenames[n]);
+
+        public int Count => filenames.Length;
+
+        public void Initialize()
         {
-            string dir = SettingsDir(isLocal);
-            if (!Directory.Exists(dir))
+            if (_isInitialized)
             {
-                Directory.CreateDirectory(dir);
+                return;
             }
-            string userPath = Path.Combine(dir, name);
-            if (!File.Exists(userPath))
+            string sDir = SettingDir;
+            string cDir = ContentDir;
+            if (!Directory.Exists(sDir))
             {
-                string origPath = Path.Combine(_appDir, name);
-                if (!File.Exists(origPath))
+                Directory.CreateDirectory(sDir);
+            }
+            foreach (string filename in filenames)
+            {
+                string userPath = Path.Combine(sDir, filename);
+                if (!File.Exists(userPath))
                 {
-                    throw new FileNotFoundException("No initial configuration file", origPath);
+                    string origPath = Path.Combine(cDir, filename);
+                    if (File.Exists(origPath))
+                    {
+                        File.Copy(origPath, userPath);
+                    }
                 }
-                File.Copy(origPath, userPath);
             }
-            return userPath;
+            _isInitialized = true;
         }
 
-        public bool ReadCsvFile(string name, Action<ICsvLine> handler, Action<Exception>? error = null, bool isLocal = false)
+        public bool ReadCsvFile(Action<ICsvLine> handler, Action<Exception>? error = null)
         {
-            string userPath = InitSettings(name, isLocal);
+            Initialize();
+            string userPath = SettingPath(0);
             try
             {
                 // 他のプロセス(≒Excel)が対象ファイルを開いていてもエラーにならないよう、FileShare を指定。
@@ -87,7 +84,7 @@ namespace SimpleCalendar.WPF.Services
                 using FileStream fs = new(userPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 // 読み込みのエンコーディングにデフォルトではCP932を用いるが、
                 // ファイルの先頭にBOMが付いているとBOMの判定結果を優先する
-                using StreamReader sr = new(fs, _cp932, true);
+                using StreamReader sr = new(fs, s_cp932, true);
                 CsvOptions opts = new()
                 {
                     HeaderMode = HeaderMode.HeaderPresent,
@@ -107,10 +104,10 @@ namespace SimpleCalendar.WPF.Services
             }
         }
 
-        public bool WriteCsvFile(string name, string[] headers, IEnumerable<string[]> enumerable, Action<Exception>? error = null, bool isLocal = false)
+        public bool WriteCsvFile(string[] headers, IEnumerable<string[]> enumerable, Action<Exception>? error = null)
         {
-            string dir = SettingsDir(isLocal);
-            string userPath = Path.Combine(dir, name);
+            Initialize();
+            string userPath = SettingPath(0);
             string userPathNew = $"{userPath}.new";
             try
             {

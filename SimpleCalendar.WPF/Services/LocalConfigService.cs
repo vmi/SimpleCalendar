@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Windows;
+using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.WPF.Services
 {
@@ -27,7 +28,7 @@ namespace SimpleCalendar.WPF.Services
         Saved,
     }
 
-    public class LocalConfigService(SettingsService settingsService)
+    public class LocalConfigService
     {
         public const int SAVE_DELEY = 1000; // ms
 
@@ -35,8 +36,6 @@ namespace SimpleCalendar.WPF.Services
         [
             "画面情報", "左", "上", "フォント名", "フォントサイズ"
         ];
-
-        private readonly SettingsService _settingsService = settingsService;
 
         private readonly SortedDictionary<string, LocalConfigEntry> _configs = [];
 
@@ -90,7 +89,7 @@ namespace SimpleCalendar.WPF.Services
             {
                 if (LoadStatus != LoadStatus.NotLoaded) { return; }
                 LoadStatus = LoadStatus.Loading;
-                _settingsService.ReadCsvFile(_settingsService.ConfigCSV, csvLine =>
+                SettingFiles.Config.ReadCsvFile(csvLine =>
                 {
                     string key = csvLine[0];
                     if (string.IsNullOrEmpty(key))
@@ -114,7 +113,7 @@ namespace SimpleCalendar.WPF.Services
                             entry.FontSize = parseColumn(csvLine[4], LocalConfigEntry.DEFAULT_FONTSIZE);
                             goto case 3;
                     }
-                }, isLocal: true);
+                });
                 if (handler != null && _configs.TryGetValue(GenKey(), out LocalConfigEntry? entry))
                 {
                     handler.Invoke(entry);
@@ -166,7 +165,7 @@ namespace SimpleCalendar.WPF.Services
                     lock (this)
                     {
                         if (_saveStatus != SaveStatus.NotSaved) { return; }
-                        _settingsService.WriteCsvFile(_settingsService.ConfigCSV, Header, generateEntries(), isLocal: true);
+                        SettingFiles.Config.WriteCsvFile(Header, generateEntries());
                         _saveStatus = SaveStatus.Saved;
                         _savedCount++;
                         Debug.WriteLine($"[INFO] Saved local config: {_savedCount}");

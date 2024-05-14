@@ -2,13 +2,12 @@ using System.Windows;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SimpleCalendar.WPF.Services;
+using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.WPF.ViewModels
 {
     public partial class DayLabelStyleSettingViewModel : ObservableObject
     {
-        private readonly SettingsService _settingsService;
         private readonly BrushConverter _brushConverter = new();
 
         private Brush _sundayBrush = Brushes.Red;
@@ -50,9 +49,8 @@ namespace SimpleCalendar.WPF.ViewModels
         private Brush _mouseOverBrush = Brushes.LightGreen;
         public Brush MouseOverBrush { get => _mouseOverBrush; private set => SetProperty(ref _mouseOverBrush, value); }
 
-        public DayLabelStyleSettingViewModel(SettingsService settingsService)
+        public DayLabelStyleSettingViewModel()
         {
-            _settingsService = settingsService;
             LoadSetting();
         }
 
@@ -71,7 +69,7 @@ namespace SimpleCalendar.WPF.ViewModels
         [RelayCommand]
         private void LoadSetting()
         {
-            _settingsService.ReadCsvFile(_settingsService.StylesCsv, csvLine =>
+            SettingFiles.Styles.ReadCsvFile(csvLine =>
             {
                 if (csvLine.ColumnCount == 0 || string.IsNullOrEmpty(csvLine[0])) { return; }
                 string dTypeName = csvLine[0].ToUpper();
