@@ -4,10 +4,11 @@ using Csv;
 
 namespace SimpleCalendar.WPF.Utilities
 {
-    public class SettingFiles(bool isLocal, params string[] filenames)
+    public class SettingFiles
     {
+        public const string HEADER = "HEADER";
         public static readonly SettingFiles Styles = new(false, "styles.csv");
-        public static readonly SettingFiles Holidays = new(false, "syukujitsu.csv", "syukujitsu.csv.header");
+        public static readonly SettingFiles Holidays = new(false, "syukujitsu.csv", [(HEADER, "syukujitsu.csv.header")]);
         public static readonly SettingFiles Specialdays = new(false, "specialdays.csv");
         public static readonly SettingFiles Config = new(true, "config.csv");
 
@@ -37,14 +38,42 @@ namespace SimpleCalendar.WPF.Utilities
             s_cp932 = Encoding.GetEncoding(932);
         }
 
+        private readonly bool _isLocal;
+        private readonly string _filename;
+        private readonly Dictionary<string, string> _extFilenameDict = [];
+
+        public SettingFiles(bool isLocal, string filename, List<(string, string)>? extFilenameList = null)
+        {
+            _isLocal = isLocal;
+            _filename = filename;
+            if (extFilenameList != null)
+            {
+                foreach ((string k, string v) in extFilenameList)
+                {
+                    _extFilenameDict.Add(k, v);
+                }
+            }
+        }
+
         private bool _isInitialized = false;
 
-        public string SettingDir => Path.Combine(isLocal ? LocalSettingBaseDir : UserSettingBaseDir, AppName);
+        public string SettingDir => Path.Combine(_isLocal ? LocalSettingBaseDir : UserSettingBaseDir, AppName);
         private static string ContentDir => Path.Combine(AppBaseDir, "Contents");
+        public string SettingPath => Path.Combine(SettingDir, _filename);
+        public string ExtPath(string key) => Path.Combine(SettingDir, _extFilenameDict[key]);
 
-        public string SettingPath(int n = 0) => Path.Combine(SettingDir, filenames[n]);
-
-        public int Count => filenames.Length;
+        private void copyDefaultFile(string filename)
+        {
+            string userPath = Path.Combine(SettingDir, filename);
+            if (!File.Exists(userPath))
+            {
+                string origPath = Path.Combine(ContentDir, filename);
+                if (File.Exists(origPath))
+                {
+                    File.Copy(origPath, userPath);
+                }
+            }
+        }
 
         public void Initialize()
         {
@@ -52,23 +81,14 @@ namespace SimpleCalendar.WPF.Utilities
             {
                 return;
             }
-            string sDir = SettingDir;
-            string cDir = ContentDir;
-            if (!Directory.Exists(sDir))
+            if (!Directory.Exists(SettingDir))
             {
-                Directory.CreateDirectory(sDir);
+                Directory.CreateDirectory(SettingDir);
             }
-            foreach (string filename in filenames)
+            copyDefaultFile(_filename);
+            foreach (string filename in _extFilenameDict.Values)
             {
-                string userPath = Path.Combine(sDir, filename);
-                if (!File.Exists(userPath))
-                {
-                    string origPath = Path.Combine(cDir, filename);
-                    if (File.Exists(origPath))
-                    {
-                        File.Copy(origPath, userPath);
-                    }
-                }
+                copyDefaultFile(filename);
             }
             _isInitialized = true;
         }
@@ -76,7 +96,7 @@ namespace SimpleCalendar.WPF.Utilities
         public bool ReadCsvFile(Action<ICsvLine> handler, Action<Exception>? error = null)
         {
             Initialize();
-            string userPath = SettingPath(0);
+            string userPath = SettingPath;
             try
             {
                 // 他のプロセス(≒Excel)が対象ファイルを開いていてもエラーにならないよう、FileShare を指定。
@@ -107,7 +127,7 @@ namespace SimpleCalendar.WPF.Utilities
         public bool WriteCsvFile(string[] headers, IEnumerable<string[]> enumerable, Action<Exception>? error = null)
         {
             Initialize();
-            string userPath = SettingPath(0);
+            string userPath = SettingPath;
             string userPathNew = $"{userPath}.new";
             try
             {

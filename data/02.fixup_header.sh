@@ -2,10 +2,10 @@
 
 file="syukujitsu.csv.header"
 if [ ! -f "$file.orig" ]; then
-  dos2unix "$file"
   cp -v "$file" "$file.orig"
 fi
-sed -i.bak -En '
-  /^(last-modified|etag|content-length):/p
-' "$file"
-diff -U0 "$file.orig" "$file"
+awk '
+  $1 == "last-modified:"  { $1 = "Last-Modified:"  ; print }
+  $1 == "content-length:" { $1 = "Content-Length:" ; print }
+' "$file.orig" > "$file"
+diff -i -u "$file.orig" "$file"
