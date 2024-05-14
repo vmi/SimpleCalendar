@@ -7,7 +7,7 @@ namespace SimpleCalendar.WPF.Services
     public class SettingsService
     {
         private const string STYLES_CSV = "styles.csv";
-        private const string HOLYDAYS_CSV = "syukujitsu.csv";
+        private const string HOLIDAYS_CSV = "syukujitsu.csv";
         private const string SPECIALDAYS_CSV = "specialdays.csv";
         private const string CONFIG_CSV = "config.csv";
 
@@ -48,7 +48,7 @@ namespace SimpleCalendar.WPF.Services
         }
 
         public string StylesCsv { get; } = STYLES_CSV;
-        public string HolydaysCsv { get; } = HOLYDAYS_CSV;
+        public string HolidaysCsv { get; } = HOLIDAYS_CSV;
         public string SpecialDaysCsv { get; } = SPECIALDAYS_CSV;
         public string ConfigCSV { get; } = CONFIG_CSV;
 

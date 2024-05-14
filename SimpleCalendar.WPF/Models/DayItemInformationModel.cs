@@ -19,7 +19,7 @@ namespace SimpleCalendar.WPF.Models
             _dateToDayItem.Clear();
 
             // 祝祭日の読み込み
-            _settingsService.ReadCsvFile(_settingsService.HolydaysCsv, csvLine =>
+            _settingsService.ReadCsvFile(_settingsService.HolidaysCsv, csvLine =>
             {
                 string dateStr = csvLine[0];
                 if (string.IsNullOrEmpty(dateStr))
