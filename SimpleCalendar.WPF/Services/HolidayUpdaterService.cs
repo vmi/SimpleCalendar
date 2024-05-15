@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.WPF.Services
@@ -87,33 +86,6 @@ namespace SimpleCalendar.WPF.Services
             return HolidayUpdaterStatus.UPDATED;
         }
 
-        private static string capitalize(string s)
-        {
-            bool wasLetter = false;
-            StringBuilder sb = new();
-            foreach (char c in s)
-            {
-                char nc;
-                switch (c)
-                {
-                    case >= 'a' and <= 'z':
-                        nc = wasLetter ? c : char.ToUpper(c);
-                        wasLetter = true;
-                        break;
-                    case >= 'A' and <= 'Z':
-                        nc = wasLetter ? char.ToLower(c) : c;
-                        wasLetter = true;
-                        break;
-                    default:
-                        nc = c;
-                        wasLetter = false;
-                        break;
-                }
-                sb.Append(nc);
-            }
-            return sb.ToString();
-        }
-
         private string? GetSavedLastModified()
         {
             if (!File.Exists(_headerPath)) { return null; }
@@ -127,7 +99,7 @@ namespace SimpleCalendar.WPF.Services
                     {
                         continue;
                     }
-                    switch (capitalize(entry[0]))
+                    switch (entry[0])
                     {
                         case LastModified:
                             return entry[1];
