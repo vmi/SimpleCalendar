@@ -26,9 +26,9 @@ namespace SimpleCalendar.Tests
             {
                 File.Delete(headerFile);
             }
-            HolidayUpdaterStatus status = await sus.DownloadHolidaysCsvAsync();
+            HolidayUpdaterStatus status = await sus.UpdateAsync();
             Assert.Equal(HolidayUpdaterStatus.UPDATED, status);
-            HolidayUpdaterStatus status2 = await sus.DownloadHolidaysCsvAsync();
+            HolidayUpdaterStatus status2 = await sus.UpdateAsync();
             Assert.Equal(HolidayUpdaterStatus.NO_UPDATE_REQUIRED, status2);
         }
     }

@@ -21,6 +21,9 @@ namespace SimpleCalendar.WPF
                 .AddSingleton<DaysOfMonthModel>()
                 .AddSingleton<CurrentMonthViewModel>()
                 .AddTransient<CalendarMonthViewModel>()
+                .AddSingleton<SettingsLogger>()
+                .AddSingleton<SettingsViewModel>()
+                .AddSingleton<HolidayUpdaterService>()
                 .BuildServiceProvider());
         }
 

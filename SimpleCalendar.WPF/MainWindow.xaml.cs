@@ -10,7 +10,6 @@ using SimpleCalendar.WPF.Services;
 using SimpleCalendar.WPF.Utilities;
 using SimpleCalendar.WPF.ViewModels;
 using SimpleCalendar.WPF.Views;
-//using static System.Net.Mime.MediaTypeNames;
 
 namespace SimpleCalendar.WPF
 {
@@ -30,6 +29,7 @@ namespace SimpleCalendar.WPF
         private HwndSourceHook? _sourceHook;
 
         private Window? _help;
+        private Window? _settingsView;
 
         public MainWindow()
         {
@@ -48,6 +48,12 @@ namespace SimpleCalendar.WPF
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
+            RegisterNotifyIcon();
+            UpdateHolidaysCsv();
+        }
+
+        private void RegisterNotifyIcon()
+        {
             Icon? icon = AssemblyHelper.Instance.LoadIcon(ICON_NAME);
             if (icon == null)
             {
@@ -61,6 +67,12 @@ namespace SimpleCalendar.WPF
             _source.AddHook(_sourceHook);
             _notifyIconManager.Select = NotifyIcon_Select;
             _notifyIconManager.Add(icon, tip: "Simple Calendar", callbackMessage: WMAPP_NOTIFYCALLBACK);
+        }
+
+        private static void UpdateHolidaysCsv()
+        {
+            HolidayUpdaterService hus = ServiceRegistry.GetService<HolidayUpdaterService>()!;
+            Task.Run(hus.UpdateAsync);
         }
 
         private void NotifyIcon_Select(nint hwnd)
@@ -206,7 +218,7 @@ namespace SimpleCalendar.WPF
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
@@ -218,6 +230,15 @@ namespace SimpleCalendar.WPF
                 _help = new Help();
             }
             _help.Show();
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            if (_settingsView == null || !_settingsView.IsLoaded)
+            {
+                _settingsView = new SettingsView();
+            }
+            _settingsView.Show();
         }
     }
 }

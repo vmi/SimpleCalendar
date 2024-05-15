@@ -1,0 +1,65 @@
+<Window x:Class="SimpleCalendar.WPF.Views.SettingsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleCalendar.WPF.Views"
+        xmlns:helper="clr-namespace:SimpleCalendar.WPF.Views.Helpers"
+        xmlns:viewmodel="clr-namespace:SimpleCalendar.WPF.ViewModels"
+        d:DataContext="{d:DesignInstance Type=viewmodel:SettingsViewModel}"
+        helper:DataContextHelper.DataContext="{x:Type viewmodel:SettingsViewModel}"
+        mc:Ignorable="d"
+        Title="設定"
+        Height="450"
+        Width="600">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Setting" TargetType="Grid">
+                <Style.Resources>
+                    <Style TargetType="Label" />
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Margin" Value="5" />
+                    </Style>
+                    <Style TargetType="Button">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Width" Value="144" />
+                        <Setter Property="Margin" Value="0,5" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Style="{StaticResource Setting}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="ログメッセージ" />
+        <ListView Grid.Row="1"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="3"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  ItemsSource="{Binding Logger.LogEntries}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem" />
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Text}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button Grid.Row="2" Grid.Column="0" Content="設定ファイル再読み込み" />
+        <Button Grid.Row="2" Grid.Column="1" Content="祝日情報最新化" />
+        <Button Grid.Row="2" Grid.Column="2" Content="閉じる" Click="Close_Click" />
+    </Grid>
+</Window>
