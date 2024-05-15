@@ -137,6 +137,8 @@ MVVM
 * [MVVM Toolkit の概要](https://learn.microsoft.com/ja-jp/dotnet/communitytoolkit/mvvm/)
 * [CommunityToolkit.Mvvm V8 入門](https://qiita.com/kk-river/items/d974b02f6c4010433a9e)
 * [NET用 MVVM Toolkit v8でMVVMコードを短く](https://qiita.com/hqf00342/items/d12bb669d1ac6fed6ab6)
+* [MVVMとは何か](https://days-of-programming.blogspot.com/2017/11/mvvm.html)
+    * ModelとViewModelをどういう方針で設計したらよいかわからない状態で引っ掛かったページ。これが「正しい」かどうかはまだ判断が付かない。
 
 C# の依存性注入 (DI/Dependency Injection)
 -----------------------------------------
@@ -156,6 +158,14 @@ C# の依存性注入 (DI/Dependency Injection)
         * インスタンス化に使用されるコンストラクタは、登録されたクラス群によって解決可能なもののうち、最も引数の多いものが選択される。
         * 引数の数が同じである解決可能なコンストラクタが複数ある場合は実行時エラーが発生する。
         * 特定のコンストラクタを使用することを明示的に指示したい場合は、`AddXXX()`の引数にインスタンス化処理を行うラムダ式(`Action<T>`)を渡す。
+
+非同期プログラミング
+--------------------
+
+* [非同期 MVVM アプリケーションのパターン: データ バインド](https://learn.microsoft.com/ja-jp/archive/msdn-magazine/2014/march/async-programming-patterns-for-asynchronous-mvvm-applications-data-binding)
+    * Taskを直接待つ(Wait/Result)のは、処理がブロックされるので禁止。(⇒ よくある誤り)
+    * 「サービスは UI 非依存なので、待機のたびに ConfigureAwait(false) を使用します」(`ConfigureAwait(false)` is 何?)
+* [初心者のためのTask.Run(), async/awaitの使い方](https://qiita.com/inew/items/0126270bca99883605de)
 
 設定ファイルの扱い
 ------------------
