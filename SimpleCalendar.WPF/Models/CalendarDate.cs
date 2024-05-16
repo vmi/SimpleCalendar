@@ -59,9 +59,6 @@ namespace SimpleCalendar.WPF.Models
 
     public class DayItem
     {
-        public const int DAYS_IN_WEEK = 7;
-        public const int MAX_WEEKS_IN_MONTH = 6;
-
         public const int EMPTY_DAY = -1;
         public const string NO_LABEL = "";
         public static readonly DayItem EMPTY = new(EMPTY_DAY, DayType.EMPTY, NO_LABEL);
@@ -86,6 +83,20 @@ namespace SimpleCalendar.WPF.Models
             }
             DayType = dayType;
             Label = label;
+        }
+    }
+
+    public class DaysMatrix
+    {
+        public const int DAYS_IN_WEEK = 7;
+        public const int MAX_WEEKS_IN_MONTH = 6;
+
+        private readonly DayItem[,] _days = new DayItem[MAX_WEEKS_IN_MONTH, DAYS_IN_WEEK];
+
+        public DayItem this[int w, int dow]
+        {
+            get => _days[w, dow];
+            set => _days[w, dow] = value;
         }
     }
 }

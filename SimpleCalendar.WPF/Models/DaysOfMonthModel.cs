@@ -2,49 +2,45 @@ namespace SimpleCalendar.WPF.Models
 {
     public class DaysOfMonthModel(DayItemInformationModel dayIteminformationModel)
     {
-        private readonly Dictionary<int, Dictionary<int, DayItem[][]>> _daysCache = [];
+        private readonly Dictionary<int, Dictionary<int, DaysMatrix>> _daysCache = [];
 
-        public DayItem[][] GetDays(YearMonth yearMonth)
+        public DaysMatrix GetDaysMatrix(YearMonth yearMonth)
         {
             lock (this)
             {
                 int year = yearMonth.Year;
                 int month = yearMonth.Month;
-                if (!_daysCache.TryGetValue(year, out Dictionary<int, DayItem[][]>? dss))
+                if (!_daysCache.TryGetValue(year, out Dictionary<int, DaysMatrix>? dms))
                 {
-                    dss = _daysCache[year] = [];
+                    dms = _daysCache[year] = [];
                 }
-                if (!dss.TryGetValue(month, out DayItem[][]? ds))
+                if (!dms.TryGetValue(month, out DaysMatrix? dm))
                 {
-                    ds = dss[month] = new DayItem[DayItem.MAX_WEEKS_IN_MONTH][];
-                    for (int i = 0; i < ds.Length; i++)
-                    {
-                        ds[i] = new DayItem[DayItem.DAYS_IN_WEEK];
-                    }
-                    FillDays(year, month, ds);
+                    dm = dms[month] = new DaysMatrix();
+                    FillDays(year, month, dm);
                 }
-                return ds;
+                return dm;
             }
         }
 
-        private void FillDays(int year, int month, DayItem[][] days)
+        private void FillDays(int year, int month, DaysMatrix dm)
         {
             DateOnly firstDay = new(year, month, 1);
             int firstDayOfWeek = (int)firstDay.DayOfWeek;
             int daysInMonth = DateTime.DaysInMonth(year, month);
             int day = -firstDayOfWeek;
-            for (int w = 0; w < DayItem.MAX_WEEKS_IN_MONTH; w++)
+            for (int w = 0; w < DaysMatrix.MAX_WEEKS_IN_MONTH; w++)
             {
-                for (int dow = 0; dow < DayItem.DAYS_IN_WEEK; dow++)
+                for (int dow = 0; dow < DaysMatrix.DAYS_IN_WEEK; dow++)
                 {
                     day++;
                     if (1 <= day && day <= daysInMonth)
                     {
-                        days[w][dow] = dayIteminformationModel.GetDayItem(year, month, day, dow);
+                        dm[w, dow] = dayIteminformationModel.GetDayItem(year, month, day, dow);
                     }
                     else
                     {
-                        days[w][dow] = DayItem.EMPTY;
+                        dm[w, dow] = DayItem.EMPTY;
                     }
                 }
             }

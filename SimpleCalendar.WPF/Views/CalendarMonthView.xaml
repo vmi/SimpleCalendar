@@ -53,53 +53,53 @@
             <control:DayOfWeekLabel Grid.Row="0" Grid.Column="4" DayOfWeek="THURSDAY" />
             <control:DayOfWeekLabel Grid.Row="0" Grid.Column="5" DayOfWeek="FRIDAY" />
             <control:DayOfWeekLabel Grid.Row="0" Grid.Column="6" DayOfWeek="SATURDAY" />
-            <control:DayLabel Grid.Row="1" Grid.Column="0" DayItem="{Binding Path='Days[0][0]'}" />
-            <control:DayLabel Grid.Row="1" Grid.Column="1" DayItem="{Binding Path='Days[0][1]'}" />
-            <control:DayLabel Grid.Row="1" Grid.Column="2" DayItem="{Binding Path='Days[0][2]'}" />
-            <control:DayLabel Grid.Row="1" Grid.Column="3" DayItem="{Binding Path='Days[0][3]'}" />
-            <control:DayLabel Grid.Row="1" Grid.Column="4" DayItem="{Binding Path='Days[0][4]'}" />
-            <control:DayLabel Grid.Row="1" Grid.Column="5" DayItem="{Binding Path='Days[0][5]'}" />
-            <control:DayLabel Grid.Row="1" Grid.Column="6" DayItem="{Binding Path='Days[0][6]'}" />
+            <control:DayLabel Grid.Row="1" Grid.Column="0" DayItem="{Binding Path='DaysMatrix[0, 0]'}" />
+            <control:DayLabel Grid.Row="1" Grid.Column="1" DayItem="{Binding Path='DaysMatrix[0, 1]'}" />
+            <control:DayLabel Grid.Row="1" Grid.Column="2" DayItem="{Binding Path='DaysMatrix[0, 2]'}" />
+            <control:DayLabel Grid.Row="1" Grid.Column="3" DayItem="{Binding Path='DaysMatrix[0, 3]'}" />
+            <control:DayLabel Grid.Row="1" Grid.Column="4" DayItem="{Binding Path='DaysMatrix[0, 4]'}" />
+            <control:DayLabel Grid.Row="1" Grid.Column="5" DayItem="{Binding Path='DaysMatrix[0, 5]'}" />
+            <control:DayLabel Grid.Row="1" Grid.Column="6" DayItem="{Binding Path='DaysMatrix[0, 6]'}" />
 
-            <control:DayLabel Grid.Row="2" Grid.Column="0" DayItem="{Binding Path='Days[1][0]'}" />
-            <control:DayLabel Grid.Row="2" Grid.Column="1" DayItem="{Binding Path='Days[1][1]'}" />
-            <control:DayLabel Grid.Row="2" Grid.Column="2" DayItem="{Binding Path='Days[1][2]'}" />
-            <control:DayLabel Grid.Row="2" Grid.Column="3" DayItem="{Binding Path='Days[1][3]'}" />
-            <control:DayLabel Grid.Row="2" Grid.Column="4" DayItem="{Binding Path='Days[1][4]'}" />
-            <control:DayLabel Grid.Row="2" Grid.Column="5" DayItem="{Binding Path='Days[1][5]'}" />
-            <control:DayLabel Grid.Row="2" Grid.Column="6" DayItem="{Binding Path='Days[1][6]'}" />
+            <control:DayLabel Grid.Row="2" Grid.Column="0" DayItem="{Binding Path='DaysMatrix[1, 0]'}" />
+            <control:DayLabel Grid.Row="2" Grid.Column="1" DayItem="{Binding Path='DaysMatrix[1, 1]'}" />
+            <control:DayLabel Grid.Row="2" Grid.Column="2" DayItem="{Binding Path='DaysMatrix[1, 2]'}" />
+            <control:DayLabel Grid.Row="2" Grid.Column="3" DayItem="{Binding Path='DaysMatrix[1, 3]'}" />
+            <control:DayLabel Grid.Row="2" Grid.Column="4" DayItem="{Binding Path='DaysMatrix[1, 4]'}" />
+            <control:DayLabel Grid.Row="2" Grid.Column="5" DayItem="{Binding Path='DaysMatrix[1, 5]'}" />
+            <control:DayLabel Grid.Row="2" Grid.Column="6" DayItem="{Binding Path='DaysMatrix[1, 6]'}" />
 
-            <control:DayLabel Grid.Row="3" Grid.Column="0" DayItem="{Binding Path='Days[2][0]'}" />
-            <control:DayLabel Grid.Row="3" Grid.Column="1" DayItem="{Binding Path='Days[2][1]'}" />
-            <control:DayLabel Grid.Row="3" Grid.Column="2" DayItem="{Binding Path='Days[2][2]'}" />
-            <control:DayLabel Grid.Row="3" Grid.Column="3" DayItem="{Binding Path='Days[2][3]'}" />
-            <control:DayLabel Grid.Row="3" Grid.Column="4" DayItem="{Binding Path='Days[2][4]'}" />
-            <control:DayLabel Grid.Row="3" Grid.Column="5" DayItem="{Binding Path='Days[2][5]'}" />
-            <control:DayLabel Grid.Row="3" Grid.Column="6" DayItem="{Binding Path='Days[2][6]'}" />
+            <control:DayLabel Grid.Row="3" Grid.Column="0" DayItem="{Binding Path='DaysMatrix[2, 0]'}" />
+            <control:DayLabel Grid.Row="3" Grid.Column="1" DayItem="{Binding Path='DaysMatrix[2, 1]'}" />
+            <control:DayLabel Grid.Row="3" Grid.Column="2" DayItem="{Binding Path='DaysMatrix[2, 2]'}" />
+            <control:DayLabel Grid.Row="3" Grid.Column="3" DayItem="{Binding Path='DaysMatrix[2, 3]'}" />
+            <control:DayLabel Grid.Row="3" Grid.Column="4" DayItem="{Binding Path='DaysMatrix[2, 4]'}" />
+            <control:DayLabel Grid.Row="3" Grid.Column="5" DayItem="{Binding Path='DaysMatrix[2, 5]'}" />
+            <control:DayLabel Grid.Row="3" Grid.Column="6" DayItem="{Binding Path='DaysMatrix[2, 6]'}" />
 
-            <control:DayLabel Grid.Row="4" Grid.Column="0" DayItem="{Binding Path='Days[3][0]'}" />
-            <control:DayLabel Grid.Row="4" Grid.Column="1" DayItem="{Binding Path='Days[3][1]'}" />
-            <control:DayLabel Grid.Row="4" Grid.Column="2" DayItem="{Binding Path='Days[3][2]'}" />
-            <control:DayLabel Grid.Row="4" Grid.Column="3" DayItem="{Binding Path='Days[3][3]'}" />
-            <control:DayLabel Grid.Row="4" Grid.Column="4" DayItem="{Binding Path='Days[3][4]'}" />
-            <control:DayLabel Grid.Row="4" Grid.Column="5" DayItem="{Binding Path='Days[3][5]'}" />
-            <control:DayLabel Grid.Row="4" Grid.Column="6" DayItem="{Binding Path='Days[3][6]'}" />
+            <control:DayLabel Grid.Row="4" Grid.Column="0" DayItem="{Binding Path='DaysMatrix[3, 0]'}" />
+            <control:DayLabel Grid.Row="4" Grid.Column="1" DayItem="{Binding Path='DaysMatrix[3, 1]'}" />
+            <control:DayLabel Grid.Row="4" Grid.Column="2" DayItem="{Binding Path='DaysMatrix[3, 2]'}" />
+            <control:DayLabel Grid.Row="4" Grid.Column="3" DayItem="{Binding Path='DaysMatrix[3, 3]'}" />
+            <control:DayLabel Grid.Row="4" Grid.Column="4" DayItem="{Binding Path='DaysMatrix[3, 4]'}" />
+            <control:DayLabel Grid.Row="4" Grid.Column="5" DayItem="{Binding Path='DaysMatrix[3, 5]'}" />
+            <control:DayLabel Grid.Row="4" Grid.Column="6" DayItem="{Binding Path='DaysMatrix[3, 6]'}" />
 
-            <control:DayLabel Grid.Row="5" Grid.Column="0" DayItem="{Binding Path='Days[4][0]'}" />
-            <control:DayLabel Grid.Row="5" Grid.Column="1" DayItem="{Binding Path='Days[4][1]'}" />
-            <control:DayLabel Grid.Row="5" Grid.Column="2" DayItem="{Binding Path='Days[4][2]'}" />
-            <control:DayLabel Grid.Row="5" Grid.Column="3" DayItem="{Binding Path='Days[4][3]'}" />
-            <control:DayLabel Grid.Row="5" Grid.Column="4" DayItem="{Binding Path='Days[4][4]'}" />
-            <control:DayLabel Grid.Row="5" Grid.Column="5" DayItem="{Binding Path='Days[4][5]'}" />
-            <control:DayLabel Grid.Row="5" Grid.Column="6" DayItem="{Binding Path='Days[4][6]'}" />
+            <control:DayLabel Grid.Row="5" Grid.Column="0" DayItem="{Binding Path='DaysMatrix[4, 0]'}" />
+            <control:DayLabel Grid.Row="5" Grid.Column="1" DayItem="{Binding Path='DaysMatrix[4, 1]'}" />
+            <control:DayLabel Grid.Row="5" Grid.Column="2" DayItem="{Binding Path='DaysMatrix[4, 2]'}" />
+            <control:DayLabel Grid.Row="5" Grid.Column="3" DayItem="{Binding Path='DaysMatrix[4, 3]'}" />
+            <control:DayLabel Grid.Row="5" Grid.Column="4" DayItem="{Binding Path='DaysMatrix[4, 4]'}" />
+            <control:DayLabel Grid.Row="5" Grid.Column="5" DayItem="{Binding Path='DaysMatrix[4, 5]'}" />
+            <control:DayLabel Grid.Row="5" Grid.Column="6" DayItem="{Binding Path='DaysMatrix[4, 6]'}" />
 
-            <control:DayLabel Grid.Row="6" Grid.Column="0" DayItem="{Binding Path='Days[5][0]'}" />
-            <control:DayLabel Grid.Row="6" Grid.Column="1" DayItem="{Binding Path='Days[5][1]'}" />
-            <control:DayLabel Grid.Row="6" Grid.Column="2" DayItem="{Binding Path='Days[5][2]'}" />
-            <control:DayLabel Grid.Row="6" Grid.Column="3" DayItem="{Binding Path='Days[5][3]'}" />
-            <control:DayLabel Grid.Row="6" Grid.Column="4" DayItem="{Binding Path='Days[5][4]'}" />
-            <control:DayLabel Grid.Row="6" Grid.Column="5" DayItem="{Binding Path='Days[5][5]'}" />
-            <control:DayLabel Grid.Row="6" Grid.Column="6" DayItem="{Binding Path='Days[5][6]'}" />
+            <control:DayLabel Grid.Row="6" Grid.Column="0" DayItem="{Binding Path='DaysMatrix[5, 0]'}" />
+            <control:DayLabel Grid.Row="6" Grid.Column="1" DayItem="{Binding Path='DaysMatrix[5, 1]'}" />
+            <control:DayLabel Grid.Row="6" Grid.Column="2" DayItem="{Binding Path='DaysMatrix[5, 2]'}" />
+            <control:DayLabel Grid.Row="6" Grid.Column="3" DayItem="{Binding Path='DaysMatrix[5, 3]'}" />
+            <control:DayLabel Grid.Row="6" Grid.Column="4" DayItem="{Binding Path='DaysMatrix[5, 4]'}" />
+            <control:DayLabel Grid.Row="6" Grid.Column="5" DayItem="{Binding Path='DaysMatrix[5, 5]'}" />
+            <control:DayLabel Grid.Row="6" Grid.Column="6" DayItem="{Binding Path='DaysMatrix[5, 6]'}" />
         </Grid>
     </StackPanel>
 </UserControl>

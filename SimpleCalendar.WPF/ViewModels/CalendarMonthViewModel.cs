@@ -17,7 +17,7 @@ namespace SimpleCalendar.WPF.ViewModels
 
         public YearMonth YearMonth { get; private set; }
 
-        public DayItem[][] Days { get; private set; }
+        public DaysMatrix DaysMatrix { get; private set; }
 
         partial void OnOffsetChanged(int oldValue, int newValue)
         {
@@ -42,9 +42,9 @@ namespace SimpleCalendar.WPF.ViewModels
         private void UpdateDerivedProperties(YearMonth baseYearMonth)
         {
             YearMonth = baseYearMonth.AddMonths(Offset);
-            Days = _daysOfMonthModel.GetDays(YearMonth);
+            DaysMatrix = _daysOfMonthModel.GetDaysMatrix(YearMonth);
             OnPropertyChanged(nameof(YearMonth));
-            OnPropertyChanged(nameof(Days));
+            OnPropertyChanged(nameof(DaysMatrix));
         }
 
         public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthModel, CurrentMonthViewModel currentMonth, DayLabelStyleSettingViewModel dayLabelStyleSetting)
@@ -56,10 +56,10 @@ namespace SimpleCalendar.WPF.ViewModels
             CurrentMonth.PropertyChanged += CurrentMonth_PropertyChanged;
             YearMonth = currentMonth.BaseYearMonth;
             _offset = 0;
-            Days = daysOfMonthModel.GetDays(YearMonth);
+            DaysMatrix = daysOfMonthModel.GetDaysMatrix(YearMonth);
             OnPropertyChanged(nameof(YearMonth));
             OnPropertyChanged(nameof(Offset));
-            OnPropertyChanged(nameof(Days));
+            OnPropertyChanged(nameof(DaysMatrix));
         }
     }
 }

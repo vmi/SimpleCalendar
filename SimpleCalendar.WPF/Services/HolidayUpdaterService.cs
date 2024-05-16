@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -8,6 +9,7 @@ namespace SimpleCalendar.WPF.Services
 {
     public enum HolidayUpdaterStatus
     {
+        IN_PROGRESS,
         NO_UPDATE_REQUIRED,
         UPDATED,
         ERROR,
@@ -33,61 +35,86 @@ namespace SimpleCalendar.WPF.Services
             _headerPath = SettingFiles.Holidays.ExtPath(SettingFiles.HEADER);
         }
 
-
-        public async Task<HolidayUpdaterStatus> UpdateAsync()
+        public async Task<HolidayUpdaterStatus> UpdateAsync(Action<HolidayUpdaterStatus> statusChanged)
         {
-            // ローカルに保存された ETag を取得
-            if (GetSavedLastModified() is string lastModified)
+            bool locked = false;
+            try
             {
-                _logger.Log("祝日ファイルの更新を確認中");
-                // HEAD リクエストで更新状況を確認。
-                // If-Modified-Since, If-None-Match は期待通り動かなかったので、設定せずにリクエスト送出。
-                // また、Etag は、中身が変わっていないのに値が変わっているケースがあったため、チェック対象とはしない。
-                using (var client = new HttpClient())
+                // 下記の記述の場合、ロックを獲得できたときは確実にlockedがtrueになる。
+                // 「locked = Monitor.TryEnter(this)」の場合、ロックは獲得できたがlockedへの
+                // 代入が完了する前にスレッドがアボートするとロックが開放されない可能性がある。(←ほんとに?)
+                Monitor.TryEnter(this, ref locked);
+                if (!locked) { return HolidayUpdaterStatus.IN_PROGRESS; }
+                statusChanged(HolidayUpdaterStatus.IN_PROGRESS);
+                // ローカルに保存された最終更新日を取得
+                if (GetSavedLastModified() is string lastModified)
                 {
-                    HttpRequestMessage request = new(HttpMethod.Head, HolidaysCsvUri)
+                    _logger.Log("祝日ファイルの更新を確認中");
+                    // HEAD リクエストで更新状況を確認。
+                    // If-Modified-Since, If-None-Match は期待通り動かなかったので、設定せずにリクエスト送出。
+                    // また、Etag は、中身が変わっていないのに値が変わっているケースがあったため、チェック対象とはしない。
+                    using (var client = new HttpClient())
                     {
-                        Version = Version.Parse("2.0")
-                    };
-                    HttpResponseMessage response = await client.SendAsync(request);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // ※「response.Headers」ではなく「response.Content.Headers」でないと、「Last-Modified」が拾えない(!?)
-                        HttpContentHeaders h = response.Content.Headers;
-                        var lm = DateTimeOffset.Parse(lastModified);
-                        if (lm == h.LastModified)
+                        HttpRequestMessage request = new(HttpMethod.Head, HolidaysCsvUri)
                         {
-                            _logger.Log($"祝日ファイルは最新です (最終更新日時: {lm.ToLocalTime():yyyy-MM-dd(ddd) HH:mm:ss zzz})");
-                            return HolidayUpdaterStatus.NO_UPDATE_REQUIRED;
+                            Version = Version.Parse("2.0")
+                        };
+                        HttpResponseMessage response = await client.SendAsync(request);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            // ※「response.Headers」ではなく「response.Content.Headers」でないと、「Last-Modified」が拾えない(!?)
+                            HttpContentHeaders h = response.Content.Headers;
+                            var lm = DateTimeOffset.Parse(lastModified);
+                            if (lm == h.LastModified)
+                            {
+                                _logger.Log($"祝日ファイルは最新です (最終更新日時: {lm.ToLocalTime():yyyy-MM-dd(ddd) HH:mm:ss zzz})");
+                                statusChanged(HolidayUpdaterStatus.NO_UPDATE_REQUIRED);
+                                return HolidayUpdaterStatus.NO_UPDATE_REQUIRED;
+                            }
                         }
                     }
                 }
-            }
 
-            // ファイルをダウンロード
-            using (var client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync(HolidaysCsvUri);
-                if (!response.IsSuccessStatusCode)
+                // ファイルをダウンロード
+                using (var client = new HttpClient())
                 {
-                    _logger.Log("祝日ファイルの取得に失敗しました");
-                    return HolidayUpdaterStatus.ERROR;
-                }
-                response.EnsureSuccessStatusCode();
-                string newPath = $"{_settingPath}.new";
-                using (Stream stream = await response.Content.ReadAsStreamAsync())
-                {
-                    using (FileStream fileStream = File.OpenWrite(newPath))
+                    HttpResponseMessage response = await client.GetAsync(HolidaysCsvUri);
+                    if (!response.IsSuccessStatusCode)
                     {
-                        await stream.CopyToAsync(fileStream);
+                        _logger.Log("祝日ファイルの取得に失敗しました");
+                        statusChanged(HolidayUpdaterStatus.ERROR);
+                        return HolidayUpdaterStatus.ERROR;
                     }
+                    response.EnsureSuccessStatusCode();
+                    string newPath = $"{_settingPath}.new";
+                    using (Stream stream = await response.Content.ReadAsStreamAsync())
+                    {
+                        using (FileStream fileStream = File.OpenWrite(newPath))
+                        {
+                            await stream.CopyToAsync(fileStream);
+                        }
+                    }
+                    File.Move(newPath, _settingPath, true);
+                    // 新しい ETag を保存
+                    SaveHeaders(response.Content.Headers);
                 }
-                File.Move(newPath, _settingPath, true);
-                // 新しい ETag を保存
-                SaveHeaders(response.Content.Headers);
+                _logger.Log("祝日ファイルを最新化しました");
+                statusChanged(HolidayUpdaterStatus.UPDATED);
+                return HolidayUpdaterStatus.UPDATED;
             }
-            _logger.Log("祝日ファイルを最新化しました");
-            return HolidayUpdaterStatus.UPDATED;
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                statusChanged(HolidayUpdaterStatus.ERROR);
+                return HolidayUpdaterStatus.ERROR;
+            }
+            finally
+            {
+                if (locked)
+                {
+                    Monitor.Exit(this);
+                }
+            }
         }
 
         private string? GetSavedLastModified()

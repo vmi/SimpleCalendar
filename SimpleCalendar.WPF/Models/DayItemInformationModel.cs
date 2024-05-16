@@ -1,13 +1,25 @@
+using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
+using SimpleCalendar.WPF.Services;
 using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.WPF.Models
 {
-    public class DayItemInformationModel
+    public partial class DayItemInformationModel : ObservableObject
     {
+        private readonly HolidayUpdaterService _holidayUpdaterService;
+
         private readonly Dictionary<DateOnly, DayItem> _dateToDayItem = [];
 
-        public DayItemInformationModel()
+        [ObservableProperty]
+        private bool _isHolidaysUpdateInProgress = false;
+
+        [ObservableProperty]
+        private DateTime _lastModified;
+
+        public DayItemInformationModel(HolidayUpdaterService holidayUpdaterService)
         {
+            _holidayUpdaterService = holidayUpdaterService;
             LoadSettings();
         }
 
@@ -55,7 +67,22 @@ namespace SimpleCalendar.WPF.Models
                 DayItem newDayItem = new(date.Day, dType, label);
                 _dateToDayItem.Add(date, newDayItem);
             });
+
+            LastModified = DateTime.Now;
         }
+
+        public void UpdateHolidays()
+        {
+            Task.Run(async () =>
+            {
+                await _holidayUpdaterService.UpdateAsync(status =>
+                {
+                    Application.Current.Dispatcher.Invoke
+                    //if (status == HolidayUpdaterStatus.IN_PROGRESS
+                });
+            });
+        }
+
 
         public DayItem GetDayItem(int year, int month, int day, int dow)
         {

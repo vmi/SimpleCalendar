@@ -49,7 +49,6 @@ namespace SimpleCalendar.WPF
         {
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
             RegisterNotifyIcon();
-            UpdateHolidaysCsv();
         }
 
         private void RegisterNotifyIcon()
@@ -67,12 +66,6 @@ namespace SimpleCalendar.WPF
             _source.AddHook(_sourceHook);
             _notifyIconManager.Select = NotifyIcon_Select;
             _notifyIconManager.Add(icon, tip: "Simple Calendar", callbackMessage: WMAPP_NOTIFYCALLBACK);
-        }
-
-        private static void UpdateHolidaysCsv()
-        {
-            HolidayUpdaterService hus = ServiceRegistry.GetService<HolidayUpdaterService>()!;
-            Task.Run(hus.UpdateAsync);
         }
 
         private void NotifyIcon_Select(nint hwnd)
