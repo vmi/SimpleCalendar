@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using SimpleCalendar.WPF.Models;
 using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.WPF.Services
@@ -11,6 +10,7 @@ namespace SimpleCalendar.WPF.Services
     {
         IN_PROGRESS,
         NO_UPDATE_REQUIRED,
+        DOWNLOADED,
         UPDATED,
         ERROR,
     }
@@ -22,20 +22,19 @@ namespace SimpleCalendar.WPF.Services
         private const string LastModified = "Last-Modified";
         private const string ContentLength = "Content-Length";
 
-        private readonly SettingsLogger _logger;
-
         private readonly string _settingPath;
         private readonly string _headerPath;
 
-        public HolidayUpdaterService(SettingsLogger logger)
+        public delegate Task StatusChanged(HolidayUpdaterStatus status, params object[] args);
+
+        public HolidayUpdaterService()
         {
-            _logger = logger;
             SettingFiles.Holidays.Initialize();
             _settingPath = SettingFiles.Holidays.SettingPath;
             _headerPath = SettingFiles.Holidays.ExtPath(SettingFiles.HEADER);
         }
 
-        public async Task<HolidayUpdaterStatus> UpdateAsync(Action<HolidayUpdaterStatus> statusChanged)
+        public async Task<HolidayUpdaterStatus> UpdateAsync(StatusChanged statusChanged)
         {
             bool locked = false;
             try
@@ -45,11 +44,10 @@ namespace SimpleCalendar.WPF.Services
                 // 代入が完了する前にスレッドがアボートするとロックが開放されない可能性がある。(←ほんとに?)
                 Monitor.TryEnter(this, ref locked);
                 if (!locked) { return HolidayUpdaterStatus.IN_PROGRESS; }
-                statusChanged(HolidayUpdaterStatus.IN_PROGRESS);
+                await statusChanged(HolidayUpdaterStatus.IN_PROGRESS).ConfigureAwait(false);
                 // ローカルに保存された最終更新日を取得
                 if (GetSavedLastModified() is string lastModified)
                 {
-                    _logger.Log("祝日ファイルの更新を確認中");
                     // HEAD リクエストで更新状況を確認。
                     // If-Modified-Since, If-None-Match は期待通り動かなかったので、設定せずにリクエスト送出。
                     // また、Etag は、中身が変わっていないのに値が変わっているケースがあったため、チェック対象とはしない。
@@ -59,7 +57,7 @@ namespace SimpleCalendar.WPF.Services
                         {
                             Version = Version.Parse("2.0")
                         };
-                        HttpResponseMessage response = await client.SendAsync(request);
+                        HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
                         if (response.IsSuccessStatusCode)
                         {
                             // ※「response.Headers」ではなく「response.Content.Headers」でないと、「Last-Modified」が拾えない(!?)
@@ -67,8 +65,7 @@ namespace SimpleCalendar.WPF.Services
                             var lm = DateTimeOffset.Parse(lastModified);
                             if (lm == h.LastModified)
                             {
-                                _logger.Log($"祝日ファイルは最新です (最終更新日時: {lm.ToLocalTime():yyyy-MM-dd(ddd) HH:mm:ss zzz})");
-                                statusChanged(HolidayUpdaterStatus.NO_UPDATE_REQUIRED);
+                                await statusChanged(HolidayUpdaterStatus.NO_UPDATE_REQUIRED, lm).ConfigureAwait(false);
                                 return HolidayUpdaterStatus.NO_UPDATE_REQUIRED;
                             }
                         }
@@ -78,11 +75,10 @@ namespace SimpleCalendar.WPF.Services
                 // ファイルをダウンロード
                 using (var client = new HttpClient())
                 {
-                    HttpResponseMessage response = await client.GetAsync(HolidaysCsvUri);
+                    HttpResponseMessage response = await client.GetAsync(HolidaysCsvUri).ConfigureAwait(false);
                     if (!response.IsSuccessStatusCode)
                     {
-                        _logger.Log("祝日ファイルの取得に失敗しました");
-                        statusChanged(HolidayUpdaterStatus.ERROR);
+                        await statusChanged(HolidayUpdaterStatus.ERROR, response.StatusCode).ConfigureAwait(false);
                         return HolidayUpdaterStatus.ERROR;
                     }
                     response.EnsureSuccessStatusCode();
@@ -91,21 +87,20 @@ namespace SimpleCalendar.WPF.Services
                     {
                         using (FileStream fileStream = File.OpenWrite(newPath))
                         {
-                            await stream.CopyToAsync(fileStream);
+                            await stream.CopyToAsync(fileStream).ConfigureAwait(false);
                         }
                     }
                     File.Move(newPath, _settingPath, true);
-                    // 新しい ETag を保存
+                    // 新しいヘッダ情報の抜粋を保存
                     SaveHeaders(response.Content.Headers);
                 }
-                _logger.Log("祝日ファイルを最新化しました");
-                statusChanged(HolidayUpdaterStatus.UPDATED);
-                return HolidayUpdaterStatus.UPDATED;
+                await statusChanged(HolidayUpdaterStatus.DOWNLOADED).ConfigureAwait(false);
+                return HolidayUpdaterStatus.DOWNLOADED;
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
-                statusChanged(HolidayUpdaterStatus.ERROR);
+                await statusChanged(HolidayUpdaterStatus.ERROR).ConfigureAwait(false);
                 return HolidayUpdaterStatus.ERROR;
             }
             finally

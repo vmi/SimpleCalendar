@@ -48,6 +48,10 @@ namespace SimpleCalendar.WPF
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
+            if (DataContext is MainWindowViewModel vm)
+            {
+                vm.SettingsViewModel.UpdateHolidaysCommand.Execute(this);
+            }
             RegisterNotifyIcon();
         }
 
@@ -76,7 +80,7 @@ namespace SimpleCalendar.WPF
                     WindowState = WindowState.Minimized;
                     break;
                 case WindowState.Minimized:
-                    if (DataContext is CurrentMonthViewModel curMon)
+                    if (DataContext is MainWindowViewModel curMon)
                     {
                         curMon.UpdateTodayCommand.Execute(null);
                     }
@@ -119,7 +123,7 @@ namespace SimpleCalendar.WPF
 
         private void MainWindow_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (DataContext is CurrentMonthViewModel curMon)
+            if (DataContext is MainWindowViewModel curMon)
             {
                 int delta = e.Delta;
                 if (delta < 0)
@@ -188,7 +192,7 @@ namespace SimpleCalendar.WPF
 
         private void CalendarRoot_Loaded(object sender, RoutedEventArgs e)
         {
-            if (sender is Grid grid && DataContext is CurrentMonthViewModel curMon)
+            if (sender is Grid grid && DataContext is MainWindowViewModel curMon)
             {
                 curMon.RowCount = grid.ColumnDefinitions.Count;
                 curMon.ColumnCount = grid.ColumnDefinitions.Count;
@@ -197,7 +201,7 @@ namespace SimpleCalendar.WPF
 
         private void MainWindow_Activated(object? sender, EventArgs e)
         {
-            if (DataContext is CurrentMonthViewModel curMon)
+            if (DataContext is MainWindowViewModel curMon)
             {
                 curMon.UpdateTodayCommand.Execute(null);
             }

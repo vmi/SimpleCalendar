@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using System.Windows;
+using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.WPF.Views
 {
@@ -10,6 +12,15 @@ namespace SimpleCalendar.WPF.Views
         public SettingsView()
         {
             InitializeComponent();
+        }
+
+        private void OpenSettingsFolder_Click(object sender, RoutedEventArgs e)
+        {
+            using Process process = new();
+            ProcessStartInfo startInfo = process.StartInfo;
+            startInfo.UseShellExecute = true;
+            startInfo.FileName = SettingFiles.UserSettingBaseDir;
+            process.Start();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)

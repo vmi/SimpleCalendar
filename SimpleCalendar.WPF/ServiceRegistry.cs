@@ -17,13 +17,12 @@ namespace SimpleCalendar.WPF
                 new ServiceCollection()
                 .AddSingleton<LocalConfigService>()
                 .AddSingleton<DayItemInformationModel>()
+                .AddSingleton<HolidayUpdaterService>()
                 .AddSingleton<DayLabelStyleSettingViewModel>()
                 .AddSingleton<DaysOfMonthModel>()
-                .AddSingleton<CurrentMonthViewModel>()
+                .AddSingleton<MainWindowViewModel>()
                 .AddTransient<CalendarMonthViewModel>()
-                .AddSingleton<SettingsLogger>()
                 .AddSingleton<SettingsViewModel>()
-                .AddSingleton<HolidayUpdaterService>()
                 .BuildServiceProvider());
         }
 

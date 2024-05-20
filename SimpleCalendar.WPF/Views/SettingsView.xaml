@@ -23,7 +23,7 @@
                     <Style TargetType="Button">
                         <Setter Property="HorizontalAlignment" Value="Center" />
                         <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Width" Value="144" />
+                        <Setter Property="Width" Value="130" />
                         <Setter Property="Margin" Value="0,5" />
                     </Style>
                 </Style.Resources>
@@ -40,14 +40,15 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="ログメッセージ" />
         <ListView Grid.Row="1"
                   Grid.Column="0"
-                  Grid.ColumnSpan="3"
+                  Grid.ColumnSpan="4"
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   VirtualizingPanel.IsVirtualizing="True"
-                  ItemsSource="{Binding Logger.LogEntries}">
+                  ItemsSource="{Binding LogEntries}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" />
             </ListView.ItemContainerStyle>
@@ -58,8 +59,9 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Button Grid.Row="2" Grid.Column="0" Content="設定ファイル再読み込み" />
-        <Button Grid.Row="2" Grid.Column="1" Content="祝日情報最新化" />
-        <Button Grid.Row="2" Grid.Column="2" Content="閉じる" Click="Close_Click" />
+        <Button Grid.Row="2" Grid.Column="0" Content="設定フォルダを開く" Click="OpenSettingsFolder_Click"/>
+        <Button Grid.Row="2" Grid.Column="1" Content="設定ファイル再読み込み"/>
+        <Button Grid.Row="2" Grid.Column="2" Content="祝日情報最新化" Command="{Binding UpdateHolidaysCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+        <Button Grid.Row="2" Grid.Column="3" Content="閉じる" Click="Close_Click" />
     </Grid>
 </Window>

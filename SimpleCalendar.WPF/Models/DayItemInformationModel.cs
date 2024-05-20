@@ -1,7 +1,8 @@
-using System.Windows;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SimpleCalendar.WPF.Services;
 using SimpleCalendar.WPF.Utilities;
+using static SimpleCalendar.WPF.Services.HolidayUpdaterService;
 
 namespace SimpleCalendar.WPF.Models
 {
@@ -11,11 +12,10 @@ namespace SimpleCalendar.WPF.Models
 
         private readonly Dictionary<DateOnly, DayItem> _dateToDayItem = [];
 
-        [ObservableProperty]
-        private bool _isHolidaysUpdateInProgress = false;
+        private readonly ReaderWriterLockSlim _lock = new();
 
         [ObservableProperty]
-        private DateTime _lastModified;
+        private DateTime _lastModified = DateTime.MinValue;
 
         public DayItemInformationModel(HolidayUpdaterService holidayUpdaterService)
         {
@@ -23,71 +23,92 @@ namespace SimpleCalendar.WPF.Models
             LoadSettings();
         }
 
-        public void LoadSettings()
+        public void LoadSettings(Dispatcher? dispatcher = null)
         {
-            // 既存情報の消去
-            _dateToDayItem.Clear();
-
-            // 祝祭日の読み込み
-            SettingFiles.Holidays.ReadCsvFile(csvLine =>
+            try
             {
-                string dateStr = csvLine[0];
-                if (string.IsNullOrEmpty(dateStr))
-                {
-                    return;
-                }
-                var date = DateOnly.Parse(dateStr);
-                string label = csvLine[1];
-                DayItem dayItem = new(date.Day, DayType.HOLIDAY, label);
-                _dateToDayItem.Add(date, dayItem);
-            });
+                _lock.EnterWriteLock();
 
-            // 特別日の読み込み
-            SettingFiles.Specialdays.ReadCsvFile(csvLine =>
-            {
-                string dateStr = csvLine[0];
-                if (string.IsNullOrEmpty(dateStr))
+                // 既存情報の消去
+                _dateToDayItem.Clear();
+
+                // 祝祭日の読み込み
+                SettingFiles.Holidays.ReadCsvFile(csvLine =>
                 {
-                    return;
-                }
-                var date = DateOnly.Parse(dateStr);
-                string dTypeStr = csvLine[1];
-                DayType dType = Enum.Parse<DayType>(dTypeStr);
-                string label = csvLine[2];
-                if (_dateToDayItem.TryGetValue(date, out DayItem? prevDayItem))
-                {
-                    // DayTypeの優先度は HOLIDAY < SPECIALDAY1 < SPECIALDAY2 < SPECIALDAY3 とする
-                    if (dType < prevDayItem.DayType)
+                    string dateStr = csvLine[0];
+                    if (string.IsNullOrEmpty(dateStr))
                     {
-                        dType = prevDayItem.DayType;
+                        return;
                     }
-                    // 日付が重複する場合はラベルを結合する
-                    label = $"{prevDayItem.Label}\n{label}";
-                }
-                DayItem newDayItem = new(date.Day, dType, label);
-                _dateToDayItem.Add(date, newDayItem);
-            });
-
-            LastModified = DateTime.Now;
-        }
-
-        public void UpdateHolidays()
-        {
-            Task.Run(async () =>
-            {
-                await _holidayUpdaterService.UpdateAsync(status =>
-                {
-                    Application.Current.Dispatcher.Invoke
-                    //if (status == HolidayUpdaterStatus.IN_PROGRESS
+                    var date = DateOnly.Parse(dateStr);
+                    string label = csvLine[1];
+                    DayItem dayItem = new(date.Day, DayType.HOLIDAY, label);
+                    _dateToDayItem.Add(date, dayItem);
                 });
-            });
+
+                // 特別日の読み込み
+                SettingFiles.Specialdays.ReadCsvFile(csvLine =>
+                {
+                    string dateStr = csvLine[0];
+                    if (string.IsNullOrEmpty(dateStr))
+                    {
+                        return;
+                    }
+                    var date = DateOnly.Parse(dateStr);
+                    string dTypeStr = csvLine[1];
+                    DayType dType = Enum.Parse<DayType>(dTypeStr);
+                    string label = csvLine[2];
+                    if (_dateToDayItem.TryGetValue(date, out DayItem? prevDayItem))
+                    {
+                        // DayTypeの優先度は HOLIDAY < SPECIALDAY1 < SPECIALDAY2 < SPECIALDAY3 とする
+                        if (dType < prevDayItem.DayType)
+                        {
+                            dType = prevDayItem.DayType;
+                        }
+                        // 日付が重複する場合はラベルを結合する
+                        label = $"{prevDayItem.Label}\n{label}";
+                    }
+                    DayItem newDayItem = new(date.Day, dType, label);
+                    _dateToDayItem.Add(date, newDayItem);
+                });
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+            if (dispatcher != null)
+            {
+                dispatcher.BeginInvoke(() => LastModified = DateTime.Now);
+            }
+            else
+            {
+                LastModified = DateTime.Now;
+            }
         }
 
+        public async Task<HolidayUpdaterStatus> UpdateHolidays(Dispatcher? dispatcher, StatusChanged statusChanged)
+        {
+            HolidayUpdaterStatus result = await _holidayUpdaterService.UpdateAsync(statusChanged).ConfigureAwait(false);
+            if (result != HolidayUpdaterStatus.DOWNLOADED) { return result; }
+            await Task.Run(() => LoadSettings(dispatcher)).ConfigureAwait(false);
+            await statusChanged(HolidayUpdaterStatus.UPDATED).ConfigureAwait(false);
+            return HolidayUpdaterStatus.UPDATED;
+        }
 
         public DayItem GetDayItem(int year, int month, int day, int dow)
         {
             var date = new DateOnly(year, month, day);
-            return _dateToDayItem.TryGetValue(date, out DayItem? dayItem) ? dayItem : new DayItem(day, (DayType)dow);
+            DayItem? dayItem;
+            try
+            {
+                _lock.EnterReadLock();
+                _dateToDayItem.TryGetValue(date, out dayItem);
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+            return dayItem ?? new DayItem(day, (DayType)dow);
         }
     }
 }

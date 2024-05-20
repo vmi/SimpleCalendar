@@ -4,8 +4,10 @@ using SimpleCalendar.WPF.Models;
 
 namespace SimpleCalendar.WPF.ViewModels
 {
-    public partial class CurrentMonthViewModel : ObservableObject
+    public partial class MainWindowViewModel : ObservableObject
     {
+        public readonly SettingsViewModel SettingsViewModel;
+
         private DateOnly _today;
 
         public DateOnly Today { get => _today; private set => SetProperty(ref _today, value); }
@@ -19,10 +21,11 @@ namespace SimpleCalendar.WPF.ViewModels
         [ObservableProperty]
         private int _columnCount;
 
-        public CurrentMonthViewModel()
+        public MainWindowViewModel(SettingsViewModel settingsViewModel)
         {
             Today = DateOnly.FromDateTime(DateTime.Now);
             BaseYearMonth = new(Today);
+            SettingsViewModel = settingsViewModel;
         }
 
         [RelayCommand]

@@ -8,7 +8,7 @@ namespace SimpleCalendar.WPF.ViewModels
     {
         private readonly DaysOfMonthModel _daysOfMonthModel;
 
-        public CurrentMonthViewModel CurrentMonth { get; init; }
+        public MainWindowViewModel CurrentMonth { get; init; }
 
         public DayLabelStyleSettingViewModel DayLabelStyleSetting { get; init; }
 
@@ -26,7 +26,7 @@ namespace SimpleCalendar.WPF.ViewModels
 
         private void CurrentMonth_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (sender is CurrentMonthViewModel curMonth)
+            if (sender is MainWindowViewModel curMonth)
             {
                 switch (e.PropertyName)
                 {
@@ -47,7 +47,7 @@ namespace SimpleCalendar.WPF.ViewModels
             OnPropertyChanged(nameof(DaysMatrix));
         }
 
-        public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthModel, CurrentMonthViewModel currentMonth, DayLabelStyleSettingViewModel dayLabelStyleSetting)
+        public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthModel, MainWindowViewModel currentMonth, DayLabelStyleSettingViewModel dayLabelStyleSetting)
         {
             _daysOfMonthModel = daysOfMonthModel;
             CurrentMonth = currentMonth;

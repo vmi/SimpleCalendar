@@ -11,8 +11,8 @@
         WindowStyle="None"
         ResizeMode="CanMinimize"
         SizeToContent="WidthAndHeight"
-        d:DataContext="{d:DesignInstance Type=viewmodel:CurrentMonthViewModel}"
-        helper:DataContextHelper.DataContext="{x:Type viewmodel:CurrentMonthViewModel}"
+        d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
+        helper:DataContextHelper.DataContext="{x:Type viewmodel:MainWindowViewModel}"
         Icon="/Images/icon256.png">
     <Window.Resources>
         <ResourceDictionary Source="MainWindowStyles.xaml" />
