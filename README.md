@@ -166,6 +166,14 @@ C# の依存性注入 (DI/Dependency Injection)
     * Taskを直接待つ(Wait/Result)のは、処理がブロックされるので禁止。(⇒ よくある誤り)
     * 「サービスは UI 非依存なので、待機のたびに ConfigureAwait(false) を使用します」(`ConfigureAwait(false)` is 何?)
 * [初心者のためのTask.Run(), async/awaitの使い方](https://qiita.com/inew/items/0126270bca99883605de)
+* [asyncの落とし穴Part3, async voidを避けるべき100億の理由](https://neue.cc/2013/10/10_429.html)
+* [ReaderWriterLockSlimクラス](https://so-zou.jp/software/tech/programming/c-sharp/thread/reader-writer-lock-slim.htm)
+    * [ReaderWriterLockクラス](https://so-zou.jp/software/tech/programming/c-sharp/thread/reader-writer-lock.htm)
+        * 『特段の理由がなければReaderWriterLockSlimクラスを使用します。』
+    * [ReaderWriterLockSlim and async\\await](https://stackoverflow.com/questions/19659387/readerwriterlockslim-and-async-await)
+        * `ReaderWriterLockSlim`でロックを取得している間に`await`してはいけない。`ReaderWriterLockSlim`は現在のスレッドに依存しているので、await後別スレッドになってしまうと壊れる。`ConfigureAwait(true)`すれば問題ないかも?(未検証)
+* [Async/Await - 非同期プログラミングのベスト プラクティス](https://learn.microsoft.com/ja-jp/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming)
+    * `ConfigureAwait(false)`を使うと、`await`前後でコンテキストが維持されない = 元のスレッドに戻るとは限らない → `await`前後でViewの操作を行うと壊れる (UI非依存ならば問題ない)
 
 設定ファイルの扱い
 ------------------
