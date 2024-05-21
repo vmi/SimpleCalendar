@@ -69,7 +69,7 @@ namespace SimpleCalendar.WPF.Models
                         label = $"{prevDayItem.Label}\n{label}";
                     }
                     DayItem newDayItem = new(date.Day, dType, label);
-                    _dateToDayItem.Add(date, newDayItem);
+                    _dateToDayItem[date] = newDayItem;
                 });
             }
             finally

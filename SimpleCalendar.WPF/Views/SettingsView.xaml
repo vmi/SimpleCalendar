@@ -60,7 +60,7 @@
         </ListView>
 
         <Button Grid.Row="2" Grid.Column="0" Content="設定フォルダを開く" Click="OpenSettingsFolder_Click"/>
-        <Button Grid.Row="2" Grid.Column="1" Content="設定ファイル再読み込み"/>
+        <Button Grid.Row="2" Grid.Column="1" Content="設定ファイル再読み込み" Command="{Binding ReloadSettingsCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
         <Button Grid.Row="2" Grid.Column="2" Content="祝日情報最新化" Command="{Binding UpdateHolidaysCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
         <Button Grid.Row="2" Grid.Column="3" Content="閉じる" Click="Close_Click" />
     </Grid>

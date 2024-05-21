@@ -1,8 +1,26 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace SimpleCalendar.WPF.Models
 {
-    public class DaysOfMonthModel(DayItemInformationModel dayIteminformationModel)
+    public partial class DaysOfMonthModel : ObservableObject
     {
+        private readonly DayItemInformationModel _dayIteminformationModel;
         private readonly Dictionary<int, Dictionary<int, DaysMatrix>> _daysCache = [];
+
+        [ObservableProperty]
+        private DateTime _lastModified = DateTime.MinValue;
+
+        public DaysOfMonthModel(DayItemInformationModel dayIteminformationModel)
+        {
+            _dayIteminformationModel = dayIteminformationModel;
+            _dayIteminformationModel.PropertyChanged += DayIteminformationModel_PropertyChanged;
+        }
+
+        private void DayIteminformationModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            _daysCache.Clear();
+            LastModified = DateTime.Now;
+        }
 
         public DaysMatrix GetDaysMatrix(YearMonth yearMonth)
         {
@@ -36,7 +54,7 @@ namespace SimpleCalendar.WPF.Models
                     day++;
                     if (1 <= day && day <= daysInMonth)
                     {
-                        dm[w, dow] = dayIteminformationModel.GetDayItem(year, month, day, dow);
+                        dm[w, dow] = _dayIteminformationModel.GetDayItem(year, month, day, dow);
                     }
                     else
                     {

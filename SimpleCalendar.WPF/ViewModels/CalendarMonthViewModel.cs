@@ -19,7 +19,25 @@ namespace SimpleCalendar.WPF.ViewModels
 
         public DaysMatrix DaysMatrix { get; private set; }
 
-        partial void OnOffsetChanged(int oldValue, int newValue)
+        public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthModel, MainWindowViewModel currentMonth, DayLabelStyleSettingViewModel dayLabelStyleSetting)
+        {
+            _daysOfMonthModel = daysOfMonthModel;
+            _daysOfMonthModel.PropertyChanged += DaysOfMonthModel_PropertyChanged;
+
+            CurrentMonth = currentMonth;
+            CurrentMonth.PropertyChanged += CurrentMonth_PropertyChanged;
+
+            DayLabelStyleSetting = dayLabelStyleSetting;
+
+            YearMonth = currentMonth.BaseYearMonth;
+            _offset = 0;
+            DaysMatrix = daysOfMonthModel.GetDaysMatrix(YearMonth);
+            OnPropertyChanged(nameof(YearMonth));
+            OnPropertyChanged(nameof(Offset));
+            OnPropertyChanged(nameof(DaysMatrix));
+        }
+
+        private void DaysOfMonthModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             UpdateDerivedProperties(CurrentMonth.BaseYearMonth);
         }
@@ -39,26 +57,16 @@ namespace SimpleCalendar.WPF.ViewModels
             }
         }
 
+        partial void OnOffsetChanged(int oldValue, int newValue)
+        {
+            UpdateDerivedProperties(CurrentMonth.BaseYearMonth);
+        }
+
         private void UpdateDerivedProperties(YearMonth baseYearMonth)
         {
             YearMonth = baseYearMonth.AddMonths(Offset);
             DaysMatrix = _daysOfMonthModel.GetDaysMatrix(YearMonth);
             OnPropertyChanged(nameof(YearMonth));
-            OnPropertyChanged(nameof(DaysMatrix));
-        }
-
-        public CalendarMonthViewModel(DaysOfMonthModel daysOfMonthModel, MainWindowViewModel currentMonth, DayLabelStyleSettingViewModel dayLabelStyleSetting)
-        {
-            _daysOfMonthModel = daysOfMonthModel;
-            CurrentMonth = currentMonth;
-            DayLabelStyleSetting = dayLabelStyleSetting;
-
-            CurrentMonth.PropertyChanged += CurrentMonth_PropertyChanged;
-            YearMonth = currentMonth.BaseYearMonth;
-            _offset = 0;
-            DaysMatrix = daysOfMonthModel.GetDaysMatrix(YearMonth);
-            OnPropertyChanged(nameof(YearMonth));
-            OnPropertyChanged(nameof(Offset));
             OnPropertyChanged(nameof(DaysMatrix));
         }
     }

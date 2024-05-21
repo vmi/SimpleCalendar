@@ -25,6 +25,8 @@ namespace SimpleCalendar.WPF.Services
         private readonly string _settingPath;
         private readonly string _headerPath;
 
+        private readonly SemaphoreSlim _semaphore = new(1);
+
         public delegate Task StatusChanged(HolidayUpdaterStatus status, params object[] args);
 
         public HolidayUpdaterService()
@@ -39,10 +41,7 @@ namespace SimpleCalendar.WPF.Services
             bool locked = false;
             try
             {
-                // 下記の記述の場合、ロックを獲得できたときは確実にlockedがtrueになる。
-                // 「locked = Monitor.TryEnter(this)」の場合、ロックは獲得できたがlockedへの
-                // 代入が完了する前にスレッドがアボートするとロックが開放されない可能性がある。(←ほんとに?)
-                Monitor.TryEnter(this, ref locked);
+                locked = await _semaphore.WaitAsync(0);
                 if (!locked) { return HolidayUpdaterStatus.IN_PROGRESS; }
                 await statusChanged(HolidayUpdaterStatus.IN_PROGRESS).ConfigureAwait(false);
                 // ローカルに保存された最終更新日を取得
@@ -107,7 +106,7 @@ namespace SimpleCalendar.WPF.Services
             {
                 if (locked)
                 {
-                    Monitor.Exit(this);
+                    _semaphore.Release();
                 }
             }
         }

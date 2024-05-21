@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using SimpleCalendar.WPF.Utilities;
 
@@ -19,7 +20,7 @@ namespace SimpleCalendar.WPF.Views
             using Process process = new();
             ProcessStartInfo startInfo = process.StartInfo;
             startInfo.UseShellExecute = true;
-            startInfo.FileName = SettingFiles.UserSettingBaseDir;
+            startInfo.FileName = Path.Combine(SettingFiles.UserSettingBaseDir, SettingFiles.AppName);
             process.Start();
         }
 
