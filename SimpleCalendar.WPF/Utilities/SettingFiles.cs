@@ -41,6 +41,12 @@ namespace SimpleCalendar.WPF.Utilities
         private readonly bool _isLocal;
         private readonly string _filename;
         private readonly Dictionary<string, string> _extFilenameDict = [];
+        private bool _isInitialized = false;
+
+        public string SettingDir => Path.Combine(_isLocal ? LocalSettingBaseDir : UserSettingBaseDir, AppName);
+        private static string ContentDir => Path.Combine(AppBaseDir, "Contents");
+        public string SettingPath => Path.Combine(SettingDir, _filename);
+        public string ExtPath(string key) => Path.Combine(SettingDir, _extFilenameDict[key]);
 
         public SettingFiles(bool isLocal, string filename, List<(string, string)>? extFilenameList = null)
         {
@@ -54,13 +60,6 @@ namespace SimpleCalendar.WPF.Utilities
                 }
             }
         }
-
-        private bool _isInitialized = false;
-
-        public string SettingDir => Path.Combine(_isLocal ? LocalSettingBaseDir : UserSettingBaseDir, AppName);
-        private static string ContentDir => Path.Combine(AppBaseDir, "Contents");
-        public string SettingPath => Path.Combine(SettingDir, _filename);
-        public string ExtPath(string key) => Path.Combine(SettingDir, _extFilenameDict[key]);
 
         private void copyDefaultFile(string filename)
         {

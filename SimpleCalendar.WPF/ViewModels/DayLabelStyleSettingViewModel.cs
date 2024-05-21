@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.WPF.ViewModels
@@ -66,8 +65,7 @@ namespace SimpleCalendar.WPF.ViewModels
             }
         }
 
-        [RelayCommand]
-        private void LoadSetting()
+        public void LoadSetting()
         {
             SettingFiles.Styles.ReadCsvFile(csvLine =>
             {

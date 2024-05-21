@@ -1,4 +1,3 @@
-using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SimpleCalendar.WPF.Services;
 using SimpleCalendar.WPF.Utilities;
@@ -23,7 +22,7 @@ namespace SimpleCalendar.WPF.Models
             LoadSettings();
         }
 
-        public void LoadSettings(Dispatcher? dispatcher = null)
+        public void LoadSettings()
         {
             try
             {
@@ -76,21 +75,14 @@ namespace SimpleCalendar.WPF.Models
             {
                 _lock.ExitWriteLock();
             }
-            if (dispatcher != null)
-            {
-                dispatcher.BeginInvoke(() => LastModified = DateTime.Now);
-            }
-            else
-            {
-                LastModified = DateTime.Now;
-            }
+            LastModified = DateTime.Now;
         }
 
-        public async Task<HolidayUpdaterStatus> UpdateHolidays(Dispatcher? dispatcher, StatusChanged statusChanged)
+        public async Task<HolidayUpdaterStatus> UpdateHolidays(StatusChanged statusChanged)
         {
             HolidayUpdaterStatus result = await _holidayUpdaterService.UpdateAsync(statusChanged).ConfigureAwait(false);
             if (result != HolidayUpdaterStatus.DOWNLOADED) { return result; }
-            await Task.Run(() => LoadSettings(dispatcher)).ConfigureAwait(false);
+            LoadSettings();
             await statusChanged(HolidayUpdaterStatus.UPDATED).ConfigureAwait(false);
             return HolidayUpdaterStatus.UPDATED;
         }

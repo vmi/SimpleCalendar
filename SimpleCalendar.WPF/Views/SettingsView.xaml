@@ -48,7 +48,8 @@
                   Grid.ColumnSpan="4"
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   VirtualizingPanel.IsVirtualizing="True"
-                  ItemsSource="{Binding LogEntries}">
+                  ItemsSource="{Binding LogEntries}"
+                  Name="LogListView">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" />
             </ListView.ItemContainerStyle>

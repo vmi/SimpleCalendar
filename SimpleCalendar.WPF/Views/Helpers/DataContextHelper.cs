@@ -1,4 +1,6 @@
+using System.Reflection;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace SimpleCalendar.WPF.Views.Helpers
 {
@@ -17,7 +19,15 @@ namespace SimpleCalendar.WPF.Views.Helpers
         {
             if (d is FrameworkElement fe && e.NewValue is Type type)
             {
-                if ((fe.DataContext = ServiceRegistry.GetService(type)) == null)
+                var dc = fe.DataContext = ServiceRegistry.GetService(type);
+                if (dc != null)
+                {
+                    if (dc.GetType().GetProperty("Dispatcher") is PropertyInfo propertyInfo && propertyInfo.PropertyType == typeof(Dispatcher))
+                    {
+                        propertyInfo.SetValue(dc, fe.Dispatcher);
+                    }
+                }
+                else
                 {
                     throw new ArgumentException($"Failed to get instance of type {type}");
                 }

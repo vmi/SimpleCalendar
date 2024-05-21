@@ -14,26 +14,46 @@ namespace SimpleCalendar.WPF.ViewModels
         public string Text { get => $"[{DateTime.ToString(DateTimeFormat)}] {Message}"; }
     }
 
-    public partial class SettingsViewModel(DayItemInformationModel dayItemInformationModel)
+    public partial class SettingsViewModel
     {
-        private DayItemInformationModel _dayItemInformationModel = dayItemInformationModel;
+        private DayItemInformationModel _dayItemInformationModel;
+        private DayLabelStyleSettingViewModel _dayLabelStyleSettingModel;
+
+        public Dispatcher? Dispatcher { get; set; } = null;
 
         public ObservableCollection<LogEntry> LogEntries { get; } = [];
+
+        public SettingsViewModel(DayItemInformationModel dayItemInformationModel, DayLabelStyleSettingViewModel dayLabelStyleSettingViewModel)
+        {
+            _dayItemInformationModel = dayItemInformationModel;
+            _dayLabelStyleSettingModel = dayLabelStyleSettingViewModel;
+        }
 
         public void Log(string message)
         {
             var entry = new LogEntry(DateTime.Now, message);
-            LogEntries.Add(entry);
+            if (Dispatcher != null)
+            {
+                Dispatcher.Invoke(() => LogEntries.Add(entry));
+            }
+            else
+            {
+                LogEntries.Add(entry);
+            }
         }
 
         [RelayCommand]
         private async Task ReloadSettings(object sender)
         {
-            Dispatcher? dispatcher = (sender as DispatcherObject)?.Dispatcher;
-            await Task.Run(() => _dayItemInformationModel.LoadSettings(dispatcher));
+            await Task.Run(() =>
+            {
+                _dayItemInformationModel.LoadSettings();
+                _dayLabelStyleSettingModel.LoadSetting();
+                Log("設定ファイルを再読み込みしました");
+            });
         }
 
-        private void statusChanged(HolidayUpdaterStatus status, params object[] args)
+        private Task statusChanged(HolidayUpdaterStatus status, params object[] args)
         {
             switch (status)
             {
@@ -52,26 +72,16 @@ namespace SimpleCalendar.WPF.ViewModels
                     break;
                 case Services.HolidayUpdaterStatus.ERROR:
                     HttpStatusCode statusCode = (HttpStatusCode)args[0];
-                    Log($"祝日ファイルの取得に失敗しました (ステータスコード: {statusCode.ToString()})");
+                    Log($"祝日ファイルの取得に失敗しました (ステータスコード: {statusCode})");
                     break;
             }
+            return Task.CompletedTask;
         }
 
         [RelayCommand]
         private async Task UpdateHolidays(object sender)
         {
-            Dispatcher? dispatcher = (sender as DispatcherObject)?.Dispatcher;
-            await _dayItemInformationModel.UpdateHolidays(dispatcher, async (status, args) =>
-            {
-                if (dispatcher != null)
-                {
-                    await dispatcher.InvokeAsync(() => statusChanged(status, args));
-                }
-                else
-                {
-                    statusChanged(status, args);
-                }
-            });
+            await _dayItemInformationModel.UpdateHolidays(statusChanged);
         }
     }
 }

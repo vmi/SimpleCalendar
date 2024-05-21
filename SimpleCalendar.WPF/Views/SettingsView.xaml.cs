@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -13,6 +15,19 @@ namespace SimpleCalendar.WPF.Views
         public SettingsView()
         {
             InitializeComponent();
+            if (LogListView.ItemsSource is INotifyCollectionChanged notify)
+            {
+                notify.CollectionChanged += LogListView_CollectionChanged;
+            }
+        }
+
+        private void LogListView_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems is IList newItems)
+            {
+                object item = newItems[newItems.Count - 1]!;
+                LogListView.ScrollIntoView(item);
+            }
         }
 
         private void OpenSettingsFolder_Click(object sender, RoutedEventArgs e)
