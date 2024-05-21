@@ -174,6 +174,7 @@ C# の依存性注入 (DI/Dependency Injection)
         * `ReaderWriterLockSlim`でロックを取得している間に`await`してはいけない。`ReaderWriterLockSlim`は現在のスレッドに依存しているので、await後別スレッドになってしまうと壊れる。`ConfigureAwait(true)`すれば問題ないかも?(未検証)
 * [Async/Await - 非同期プログラミングのベスト プラクティス](https://learn.microsoft.com/ja-jp/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming)
     * `ConfigureAwait(false)`を使うと、`await`前後でコンテキストが維持されない = 元のスレッドに戻るとは限らない → `await`前後でViewの操作を行うと壊れる (UI非依存ならば問題ない)
+[バインドしてるObservableCollectionを非UIスレッドから操作する](https://sourcechord.hatenablog.com/entry/2014/02/02/153725)
 
 設定ファイルの扱い
 ------------------

@@ -130,4 +130,10 @@
 
 * https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv のEtag、中身変わってないのに値が変わることがあるのは何でなん……。あと「If-Modified-Since」も見てないっぽい。
 
+2024-05-21
+----------
+
+* WPFのデータバインディングでは、プロパティの更新をUIスレッドで行う必要はない?
+    * ない。参考: [バインドしてるObservableCollectionを非UIスレッドから操作する](https://sourcechord.hatenablog.com/entry/2014/02/02/153725)
+
 以上
