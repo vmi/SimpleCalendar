@@ -1,9 +1,10 @@
 using System.Collections.ObjectModel;
-using System.Net;
-using System.Windows.Threading;
+using System.IO;
+using System.Windows.Data;
 using CommunityToolkit.Mvvm.Input;
 using SimpleCalendar.WPF.Models;
 using SimpleCalendar.WPF.Services;
+using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.WPF.ViewModels
 {
@@ -18,38 +19,44 @@ namespace SimpleCalendar.WPF.ViewModels
     {
         private DayItemInformationModel _dayItemInformationModel;
         private DayLabelStyleSettingViewModel _dayLabelStyleSettingModel;
-
-        public Dispatcher? Dispatcher { get; set; } = null;
+        private readonly FileSystemWatcher _watcher;
+        private int _reloadCount = 0;
 
         public ObservableCollection<LogEntry> LogEntries { get; } = [];
 
         public SettingsViewModel(DayItemInformationModel dayItemInformationModel, DayLabelStyleSettingViewModel dayLabelStyleSettingViewModel)
         {
+            BindingOperations.EnableCollectionSynchronization(LogEntries, new object());
             _dayItemInformationModel = dayItemInformationModel;
             _dayLabelStyleSettingModel = dayLabelStyleSettingViewModel;
+            _watcher = new FileSystemWatcher(Path.Combine(SettingFiles.UserSettingBaseDir, SettingFiles.AppName));
+            _watcher.Filters.Add(SettingFiles.Holidays.SettingFilename);
+            _watcher.Filters.Add(SettingFiles.Specialdays.SettingFilename);
+            _watcher.Filters.Add(SettingFiles.Styles.SettingFilename);
+            _watcher.NotifyFilter = NotifyFilters.LastWrite;
+            _watcher.Changed += SettingFiles_Changed;
+            _watcher.EnableRaisingEvents = true;
         }
 
         public void Log(string message)
         {
             var entry = new LogEntry(DateTime.Now, message);
-            if (Dispatcher != null)
-            {
-                Dispatcher.Invoke(() => LogEntries.Add(entry));
-            }
-            else
-            {
-                LogEntries.Add(entry);
-            }
+            LogEntries.Add(entry);
         }
 
-        [RelayCommand]
-        private async Task ReloadSettings(object sender)
+        private void SettingFiles_Changed(object sender, FileSystemEventArgs e)
         {
-            await Task.Run(() =>
+            if (e.ChangeType != WatcherChangeTypes.Changed) return;
+            // ファイル更新を認識してから1秒以内の更新は1つにまとめる
+            int c = Interlocked.Increment(ref _reloadCount);
+            Task.Delay(1000).ContinueWith(task =>
             {
-                _dayItemInformationModel.LoadSettings();
-                _dayLabelStyleSettingModel.LoadSetting();
-                Log("設定ファイルを再読み込みしました");
+                if (c == _reloadCount)
+                {
+                    _dayItemInformationModel.LoadSettings();
+                    _dayLabelStyleSettingModel.LoadSetting();
+                    Log($"設定ファイルを再読み込みしました");
+                }
             });
         }
 
@@ -67,12 +74,9 @@ namespace SimpleCalendar.WPF.ViewModels
                 case Services.HolidayUpdaterStatus.DOWNLOADED:
                     Log("祝日ファイルを最新化しました");
                     break;
-                case Services.HolidayUpdaterStatus.UPDATED:
-                    Log("祝日ファイルを再読み込みしました");
-                    break;
                 case Services.HolidayUpdaterStatus.ERROR:
-                    HttpStatusCode statusCode = (HttpStatusCode)args[0];
-                    Log($"祝日ファイルの取得に失敗しました (ステータスコード: {statusCode})");
+                    var error = args.Length >= 1 ? $" (エラー情報: {args[0]})" : "";
+                    Log($"祝日ファイルの取得に失敗しました{error}");
                     break;
             }
             return Task.CompletedTask;

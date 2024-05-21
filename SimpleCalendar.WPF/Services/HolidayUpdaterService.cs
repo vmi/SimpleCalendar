@@ -11,7 +11,6 @@ namespace SimpleCalendar.WPF.Services
         IN_PROGRESS,
         NO_UPDATE_REQUIRED,
         DOWNLOADED,
-        UPDATED,
         ERROR,
     }
 
@@ -99,7 +98,7 @@ namespace SimpleCalendar.WPF.Services
             catch (Exception e)
             {
                 Debug.WriteLine(e);
-                await statusChanged(HolidayUpdaterStatus.ERROR).ConfigureAwait(false);
+                await statusChanged(HolidayUpdaterStatus.ERROR, e).ConfigureAwait(false);
                 return HolidayUpdaterStatus.ERROR;
             }
             finally

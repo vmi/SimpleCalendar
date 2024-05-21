@@ -80,11 +80,7 @@ namespace SimpleCalendar.WPF.Models
 
         public async Task<HolidayUpdaterStatus> UpdateHolidays(StatusChanged statusChanged)
         {
-            HolidayUpdaterStatus result = await _holidayUpdaterService.UpdateAsync(statusChanged).ConfigureAwait(false);
-            if (result != HolidayUpdaterStatus.DOWNLOADED) { return result; }
-            LoadSettings();
-            await statusChanged(HolidayUpdaterStatus.UPDATED).ConfigureAwait(false);
-            return HolidayUpdaterStatus.UPDATED;
+            return await _holidayUpdaterService.UpdateAsync(statusChanged).ConfigureAwait(false);
         }
 
         public DayItem GetDayItem(int year, int month, int day, int dow)

@@ -40,12 +40,11 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="ログメッセージ" />
         <ListView Grid.Row="1"
                   Grid.Column="0"
-                  Grid.ColumnSpan="4"
+                  Grid.ColumnSpan="3"
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   VirtualizingPanel.IsVirtualizing="True"
                   ItemsSource="{Binding LogEntries}"
@@ -61,8 +60,7 @@
         </ListView>
 
         <Button Grid.Row="2" Grid.Column="0" Content="設定フォルダを開く" Click="OpenSettingsFolder_Click"/>
-        <Button Grid.Row="2" Grid.Column="1" Content="設定ファイル再読み込み" Command="{Binding ReloadSettingsCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
-        <Button Grid.Row="2" Grid.Column="2" Content="祝日情報最新化" Command="{Binding UpdateHolidaysCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
-        <Button Grid.Row="2" Grid.Column="3" Content="閉じる" Click="Close_Click" />
+        <Button Grid.Row="2" Grid.Column="1" Content="祝日情報最新化" Command="{Binding UpdateHolidaysCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+        <Button Grid.Row="2" Grid.Column="2" Content="閉じる" Click="Close_Click" />
     </Grid>
 </Window>

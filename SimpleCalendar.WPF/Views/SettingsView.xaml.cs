@@ -25,8 +25,11 @@ namespace SimpleCalendar.WPF.Views
         {
             if (e.NewItems is IList newItems)
             {
-                object item = newItems[newItems.Count - 1]!;
-                LogListView.ScrollIntoView(item);
+                Dispatcher.BeginInvoke(() =>
+                {
+                    object item = newItems[newItems.Count - 1]!;
+                    LogListView.ScrollIntoView(item);
+                });
             }
         }
 

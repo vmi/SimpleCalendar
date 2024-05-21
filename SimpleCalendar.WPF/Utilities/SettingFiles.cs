@@ -45,6 +45,8 @@ namespace SimpleCalendar.WPF.Utilities
 
         public string SettingDir => Path.Combine(_isLocal ? LocalSettingBaseDir : UserSettingBaseDir, AppName);
         private static string ContentDir => Path.Combine(AppBaseDir, "Contents");
+
+        public string SettingFilename => _filename;
         public string SettingPath => Path.Combine(SettingDir, _filename);
         public string ExtPath(string key) => Path.Combine(SettingDir, _extFilenameDict[key]);
 
