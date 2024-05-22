@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Help"
-        Height="450"
+        Height="600"
         Width="720">
     <Window.Resources>
         <ResourceDictionary>
@@ -52,18 +52,35 @@
                         <Paragraph>
                             <Bold>マウスボタンの右クリック:</Bold>
                             コンテクストメニューを表示します。</Paragraph>
+                        <List>
+                            <ListItem>
+                                <Paragraph>
+                                    <Bold>設定:</Bold>
+                                    設定画面を開きます。設定画面では、設定ファイルのフォルダを開く、祝日ファイルの最新化を実行することができます。</Paragraph>
+                            </ListItem>
+                            <ListItem>
+                                <Paragraph>
+                                    <Bold>ヘルプ:</Bold>
+                                    ヘルプウィンドウ(この画面)を開きます。</Paragraph>
+                            </ListItem>
+                            <ListItem>
+                                <Paragraph>
+                                    <Bold>終了:</Bold>
+                                    本アプリケーションを終了します。</Paragraph>
+                            </ListItem>
+                        </List>
                     </ListItem>
                     <ListItem>
                         <Paragraph>
                             <Bold>通知領域アイコンのクリック:</Bold>
-                            クリックする度に、表示と非表示が切り替わります。</Paragraph>
+                            クリックする度に、カレンダーウィンドウの表示と非表示が切り替わります。</Paragraph>
                     </ListItem>
                 </List>
             </Section>
             <Section>
                 <Paragraph Style="{StaticResource h1}">設定ファイル</Paragraph>
                 <Paragraph>
-                    %APPDATA%\SimpleCalender.WPF\ フォルダに以下の設定ファイルが格納されます。
+                    %APPDATA%\SimpleCalender.WPF\ フォルダに以下の設定ファイルが格納されます。設定ファイルを更新すると、自動で再読み込みします。
                 </Paragraph>
                 <List>
                     <ListItem>
@@ -79,7 +96,7 @@
                     <ListItem>
                         <Paragraph>
                             <Bold>syukujitsu.csv:</Bold>
-                            日本の祝祭日です。最新化する場合は以下のURLから取得してください。</Paragraph>
+                            日本の祝日です。最新化する場合は設定画面の「<Bold>祝日情報最新化</Bold>」をクリックするか、以下のURLから取得してください。</Paragraph>
                         <List>
                             <ListItem>
                                 <Paragraph>https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html</Paragraph>
