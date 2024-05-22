@@ -96,6 +96,8 @@ Windowsプラットフォーム操作
     * [NotificationIcon サンプル](https://learn.microsoft.com/ja-jp/windows/win32/shell/samples-notificationicon)
         * [NotificationIcon.cpp](https://github.com/microsoft/Windows-classic-samples/blob/main/Samples/Win7Samples/winui/shell/appshellintegration/NotificationIcon/NotificationIcon.cpp)
             * 通知アイコン登録時、`Shell_NotifyIcon(NIM_ADD, &nid);` の実行後に `nid.uVersion = NOTIFYICON_VERSION_4;` を設定してから `Shell_NotifyIcon(NIM_SETVERSION, &nid);` を実行していることに注意。
+* [NOTIFYICONDATA - GUID problem](https://stackoverflow.com/questions/7432319/notifyicondata-guid-problem)
+    * 通知アイコン登録には、原則としてGUIDは使わない。(かなり限定的なユースケースでのみ使用可?)
 
 WPF/XAML
 --------
