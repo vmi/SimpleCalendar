@@ -18,7 +18,7 @@ namespace SimpleCalendar.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly Guid s_guid = Guid.Parse("{060F633E-8DB1-46D0-A1A4-9DCF5F9DB46C}");
+        private const uint NotificationIconId = 1;
 
         private const string ICON_NAME = "icon256.ico";
         private const uint WMAPP_NOTIFYCALLBACK = NotifyIconManager.WM_APP + 1;
@@ -30,6 +30,8 @@ namespace SimpleCalendar.WPF
 
         private Window? _help;
         private Window? _settingsView;
+
+        private bool _isNotificationIconAdded = false;
 
         public MainWindow()
         {
@@ -64,12 +66,12 @@ namespace SimpleCalendar.WPF
                 return;
             }
             nint hwnd = new WindowInteropHelper(this).Handle;
-            _notifyIconManager = new(hwnd, guid: s_guid);
+            _notifyIconManager = new(hwnd, id: NotificationIconId);
             _source = HwndSource.FromHwnd(hwnd);
             _sourceHook = new HwndSourceHook(WndProc);
             _source.AddHook(_sourceHook);
             _notifyIconManager.Select = NotifyIcon_Select;
-            _notifyIconManager.Add(icon, tip: "Simple Calendar", callbackMessage: WMAPP_NOTIFYCALLBACK);
+            _isNotificationIconAdded = _notifyIconManager.Add(icon, tip: "Simple Calendar", callbackMessage: WMAPP_NOTIFYCALLBACK);
         }
 
         private void NotifyIcon_Select(nint hwnd)
@@ -115,7 +117,7 @@ namespace SimpleCalendar.WPF
 
         private void MainWindow_StateChanged(object? sender, EventArgs e)
         {
-            if (WindowState == WindowState.Minimized)
+            if (WindowState == WindowState.Minimized && _isNotificationIconAdded)
             {
                 Hide();
             }
