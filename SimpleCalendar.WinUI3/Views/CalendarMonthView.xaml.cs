@@ -24,7 +24,7 @@ namespace SimpleCalendar.WinUI3.Views
 
         public CalendarMonthView()
         {
-            InitializeComponent();
+            //InitializeComponent();
         }
     }
 }

@@ -1,4 +1,5 @@
-using System.Windows;
+using System;
+using Microsoft.UI.Xaml;
 
 namespace SimpleCalendar.WinUI3.Views.Helpers
 {
@@ -10,7 +11,7 @@ namespace SimpleCalendar.WinUI3.Views.Helpers
             "DataContext",
             typeof(Type),
             typeof(DataContextHelper),
-            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.NotDataBindable, OnDataContextChanged)
+            PropertyMetadata.Create((object)null, OnDataContextChanged)
             );
 
         private static void OnDataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

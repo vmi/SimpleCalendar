@@ -1,6 +1,8 @@
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows.Data;
+using System.Threading;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using SimpleCalendar.WinUI3.Models;
 using SimpleCalendar.WinUI3.Services;
@@ -26,7 +28,7 @@ namespace SimpleCalendar.WinUI3.ViewModels
 
         public SettingsViewModel(DayItemInformationModel dayItemInformationModel, DayLabelStyleSettingViewModel dayLabelStyleSettingViewModel)
         {
-            BindingOperations.EnableCollectionSynchronization(LogEntries, new object());
+            //BindingOperations.EnableCollectionSynchronization(LogEntries, new object());
             _dayItemInformationModel = dayItemInformationModel;
             _dayLabelStyleSettingModel = dayLabelStyleSettingViewModel;
             _watcher = new FileSystemWatcher(Path.Combine(SettingFiles.UserSettingBaseDir, SettingFiles.AppName));

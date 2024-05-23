@@ -1,30 +1,36 @@
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
+using System.Linq;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace SimpleCalendar.WinUI3.Views.Helpers
 {
     public class GridHelper
     {
         public static Thickness GetMargin(DependencyObject obj) => (Thickness)obj.GetValue(MarginProperty);
-        public static void SetMargin(DependencyObject obj, Thickness value) { obj.SetValue(MarginProperty, value); obj.InvalidateProperty(MarginProperty); }
+        public static void SetMargin(DependencyObject obj, Thickness value) { obj.SetValue(MarginProperty, value); }
         public static readonly DependencyProperty MarginProperty = DependencyProperty.RegisterAttached(
             "Margin",
             typeof(Thickness),
             typeof(GridHelper),
-            new UIPropertyMetadata(new Thickness(), MarginChangedCallback));
+            PropertyMetadata.Create(new Thickness(), MarginChangedCallback));
 
         public static void MarginChangedCallback(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (sender is Grid grid)
             {
                 grid.Loaded += OnMarginPropertyChanged;
+                grid.
+                var metadata = MarginProperty.GetMetadata(typeof(Grid));
+                if (metadata != null)
+                {
+                    metadata.
+                }
                 var desc = DependencyPropertyDescriptor.FromProperty(MarginProperty, typeof(Grid));
                 desc.AddValueChanged(grid, OnMarginPropertyChanged);
             }
         }
 
-        private static void OnMarginPropertyChanged(object? sender, EventArgs e)
+        private static void OnMarginPropertyChanged(object? sender, RoutedEventArgs e)
         {
             if (sender is Grid grid)
             {

@@ -1,21 +1,31 @@
+using System;
+using System.ComponentModel;
 using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using SimpleCalendar.WinUI3.Models;
 using SimpleCalendar.WinUI3.ViewModels;
 
 namespace SimpleCalendar.WinUI3.Views.Controls
 {
-    public class DayLabel : Label
+    public partial class DayLabel : Control, INotifyPropertyChanged
     {
         public static readonly DependencyProperty DayItemProperty = DependencyProperty.Register(
             nameof(DayItem),
             typeof(DayItem),
             typeof(DayLabel),
-            new UIPropertyMetadata(OnDayItemPropertyChanged));
+            new PropertyMetadata(DayItem.EMPTY, OnDayItemPropertyChanged));
 
         public DayItem DayItem { get => (DayItem)GetValue(DayItemProperty); set => SetValue(DayItemProperty, value); }
+
+        public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(
+            nameof(Content),
+            typeof(string),
+            typeof(DayLabel),
+            PropertyMetadata.Create(""));
+
+        public string Content { get => (string)GetValue(ContentProperty); set => SetValue(ContentProperty, value); }
 
         private static void OnDayItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -31,79 +41,75 @@ namespace SimpleCalendar.WinUI3.Views.Controls
                 else
                 {
                     obj.ToolTip = dayItem.Label;
-                    ToolTipService.SetInitialShowDelay(obj, 0);
                 }
+                obj.IsToday_PropertyChanged();
             }
         }
 
-        private static readonly DependencyPropertyKey DayTypePropertyKey = DependencyProperty.RegisterReadOnly(
+        public static readonly DependencyProperty DayTypeProperty = DependencyProperty.Register(
             nameof(DayType),
             typeof(DayType),
             typeof(DayLabel),
-            new UIPropertyMetadata());
+            PropertyMetadata.Create(DayType.EMPTY));
 
-        public static readonly DependencyProperty DayTypeProperty = DayTypePropertyKey.DependencyProperty;
+        public DayType DayType { get => (DayType)GetValue(DayTypeProperty); private set => SetValue(DayTypeProperty, value); }
 
-        public DayType DayType { get => (DayType)GetValue(DayTypeProperty); private set => SetValue(DayTypePropertyKey, value); }
-
-        private static readonly DependencyPropertyKey IsDayTypeEmptyPropertyKey = DependencyProperty.RegisterReadOnly(
+        public static readonly DependencyProperty IsDayTypeEmptyProperty = DependencyProperty.Register(
             nameof(IsDayTypeEmpty),
             typeof(bool),
             typeof(DayLabel),
-            new UIPropertyMetadata());
+            PropertyMetadata.Create(true));
 
-        public static readonly DependencyProperty IsDayTypeEmptyProperty = IsDayTypeEmptyPropertyKey.DependencyProperty;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool IsDayTypeEmpty { get => (bool)GetValue(IsDayTypeEmptyProperty); private set => SetValue(IsDayTypeEmptyPropertyKey, value); }
+        public bool IsDayTypeEmpty { get => (bool)GetValue(IsDayTypeEmptyProperty); private set => SetValue(IsDayTypeEmptyProperty, value); }
 
-        public static readonly DependencyProperty IsTodayProperty = DependencyProperty.Register(
-            nameof(IsToday),
-            typeof(bool),
-            typeof(DayLabel),
-            new UIPropertyMetadata(false));
+        public bool IsToday { get => GetIsToday(); }
 
-        public bool IsToday { get => (bool)GetValue(IsTodayProperty); set => SetValue(IsTodayProperty, value); }
-
-        private class IsTodayConverter : IMultiValueConverter
+        private bool GetIsToday()
         {
-            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            if (DataContext is CalendarMonthViewModel calMon)
             {
-                if (values[0] is DateOnly today && values[1] is YearMonth yearMonth && values[2] is DayItem dayItem)
-                {
-                    return today.Year == yearMonth.Year && today.Month == yearMonth.Month && today.Day == dayItem.Day;
-                }
-                else
-                {
-                    return false;
-                }
+                MainWindowViewModel curMon = calMon.CurrentMonth;
+                var today = curMon.Today;
+                var yearMonth = calMon.YearMonth;
+                return today.Year == yearMonth.Year && today.Month == yearMonth.Month && today.Day == DayItem.Day;
             }
-
-            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+            else
             {
-                throw new NotImplementedException();
+                return false;
             }
         }
 
-        private readonly IsTodayConverter isTodayConverter = new();
+        public string ToolTip { get => (string)((ToolTip)ToolTipService.GetToolTip(this)).Content; set => ((ToolTip)ToolTipService.GetToolTip(this)).Content = value; }
 
         public DayLabel() : base()
         {
+            var toolTip = new ToolTip();
+            ToolTipService.SetToolTip(this, toolTip);
             Loaded += DayLabel_Loaded;
+        }
+
+        public void IsToday_PropertyChanged()
+        {
+            PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsToday)));
         }
 
         private void DayLabel_Loaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is CalendarMonthViewModel calMon)
             {
-                var multiBinding = new MultiBinding()
-                {
-                    Converter = isTodayConverter
-                };
                 MainWindowViewModel curMon = calMon.CurrentMonth;
-                multiBinding.Bindings.Add(new Binding("Today") { Source = curMon });
-                multiBinding.Bindings.Add(new Binding("YearMonth") { Source = calMon });
-                multiBinding.Bindings.Add(new Binding(nameof(DayItem)) { Source = this });
-                SetBinding(IsTodayProperty, multiBinding);
+                calMon.PropertyChanged += IsTodaySource_PropertyChanged;
+                curMon.PropertyChanged += IsTodaySource_PropertyChanged;
+            }
+        }
+
+        private void IsTodaySource_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (sender is DayLabel dayLabel)
+            {
+                dayLabel.IsToday_PropertyChanged();
             }
         }
     }
