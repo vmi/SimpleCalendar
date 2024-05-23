@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SimpleCalendar.WinUI3 (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "SimpleCalendar.WinUI3 (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
