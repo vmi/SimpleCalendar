@@ -1,0 +1,23 @@
+﻿種別,色設定(空=未設定),備考
+# 曜日,, 「#」で始まるセルはコメント。空行は無視される
+SUNDAY,Red,文字色
+MONDAY,,文字色
+TUESDAY,,文字色
+WEDNESDAY,,文字色
+THURSDAY,,文字色
+FRIDAY,,文字色
+SATURDAY,Blue,文字色
+,,
+# 祝祭日,,
+HOLIDAY,Magenta,文字色
+,,
+# 特別日,,
+SPECIALDAY1,OrangeRed,文字色
+SPECIALDAY2,OrangeRed,文字色
+SPECIALDAY3,OrangeRed,文字色
+,,
+# 本日,,
+TODAY,LightSkyBlue,背景色
+,,
+# マウスカーソル下の日,,
+MOUSEOVER,LightGreen,背景色

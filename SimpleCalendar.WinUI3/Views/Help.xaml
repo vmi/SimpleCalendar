@@ -1,0 +1,115 @@
+<Window x:Class="SimpleCalendar.WinUI3.Views.Help"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Help"
+        Height="600"
+        Width="720">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="FlowDocument">
+                <Style.Resources>
+                    <Style TargetType="Paragraph">
+                        <Setter Property="Margin" Value="0" />
+                    </Style>
+                    <Style TargetType="List">
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="Padding" Value="30,0,0,0" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+            <Style TargetType="Paragraph" x:Key="h1">
+                <Setter Property="Margin" Value="0,10" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="TextDecorations" Value="Underline" />
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <FlowDocumentScrollViewer OverridesDefaultStyle="False" Name="HelpViewer">
+        <FlowDocument FontSize="14" FontFamily="Yu Gothic">
+            <Section>
+                <Paragraph Style="{StaticResource h1}">Simple Calendar</Paragraph>
+                <Paragraph>
+                    1年分のカレンダーを表示するだけのシンプルなアプリケーションです。
+                </Paragraph>
+            </Section>
+            <Section>
+                <Paragraph Style="{StaticResource h1}">操作</Paragraph>
+                <List>
+                    <ListItem>
+                        <Paragraph>
+                            <Bold>カーソルキー, Page Up, Page Down:</Bold>
+                            表示年月を移動します。</Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Bold>Home:</Bold>
+                            表示年月を初期状態に戻します。(現在月が2行目の2列目に表示されます)</Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Bold>マウスボタンの右クリック:</Bold>
+                            コンテクストメニューを表示します。</Paragraph>
+                        <List>
+                            <ListItem>
+                                <Paragraph>
+                                    <Bold>設定:</Bold>
+                                    設定画面を開きます。設定画面では、設定ファイルのフォルダを開く、祝日ファイルの最新化を実行することができます。</Paragraph>
+                            </ListItem>
+                            <ListItem>
+                                <Paragraph>
+                                    <Bold>ヘルプ:</Bold>
+                                    ヘルプウィンドウ(この画面)を開きます。</Paragraph>
+                            </ListItem>
+                            <ListItem>
+                                <Paragraph>
+                                    <Bold>終了:</Bold>
+                                    本アプリケーションを終了します。</Paragraph>
+                            </ListItem>
+                        </List>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Bold>通知領域アイコンのクリック:</Bold>
+                            クリックする度に、カレンダーウィンドウの表示と非表示が切り替わります。</Paragraph>
+                    </ListItem>
+                </List>
+            </Section>
+            <Section>
+                <Paragraph Style="{StaticResource h1}">設定ファイル</Paragraph>
+                <Paragraph>
+                    %APPDATA%\SimpleCalender.WPF\ フォルダに以下の設定ファイルが格納されます。設定ファイルを更新すると、自動で再読み込みします。
+                </Paragraph>
+                <List>
+                    <ListItem>
+                        <Paragraph>
+                            <Bold>specialdays.csv:</Bold>
+                            カスタマイズ可能な特別日を設定できます。</Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Bold>styles.csv:</Bold>
+                            曜日毎の表示色を設定できます。</Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Bold>syukujitsu.csv:</Bold>
+                            日本の祝日です。最新化する場合は設定画面の「<Bold>祝日情報最新化</Bold>」をクリックするか、以下のURLから取得してください。</Paragraph>
+                        <List>
+                            <ListItem>
+                                <Paragraph>https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html</Paragraph>
+                                <List>
+                                    <ListItem>
+                                        <Paragraph>https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv</Paragraph>
+                                    </ListItem>
+                                </List>
+                            </ListItem>
+                        </List>
+                    </ListItem>
+                </List>
+            </Section>
+        </FlowDocument>
+    </FlowDocumentScrollViewer>
+</Window>

@@ -1,0 +1,88 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:control="clr-namespace:SimpleCalendar.WinUI3.Views.Controls">
+    <Style x:Key="CalendarLabelStyle" TargetType="Label">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="DayLabel" TargetType="Label">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="6,0" />
+    </Style>
+    <Style x:Key="Month" TargetType="Grid">
+        <Style.Resources>
+            <Style TargetType="control:DayOfWeekLabel" BasedOn="{StaticResource DayLabel}">
+                <Style.Triggers>
+                    <Trigger Property="DayOfWeek" Value="SUNDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.SundayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayOfWeek" Value="MONDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.MondayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayOfWeek" Value="TUESDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.TuesdayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayOfWeek" Value="WEDNESDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.WednesdayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayOfWeek" Value="THURSDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.ThursdayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayOfWeek" Value="FRIDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.FridayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayOfWeek" Value="SATURDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.SaturdayBrush}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="control:DayLabel" BasedOn="{StaticResource DayLabel}">
+                <Style.Triggers>
+                    <Trigger Property="DayType" Value="SUNDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.SundayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayType" Value="MONDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.MondayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayType" Value="TUESDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.TuesdayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayType" Value="WEDNESDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.WednesdayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayType" Value="THURSDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.ThursdayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayType" Value="FRIDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.FridayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayType" Value="SATURDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.SaturdayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayType" Value="HOLIDAY">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.HolidayBrush}" />
+                    </Trigger>
+                    <Trigger Property="DayType" Value="SPECIALDAY1">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.Specialday1Brush}" />
+                    </Trigger>
+                    <Trigger Property="DayType" Value="SPECIALDAY2">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.Specialday2Brush}" />
+                    </Trigger>
+                    <Trigger Property="DayType" Value="SPECIALDAY3">
+                        <Setter Property="Foreground" Value="{Binding DayLabelStyleSetting.Specialday3Brush}" />
+                    </Trigger>
+                    <Trigger Property="IsToday" Value="True">
+                        <Setter Property="Background" Value="{Binding DayLabelStyleSetting.TodayBrush}" />
+                    </Trigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver" Value="True" />
+                            <Condition Property="IsDayTypeEmpty" Value="False" />
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Background" Value="{Binding DayLabelStyleSetting.MouseOverBrush}" />
+                    </MultiTrigger>
+                </Style.Triggers>
+            </Style>
+        </Style.Resources>
+    </Style>
+</ResourceDictionary>
