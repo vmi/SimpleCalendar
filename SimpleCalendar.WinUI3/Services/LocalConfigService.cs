@@ -82,7 +82,7 @@ namespace SimpleCalendar.WinUI3.Services
             }
         }
 
-        public void Load(Action<LocalConfigEntry>? handler = null)
+        public void Load(Action<LocalConfigEntry> handler = null)
         {
             lock (this)
             {
@@ -113,7 +113,7 @@ namespace SimpleCalendar.WinUI3.Services
                             goto case 3;
                     }
                 });
-                if (handler != null && _configs.TryGetValue(GenKey(), out LocalConfigEntry? entry))
+                if (handler != null && _configs.TryGetValue(GenKey(), out LocalConfigEntry entry))
                 {
                     handler.Invoke(entry);
                 }
@@ -123,7 +123,7 @@ namespace SimpleCalendar.WinUI3.Services
 
         private IEnumerable<string[]> generateEntries()
         {
-            foreach ((string? key, LocalConfigEntry? entry) in _configs)
+            foreach ((string key, LocalConfigEntry entry) in _configs)
             {
                 string[] row =
                 [
@@ -143,7 +143,7 @@ namespace SimpleCalendar.WinUI3.Services
             {
                 if (LoadStatus != LoadStatus.Loaded) { return; }
                 string key = GenKey();
-                if (_configs.TryGetValue(key, out LocalConfigEntry? entry))
+                if (_configs.TryGetValue(key, out LocalConfigEntry entry))
                 {
                     if (entry.Left == left && entry.Top == top)
                     {

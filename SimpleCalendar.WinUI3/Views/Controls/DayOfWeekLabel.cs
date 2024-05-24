@@ -1,9 +1,11 @@
+using System.Runtime.Versioning;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SimpleCalendar.WinUI3.Models;
 
 namespace SimpleCalendar.WinUI3.Views.Controls
 {
+    [SupportedOSPlatform("windows")]
     public class DayOfWeekLabel : Control
     {
         public static readonly DependencyProperty DayOfWeekProperty = DependencyProperty.Register(

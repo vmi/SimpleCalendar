@@ -61,7 +61,7 @@ namespace SimpleCalendar.WinUI3.Models
                     string dTypeStr = csvLine[1];
                     DayType dType = Enum.Parse<DayType>(dTypeStr);
                     string label = csvLine[2];
-                    if (_dateToDayItem.TryGetValue(date, out DayItem? prevDayItem))
+                    if (_dateToDayItem.TryGetValue(date, out DayItem prevDayItem))
                     {
                         // DayTypeの優先度は HOLIDAY < SPECIALDAY1 < SPECIALDAY2 < SPECIALDAY3 とする
                         if (dType < prevDayItem.DayType)
@@ -90,17 +90,22 @@ namespace SimpleCalendar.WinUI3.Models
         public DayItem GetDayItem(int year, int month, int day, int dow)
         {
             var date = new DateOnly(year, month, day);
-            DayItem? dayItem;
             try
             {
                 _lock.EnterReadLock();
-                _dateToDayItem.TryGetValue(date, out dayItem);
+                if (_dateToDayItem.TryGetValue(date, out DayItem dayItem))
+                {
+                    return dayItem;
+                }
+                else
+                {
+                    return new DayItem(day, (DayType)dow);
+                }
             }
             finally
             {
                 _lock.ExitReadLock();
             }
-            return dayItem ?? new DayItem(day, (DayType)dow);
         }
     }
 }

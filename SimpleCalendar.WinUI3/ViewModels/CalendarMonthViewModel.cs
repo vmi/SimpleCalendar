@@ -8,9 +8,9 @@ namespace SimpleCalendar.WinUI3.ViewModels
     {
         private readonly DaysOfMonthModel _daysOfMonthModel;
 
-        public MainWindowViewModel CurrentMonth { get; init; }
+        public MainWindowViewModel CurrentMonth { get; set; }
 
-        public DayLabelStyleSettingViewModel DayLabelStyleSetting { get; init; }
+        public DayLabelStyleSettingViewModel DayLabelStyleSetting { get; set; }
 
         [ObservableProperty]
         private int _offset;
@@ -37,12 +37,12 @@ namespace SimpleCalendar.WinUI3.ViewModels
             OnPropertyChanged(nameof(DaysMatrix));
         }
 
-        private void DaysOfMonthModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private void DaysOfMonthModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateDerivedProperties(CurrentMonth.BaseYearMonth);
         }
 
-        private void CurrentMonth_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private void CurrentMonth_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (sender is MainWindowViewModel curMonth)
             {

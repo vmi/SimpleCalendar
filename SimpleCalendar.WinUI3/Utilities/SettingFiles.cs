@@ -52,7 +52,7 @@ namespace SimpleCalendar.WinUI3.Utilities
         public string SettingPath => Path.Combine(SettingDir, _filename);
         public string ExtPath(string key) => Path.Combine(SettingDir, _extFilenameDict[key]);
 
-        public SettingFiles(bool isLocal, string filename, List<(string, string)>? extFilenameList = null)
+        public SettingFiles(bool isLocal, string filename, List<(string, string)> extFilenameList = null)
         {
             _isLocal = isLocal;
             _filename = filename;
@@ -96,7 +96,7 @@ namespace SimpleCalendar.WinUI3.Utilities
             _isInitialized = true;
         }
 
-        public bool ReadCsvFile(Action<ICsvLine> handler, Action<Exception>? error = null)
+        public bool ReadCsvFile(Action<ICsvLine> handler, Action<Exception> error = null)
         {
             Initialize();
             string userPath = SettingPath;
@@ -127,7 +127,7 @@ namespace SimpleCalendar.WinUI3.Utilities
             }
         }
 
-        public bool WriteCsvFile(string[] headers, IEnumerable<string[]> enumerable, Action<Exception>? error = null)
+        public bool WriteCsvFile(string[] headers, IEnumerable<string[]> enumerable, Action<Exception> error = null)
         {
             Initialize();
             string userPath = SettingPath;

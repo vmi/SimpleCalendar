@@ -18,19 +18,12 @@ namespace SimpleCalendar.WinUI3.Views.Helpers
         {
             if (sender is Grid grid)
             {
-                grid.Loaded += OnMarginPropertyChanged;
-                grid.
-                var metadata = MarginProperty.GetMetadata(typeof(Grid));
-                if (metadata != null)
-                {
-                    metadata.
-                }
-                var desc = DependencyPropertyDescriptor.FromProperty(MarginProperty, typeof(Grid));
-                desc.AddValueChanged(grid, OnMarginPropertyChanged);
+                grid.Loaded += (sender, e) => OnMarginPropertyChanged((DependencyObject)sender, Grid.MarginProperty);
+                grid.RegisterPropertyChangedCallback(Grid.MarginProperty, OnMarginPropertyChanged);
             }
         }
 
-        private static void OnMarginPropertyChanged(object? sender, RoutedEventArgs e)
+        private static void OnMarginPropertyChanged(DependencyObject sender, DependencyProperty dp)
         {
             if (sender is Grid grid)
             {

@@ -12,22 +12,22 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
+
   <ItemGroup>
-    <None Remove="Contents\config.csv" />
-    <None Remove="Contents\specialdays.csv" />
-    <None Remove="Contents\styles.csv" />
-    <None Remove="Contents\syukujitsu.csv" />
-    <None Remove="Contents\syukujitsu.csv.header" />
-    <None Remove="Images\exit256.png" />
-    <None Remove="Images\help256.png" />
-    <None Remove="Images\icon256.png" />
-    <None Remove="Images\reload256.png" />
-    <None Remove="Images\settings256.png" />
-    <None Remove="Resources\icon256.ico" />
-    <None Remove="Views\CalendarMonthView.xaml" />
-    <None Remove="Views\CalendarMonthViewStyles.xaml" />
-    <None Remove="Views\Help.xaml" />
-    <None Remove="Views\SettingsView.xaml" />
+    <Content Include="Contents/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\icon256.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,33 +38,10 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-    <Content Include="Contents\config.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="Contents\specialdays.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="Contents\styles.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="Contents\syukujitsu.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="Contents\syukujitsu.csv.header">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\icon256.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.0.240109" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240428000" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />

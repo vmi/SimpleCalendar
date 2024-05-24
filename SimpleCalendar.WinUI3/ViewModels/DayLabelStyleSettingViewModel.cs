@@ -1,4 +1,3 @@
-using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -76,14 +75,10 @@ namespace SimpleCalendar.WinUI3.ViewModels
 
         private static Brush ToBrush(string brushName, Brush defaultBrush)
         {
-            if (Enum.TryParse<Color>(brushName, true, out Color color))
-            {
-                return new SolidColorBrush(color);
-            }
-            else
-            {
-                return defaultBrush;
-            }
+            var propInfo = typeof(Colors).GetProperty(brushName, typeof(Color));
+            if (propInfo == null) return defaultBrush;
+            var color = (Color)propInfo.GetValue(null);
+            return new SolidColorBrush(color);
         }
 
         public void LoadSetting()

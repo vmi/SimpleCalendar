@@ -27,8 +27,8 @@ namespace SimpleCalendar.WinUI3
                 .BuildServiceProvider());
         }
 
-        public static T? GetService<T>() where T : class => s_ioc.GetService<T>();
+        public static T GetService<T>() where T : class => s_ioc.GetService<T>();
 
-        public static object? GetService(Type type) => s_ioc.GetService(type);
+        public static object GetService(Type type) => s_ioc.GetService(type);
     }
 }

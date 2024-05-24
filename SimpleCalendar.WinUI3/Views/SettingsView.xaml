@@ -6,12 +6,9 @@
         xmlns:local="clr-namespace:SimpleCalendar.WinUI3.Views"
         xmlns:helper="clr-namespace:SimpleCalendar.WinUI3.Views.Helpers"
         xmlns:viewmodel="clr-namespace:SimpleCalendar.WinUI3.ViewModels"
-        d:DataContext="{d:DesignInstance Type=viewmodel:SettingsViewModel}"
-        helper:DataContextHelper.DataContext="{x:Type viewmodel:SettingsViewModel}"
         mc:Ignorable="d"
-        Title="設定"
-        Height="450"
-        Width="600">
+        Title="設定">
+    <!--
     <Window.Resources>
         <ResourceDictionary>
             <Style x:Key="Setting" TargetType="Grid">
@@ -30,7 +27,24 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Style="{StaticResource Setting}">
+    -->
+    <Grid
+        d:DataContext="{d:DesignInstance Type=viewmodel:SettingsViewModel}"
+        >
+        <!-- helper:DataContextHelper.DataContext="viewmodel:SettingsViewModel" -->
+        <Grid.Resources>
+            <ResourceDictionary>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+                <Style TargetType="Button">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="Width" Value="130" />
+                    <Setter Property="Margin" Value="0,5" />
+                </Style>
+            </ResourceDictionary>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
@@ -41,12 +55,10 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="ログメッセージ" />
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="ログメッセージ" />
         <ListView Grid.Row="1"
                   Grid.Column="0"
                   Grid.ColumnSpan="3"
-                  VirtualizingPanel.VirtualizationMode="Recycling"
-                  VirtualizingPanel.IsVirtualizing="True"
                   ItemsSource="{Binding LogEntries}"
                   Name="LogListView">
             <ListView.ItemContainerStyle>
@@ -60,7 +72,7 @@
         </ListView>
 
         <Button Grid.Row="2" Grid.Column="0" Content="設定フォルダを開く" Click="OpenSettingsFolder_Click"/>
-        <Button Grid.Row="2" Grid.Column="1" Content="祝日情報最新化" Command="{Binding UpdateHolidaysCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+        <Button Grid.Row="2" Grid.Column="1" Content="祝日情報最新化"/><!-- Command="{Binding UpdateHolidaysCommand}" / -->
         <Button Grid.Row="2" Grid.Column="2" Content="閉じる" Click="Close_Click" />
     </Grid>
 </Window>

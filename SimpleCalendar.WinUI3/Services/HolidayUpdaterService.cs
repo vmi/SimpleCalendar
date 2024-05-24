@@ -115,12 +115,12 @@ namespace SimpleCalendar.WinUI3.Services
             }
         }
 
-        private string? GetSavedLastModified()
+        private string GetSavedLastModified()
         {
             if (!File.Exists(_headerPath)) { return null; }
             using (StreamReader sr = new(_headerPath))
             {
-                string? line;
+                string line;
                 while ((line = sr.ReadLine()) != null)
                 {
                     string[] entry = line.Split(':', 2, StringSplitOptions.TrimEntries);
@@ -147,11 +147,11 @@ namespace SimpleCalendar.WinUI3.Services
             using (StreamWriter sw = new(newPath))
             {
                 sw.NewLine = "\n";
-                if (headers.TryGetValues(LastModified, out IEnumerable<string>? lastModified))
+                if (headers.TryGetValues(LastModified, out IEnumerable<string> lastModified))
                 {
                     sw.WriteLine($"{LastModified}: {lastModified.First()}");
                 }
-                if (headers.TryGetValues(ContentLength, out IEnumerable<string>? contentLength))
+                if (headers.TryGetValues(ContentLength, out IEnumerable<string> contentLength))
                 {
                     sw.WriteLine($"{ContentLength}: {contentLength.First()}");
                 }

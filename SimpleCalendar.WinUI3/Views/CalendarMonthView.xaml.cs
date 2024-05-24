@@ -1,9 +1,11 @@
+using System.Runtime.Versioning;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SimpleCalendar.WinUI3.ViewModels;
 
 namespace SimpleCalendar.WinUI3.Views
 {
+    [SupportedOSPlatform("windows")]
     public sealed partial class CalendarMonthView : UserControl
     {
         public static readonly DependencyProperty OffsetProperty = DependencyProperty.Register(
@@ -24,7 +26,7 @@ namespace SimpleCalendar.WinUI3.Views
 
         public CalendarMonthView()
         {
-            //InitializeComponent();
+            InitializeComponent();
         }
     }
 }

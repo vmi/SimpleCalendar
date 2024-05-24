@@ -1,4 +1,4 @@
-using System.Windows;
+using Microsoft.UI.Xaml;
 
 namespace SimpleCalendar.WinUI3.Views
 {

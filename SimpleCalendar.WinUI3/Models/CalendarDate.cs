@@ -93,12 +93,20 @@ namespace SimpleCalendar.WinUI3.Models
         public const int DAYS_IN_WEEK = 7;
         public const int MAX_WEEKS_IN_MONTH = 6;
 
-        private readonly DayItem[,] _days = new DayItem[MAX_WEEKS_IN_MONTH, DAYS_IN_WEEK];
+        private readonly DayItem[][] _days;
 
-        public DayItem this[int w, int dow]
+        public DaysMatrix()
         {
-            get => _days[w, dow];
-            set => _days[w, dow] = value;
+            _days = new DayItem[MAX_WEEKS_IN_MONTH][];
+            for (int i = 0; i < MAX_WEEKS_IN_MONTH; i++)
+            {
+                _days[i] = new DayItem[DAYS_IN_WEEK];
+            }
+        }
+
+        public DayItem[] this[int w]
+        {
+            get => _days[w];
         }
     }
 }

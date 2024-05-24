@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using System.Windows;
+using Microsoft.UI.Xaml;
 using SimpleCalendar.WinUI3.Utilities;
 
 namespace SimpleCalendar.WinUI3.Views
@@ -15,21 +15,18 @@ namespace SimpleCalendar.WinUI3.Views
         public SettingsView()
         {
             InitializeComponent();
-            if (LogListView.ItemsSource is INotifyCollectionChanged notify)
+            if (LogListView?.ItemsSource is INotifyCollectionChanged notify)
             {
                 notify.CollectionChanged += LogListView_CollectionChanged;
             }
         }
 
-        private void LogListView_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        private void LogListView_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems is IList newItems)
             {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    object item = newItems[newItems.Count - 1]!;
-                    LogListView.ScrollIntoView(item);
-                });
+                object item = newItems[newItems.Count - 1]!;
+                LogListView?.ScrollIntoView(item);
             }
         }
 
@@ -44,7 +41,7 @@ namespace SimpleCalendar.WinUI3.Views
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            Hide();
+            // Hide();
         }
     }
 }

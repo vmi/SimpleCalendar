@@ -18,7 +18,7 @@ namespace SimpleCalendar.WinUI3.Models
             _dayIteminformationModel.PropertyChanged += DayIteminformationModel_PropertyChanged;
         }
 
-        private void DayIteminformationModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void DayIteminformationModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             _daysCache.Clear();
             LastModified = DateTime.Now;
@@ -30,11 +30,11 @@ namespace SimpleCalendar.WinUI3.Models
             {
                 int year = yearMonth.Year;
                 int month = yearMonth.Month;
-                if (!_daysCache.TryGetValue(year, out Dictionary<int, DaysMatrix>? dms))
+                if (!_daysCache.TryGetValue(year, out Dictionary<int, DaysMatrix> dms))
                 {
                     dms = _daysCache[year] = [];
                 }
-                if (!dms.TryGetValue(month, out DaysMatrix? dm))
+                if (!dms.TryGetValue(month, out DaysMatrix dm))
                 {
                     dm = dms[month] = new DaysMatrix();
                     FillDays(year, month, dm);
@@ -56,11 +56,11 @@ namespace SimpleCalendar.WinUI3.Models
                     day++;
                     if (1 <= day && day <= daysInMonth)
                     {
-                        dm[w, dow] = _dayIteminformationModel.GetDayItem(year, month, day, dow);
+                        dm[w][dow] = _dayIteminformationModel.GetDayItem(year, month, day, dow);
                     }
                     else
                     {
-                        dm[w, dow] = DayItem.EMPTY;
+                        dm[w][dow] = DayItem.EMPTY;
                     }
                 }
             }

@@ -1,14 +1,14 @@
 using System;
 using System.ComponentModel;
-using System.Globalization;
+using System.Runtime.Versioning;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
 using SimpleCalendar.WinUI3.Models;
 using SimpleCalendar.WinUI3.ViewModels;
 
 namespace SimpleCalendar.WinUI3.Views.Controls
 {
+    [SupportedOSPlatform("windows")]
     public partial class DayLabel : Control, INotifyPropertyChanged
     {
         public static readonly DependencyProperty DayItemProperty = DependencyProperty.Register(
@@ -19,19 +19,10 @@ namespace SimpleCalendar.WinUI3.Views.Controls
 
         public DayItem DayItem { get => (DayItem)GetValue(DayItemProperty); set => SetValue(DayItemProperty, value); }
 
-        public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(
-            nameof(Content),
-            typeof(string),
-            typeof(DayLabel),
-            PropertyMetadata.Create(""));
-
-        public string Content { get => (string)GetValue(ContentProperty); set => SetValue(ContentProperty, value); }
-
         private static void OnDayItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is DayLabel obj && e.NewValue is DayItem dayItem)
             {
-                obj.Content = dayItem.DayString;
                 obj.DayType = dayItem.DayType;
                 obj.IsDayTypeEmpty = dayItem.DayType == DayType.EMPTY;
                 if (string.IsNullOrEmpty(dayItem.Label))
@@ -71,8 +62,8 @@ namespace SimpleCalendar.WinUI3.Views.Controls
             if (DataContext is CalendarMonthViewModel calMon)
             {
                 MainWindowViewModel curMon = calMon.CurrentMonth;
-                var today = curMon.Today;
-                var yearMonth = calMon.YearMonth;
+                DateOnly today = curMon.Today;
+                YearMonth yearMonth = calMon.YearMonth;
                 return today.Year == yearMonth.Year && today.Month == yearMonth.Month && today.Day == DayItem.Day;
             }
             else
@@ -85,6 +76,7 @@ namespace SimpleCalendar.WinUI3.Views.Controls
 
         public DayLabel() : base()
         {
+            DefaultStyleKey = typeof(DayLabel);
             var toolTip = new ToolTip();
             ToolTipService.SetToolTip(this, toolTip);
             Loaded += DayLabel_Loaded;
@@ -92,7 +84,7 @@ namespace SimpleCalendar.WinUI3.Views.Controls
 
         public void IsToday_PropertyChanged()
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsToday)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsToday)));
         }
 
         private void DayLabel_Loaded(object sender, RoutedEventArgs e)
