@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SimpleCalendar.WinUI3.Models;
@@ -7,6 +8,8 @@ namespace SimpleCalendar.WinUI3.ViewModels
     public partial class CalendarMonthViewModel : ObservableObject
     {
         private readonly DaysOfMonthModel _daysOfMonthModel;
+
+        public HashSet<PropertyChangedEventHandler> RegisteredHandlers { get; } = [];
 
         public MainWindowViewModel CurrentMonth { get; set; }
 

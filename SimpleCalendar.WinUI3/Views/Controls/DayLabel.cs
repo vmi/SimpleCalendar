@@ -3,13 +3,16 @@ using System.ComponentModel;
 using System.Runtime.Versioning;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
 using SimpleCalendar.WinUI3.Models;
 using SimpleCalendar.WinUI3.ViewModels;
+using SimpleCalendar.WPF.Utilities;
 
 namespace SimpleCalendar.WinUI3.Views.Controls
 {
     [SupportedOSPlatform("windows")]
-    public partial class DayLabel : Control, INotifyPropertyChanged
+    public partial class DayLabel : Label
     {
         public static readonly DependencyProperty DayItemProperty = DependencyProperty.Register(
             nameof(DayItem),
@@ -18,24 +21,6 @@ namespace SimpleCalendar.WinUI3.Views.Controls
             new PropertyMetadata(DayItem.EMPTY, OnDayItemPropertyChanged));
 
         public DayItem DayItem { get => (DayItem)GetValue(DayItemProperty); set => SetValue(DayItemProperty, value); }
-
-        private static void OnDayItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is DayLabel obj && e.NewValue is DayItem dayItem)
-            {
-                obj.DayType = dayItem.DayType;
-                obj.IsDayTypeEmpty = dayItem.DayType == DayType.EMPTY;
-                if (string.IsNullOrEmpty(dayItem.Label))
-                {
-                    obj.ToolTip = null;
-                }
-                else
-                {
-                    obj.ToolTip = dayItem.Label;
-                }
-                obj.IsToday_PropertyChanged();
-            }
-        }
 
         public static readonly DependencyProperty DayTypeProperty = DependencyProperty.Register(
             nameof(DayType),
@@ -51,24 +36,45 @@ namespace SimpleCalendar.WinUI3.Views.Controls
             typeof(DayLabel),
             PropertyMetadata.Create(true));
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public bool IsDayTypeEmpty { get => (bool)GetValue(IsDayTypeEmptyProperty); private set => SetValue(IsDayTypeEmptyProperty, value); }
 
-        public bool IsToday { get => GetIsToday(); }
-
-        private bool GetIsToday()
+        private static void OnDayItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (DataContext is CalendarMonthViewModel calMon)
+            if (d is DayLabel obj && e.NewValue is DayItem dayItem)
             {
-                MainWindowViewModel curMon = calMon.CurrentMonth;
-                DateOnly today = curMon.Today;
-                YearMonth yearMonth = calMon.YearMonth;
-                return today.Year == yearMonth.Year && today.Month == yearMonth.Month && today.Day == DayItem.Day;
-            }
-            else
-            {
-                return false;
+                obj.DayType = dayItem.DayType;
+                string propName;
+                switch (obj.DayType)
+                {
+                    case DayType.SUNDAY: propName = nameof(DayLabelStyleSettingViewModel.SundayBrush); break;
+                    case DayType.MONDAY: propName = nameof(DayLabelStyleSettingViewModel.MondayBrush); break;
+                    case DayType.TUESDAY: propName = nameof(DayLabelStyleSettingViewModel.TuesdayBrush); break;
+                    case DayType.WEDNESDAY: propName = nameof(DayLabelStyleSettingViewModel.WednesdayBrush); break;
+                    case DayType.THURSDAY: propName = nameof(DayLabelStyleSettingViewModel.ThursdayBrush); break;
+                    case DayType.FRIDAY: propName = nameof(DayLabelStyleSettingViewModel.FridayBrush); break;
+                    case DayType.SATURDAY: propName = nameof(DayLabelStyleSettingViewModel.SaturdayBrush); break;
+                    case DayType.HOLIDAY: propName = nameof(DayLabelStyleSettingViewModel.HolidayBrush); break;
+                    case DayType.SPECIALDAY1: propName = nameof(DayLabelStyleSettingViewModel.Specialday1Brush); break;
+                    case DayType.SPECIALDAY2: propName = nameof(DayLabelStyleSettingViewModel.Specialday2Brush); break;
+                    case DayType.SPECIALDAY3: propName = nameof(DayLabelStyleSettingViewModel.Specialday3Brush); break;
+                    default: obj.Text = ""; propName = null; break;
+                }
+                if (!string.IsNullOrEmpty(propName))
+                {
+                    Binding binding = new() { Path = new PropertyPath($"DayLabelStyleSetting.{propName}") };
+                    obj.SetBinding(ForegroundProperty, binding);
+                }
+                obj.Text = dayItem.DayString;
+                obj.IsDayTypeEmpty = dayItem.DayType == DayType.EMPTY;
+                if (string.IsNullOrEmpty(dayItem.Label))
+                {
+                    obj.ToolTip = null;
+                }
+                else
+                {
+                    obj.ToolTip = dayItem.Label;
+                }
+                DayLabel.IsTodaySource_PropertyChanged(obj, default);
             }
         }
 
@@ -76,15 +82,11 @@ namespace SimpleCalendar.WinUI3.Views.Controls
 
         public DayLabel() : base()
         {
-            DefaultStyleKey = typeof(DayLabel);
             var toolTip = new ToolTip();
             ToolTipService.SetToolTip(this, toolTip);
             Loaded += DayLabel_Loaded;
-        }
-
-        public void IsToday_PropertyChanged()
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsToday)));
+            PointerEntered += DayLabel_PointerEntered;
+            PointerExited += DayLabel_PointerExited;
         }
 
         private void DayLabel_Loaded(object sender, RoutedEventArgs e)
@@ -92,17 +94,43 @@ namespace SimpleCalendar.WinUI3.Views.Controls
             if (DataContext is CalendarMonthViewModel calMon)
             {
                 MainWindowViewModel curMon = calMon.CurrentMonth;
-                calMon.PropertyChanged += IsTodaySource_PropertyChanged;
-                curMon.PropertyChanged += IsTodaySource_PropertyChanged;
+                calMon.RegisterPropertyChangedEventHandler(IsTodaySource_PropertyChanged);
+                curMon.RegisterPropertyChangedEventHandler(IsTodaySource_PropertyChanged);
             }
         }
 
-        private void IsTodaySource_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private static void IsTodaySource_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (sender is DayLabel dayLabel)
+            if (sender is DayLabel dayLabel && dayLabel.DataContext is CalendarMonthViewModel calMon)
             {
-                dayLabel.IsToday_PropertyChanged();
+                MainWindowViewModel curMon = calMon.CurrentMonth;
+                DateOnly today = curMon.Today;
+                YearMonth ym = calMon.YearMonth;
+                if (today.Year == ym.Year && today.Month == ym.Month && today.Day == dayLabel.DayItem.Day)
+                {
+                    dayLabel.Background = calMon.DayLabelStyleSetting.TodayBrush;
+                }
+                else
+                {
+                    dayLabel.Background = DayLabelStyleSettingViewModel.DefaultBackgroundBrush;
+                }
             }
         }
+        private static void DayLabel_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is DayLabel dayLabel && dayLabel.DataContext is CalendarMonthViewModel calMon)
+            {
+                if (dayLabel.DayType != DayType.EMPTY)
+                {
+                    dayLabel.Background = calMon.DayLabelStyleSetting.MouseOverBrush;
+                }
+            }
+        }
+
+        private static void DayLabel_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            IsTodaySource_PropertyChanged(sender, default);
+        }
+
     }
 }

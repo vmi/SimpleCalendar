@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Versioning;
 using Microsoft.UI.Xaml;
+using WinUIEx;
 
 namespace SimpleCalendar.WinUI3
 {
@@ -8,7 +9,7 @@ namespace SimpleCalendar.WinUI3
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     [SupportedOSPlatform("windows")]
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : WindowEx
     {
         //private const uint NotificationIconId = 1;
 
@@ -42,6 +43,12 @@ namespace SimpleCalendar.WinUI3
 
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
+            Windows.Foundation.Size dSize = Content.DesiredSize;
+            if (dSize.Width > 0 && dSize.Height > 0)
+            {
+                Width = dSize.Width;
+                Height = dSize.Height;
+            }
         }
 
         //private void MainWindow_Loaded(object sender, RoutedEventArgs e)

@@ -1,3 +1,4 @@
+using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -17,6 +18,7 @@ namespace SimpleCalendar.WinUI3.ViewModels
         public static readonly Brush LightSkyBlue;
         public static readonly Brush LightGreen;
         public static readonly Brush ControlTextBrush;
+        public static readonly Brush DefaultBackgroundBrush;
 
         static DayLabelStyleSettingViewModel()
         {
@@ -27,6 +29,7 @@ namespace SimpleCalendar.WinUI3.ViewModels
             LightSkyBlue = new SolidColorBrush(Colors.LightSkyBlue);
             LightGreen = new SolidColorBrush(Colors.LightGreen);
             ControlTextBrush = (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+            DefaultBackgroundBrush = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"];
         }
 
         private Brush _sundayBrush = Red;
@@ -75,7 +78,7 @@ namespace SimpleCalendar.WinUI3.ViewModels
 
         private static Brush ToBrush(string brushName, Brush defaultBrush)
         {
-            var propInfo = typeof(Colors).GetProperty(brushName, typeof(Color));
+            PropertyInfo propInfo = typeof(Colors).GetProperty(brushName, typeof(Color));
             if (propInfo == null) return defaultBrush;
             var color = (Color)propInfo.GetValue(null);
             return new SolidColorBrush(color);

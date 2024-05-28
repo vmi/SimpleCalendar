@@ -1,84 +1,16 @@
-<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:control="clr-namespace:SimpleCalendar.WinUI3.Views.Controls">
-    <Style x:Key="CalendarLabelStyle" TargetType="TextBlock">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:control="using:SimpleCalendar.WinUI3.Views.Controls">
+    <Style x:Name="CalendarLabelStyle" TargetType="TextBlock">
+        <!--  Setter Property="HorizontalContentAlignment" Value="Center" /  -->
+        <!--  Setter Property="VerticalContentAlignment" Value="Center" /  -->
         <Setter Property="HorizontalAlignment" Value="Center" />
-    </Style>
-    <Style x:Key="DayLabel" TargetType="TextBlock">
-        <!--Setter Property="HorizontalContentAlignment" Value="Center" /-->
-        <!--Setter Property="VerticalContentAlignment" Value="Center" /-->
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="6,0" />
     </Style>
-    <Interactivity:BehaviorCollection x:Key="Month">
-        <!--
-        <Core:DataTriggerBehavior Binding="{Binding DayOfWeek, RelativeSource={RelativeSource Mode=}, ElementName=DayOfWeekLabel}" ComparisonCondition="Equal" Value="SUNDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayOfWeekLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.SundayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayOfWeek, ElementName=DayOfWeekLabel}" ComparisonCondition="Equal" Value="MONDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayOfWeekLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.MondayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayOfWeek, ElementName=DayOfWeekLabel}" ComparisonCondition="Equal" Value="TUESDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayOfWeekLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.TuesdayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayOfWeek, ElementName=DayOfWeekLabel}" ComparisonCondition="Equal" Value="WEDNESDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayOfWeekLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.WednesdayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayOfWeek, ElementName=DayOfWeekLabel}" ComparisonCondition="Equal" Value="THURSDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayOfWeekLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.ThursdayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayOfWeek, ElementName=DayOfWeekLabel}" ComparisonCondition="Equal" Value="FRIDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayOfWeekLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.FridayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayOfWeek, ElementName=DayOfWeekLabel}" ComparisonCondition="Equal" Value="SATURDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayOfWeekLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.SaturdayBrush}" />
-        </Core:DataTriggerBehavior>
-
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="SUNDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.SundayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="MONDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.MondayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="TUESDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.TuesdayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="WEDNESDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.WednesdayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="THURSDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.ThursdayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="FRIDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.FridayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="SATURDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.SaturdayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="HOLIDAY">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.HolidayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="SPECIALDAY1">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.Specialday1Brush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="SPECIALDAY2">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.Specialday2Brush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding DayType, ElementName=DayLabel}" ComparisonCondition="Equal" Value="SPECIALDAY3">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Foreground" Value="{Binding DayLabelStyleSetting.Specialday3Brush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding IsToday, ElementName=DayLabel}" ComparisonCondition="Equal" Value="True">
-            <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Background" Value="{Binding DayLabelStyleSetting.TodayBrush}" />
-        </Core:DataTriggerBehavior>
-        <Core:DataTriggerBehavior Binding="{Binding IsMouseOver, ElementName=DayLabel}" ComparisonCondition="Equal" Value="True">
-            <Core:DataTriggerBehavior Binding="{Binding IsDayTypeEmpty, ElementName=DayLabel}" ComparisonCondition="Equal" Value="False">
-                <Core:ChangePropertyAction TargetObject="{Binding ElementName=DayLabel}" PropertyName="Background" Value="{Binding DayLabelStyleSetting.MouseOverBrush}" />
-            </Core:DataTriggerBehavior>
-        </Core:DataTriggerBehavior>
-        -->
-    </Interactivity:BehaviorCollection>
+    <Style TargetType="control:DayLabel">
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="6,0" />
+    </Style>
 </ResourceDictionary>
