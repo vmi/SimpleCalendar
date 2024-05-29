@@ -155,4 +155,29 @@
 
 * WinUI3、SizeToContent相当の実装がかなり難しい……。
 
+2024-05-29
+----------
+
+* WinUI3でタイトルバーを無くす。参考:
+    * [[WinUI 3](https://github.com/microsoft/microsoft-ui-xaml)] [When hiding titlebar a few white pixels still show on top #8947](https://github.com/microsoft/microsoft-ui-xaml/issues/8947#issuecomment-1748066634)
+    * [[WinUIEx](https://github.com/dotMorten/WinUIEx)] [Setting the titlebar to collapse shows a white border #67](https://github.com/dotMorten/WinUIEx/issues/67#issuecomment-1206649424)
+    * [[GlobalColorPicker](https://github.com/rocksdanister/GlobalColorPicker)] [src/GlobalColorPicker/MainWindow.xaml.cs](https://github.com/rocksdanister/GlobalColorPicker/blob/main/src/GlobalColorPicker/MainWindow.xaml.cs#L68)
+
+            public static void DisableTitleBar(Window window)
+            {
+                AppWindow appWindow = window.AppWindow;
+                if (appWindow.Presenter is OverlappedPresenter presenter)
+                {
+                    presenter.SetBorderAndTitleBar(false, false);
+                    HWND hwnd = new(window.GetWindowHandle());
+                    WINDOW_LONG_PTR_INDEX index = WINDOW_LONG_PTR_INDEX.GWL_STYLE;
+                    nint style = PInvoke.GetWindowLongPtr(hwnd, index);
+                    style &= ~(nint)WindowStyle.ThickFrame;
+                    PInvoke.SetWindowLongPtr(hwnd, index, style);
+                }
+            }
+
+* [Windows10 バージョン一覧](https://ite-notes.com/os-windows10-1/)
+
+
 以上

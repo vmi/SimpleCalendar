@@ -1,6 +1,12 @@
 using System;
+using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.Versioning;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using SimpleCalendar.WinUI3.Utilities;
+using Windows.Foundation;
+using Windows.Graphics;
 using WinUIEx;
 
 namespace SimpleCalendar.WinUI3
@@ -28,9 +34,25 @@ namespace SimpleCalendar.WinUI3
 
         public MainWindow()
         {
+
             //_localConfigService = ServiceRegistry.GetService<LocalConfigService>()!;
             InitializeComponent();
-            Activated += MainWindow_Activated;
+            WindowHelper.DisableTitleBar(this);
+            if (WindowContent is FrameworkElement elem)
+            {
+                //elem.Measure(new Size() { Width = Double.PositiveInfinity, Height = Double.PositiveInfinity });
+                //Size dSize = elem.DesiredSize;
+                //Debug.WriteLine($"First dSize: {dSize.Width}, {dSize.Height}");
+                elem.SizeChanged += Content_SizeChanged;
+
+            }
+            this.SizeChanged += (_, e) =>
+            {
+                Debug.WriteLine($"Window: Event({e.Size.Width}, {e.Size.Height}), Window({Width}, {Height})");
+            };
+            //Activated += MainWindow_Activated;
+
+            //            this.VisibilityChanged += MainWindow_VisibilityChanged;
             //Loaded += MainWindow_Loaded; // メインウィンドウ初期化時に通知領域にアイコンを登録
             //Closed += MainWindow_Closed; // メインウィンドウクローズ時に通知領域からアイコンを削除
             //Activated += MainWindow_Activated; // アクティブ化時に「今日」を最新化する
@@ -41,13 +63,38 @@ namespace SimpleCalendar.WinUI3
             //StateChanged += MainWindow_StateChanged; // 最小化時にHide()を実行してタスクバーから見えなくする
         }
 
-        private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
+        private void Content_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Windows.Foundation.Size dSize = Content.DesiredSize;
-            if (dSize.Width > 0 && dSize.Height > 0)
+            Size ps = e.PreviousSize;
+            Size ns = e.NewSize;
+            SizeInt32 size = AppWindow.Size;
+            SizeInt32 cSize = AppWindow.ClientSize;
+#pragma warning disable CA1416 // プラットフォームの互換性を検証
+            Debug.WriteLine($"SizeChanged: {ps}=>{ns} / Size=({size.Width}, {size.Height}), ClientSize=({cSize.Width}, {cSize.Height})");
+#pragma warning restore CA1416 // プラットフォームの互換性を検証
+            if (sender is FrameworkElement elem)
             {
-                Width = dSize.Width;
-                Height = dSize.Height;
+                Vector2 aSize = elem.ActualSize;
+                Size dSize = elem.DesiredSize;
+                Size rSize = elem.RenderSize;
+                double w = elem.Width;
+                double h = elem.Height;
+                Debug.WriteLine($"Actual: {aSize}, Desired: {dSize}, Render: {rSize}, Size: {w}, {h}");
+
+                if (dSize.Width > 0 && (aSize.X != dSize.Width || aSize.Y != dSize.Height))
+                {
+                    var pos = AppWindow.Position;
+                    var wOffset = size.Width - cSize.Width + 40;
+                    var hOffset = size.Height - cSize.Height;
+                    RectInt32 rect = new()
+                    {
+                        X = pos.X,
+                        Y = pos.Y,
+                        Width = (int)(dSize.Width + wOffset),
+                        Height = (int)(dSize.Height + hOffset)
+                    };
+                    DispatcherQueue.TryEnqueue(() => AppWindow.MoveAndResize(rect));
+                }
             }
         }
 

@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleCalendar.Tests", "Sim
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotifyIcon", "NotifyIcon\NotifyIcon.csproj", "{EBF07679-511A-4EBF-94AA-8B3CC5E7A4E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCalendar.WinUI3", "SimpleCalendar.WinUI3\SimpleCalendar.WinUI3.csproj", "{FB816F86-2E1C-4FF8-A009-41497186354F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleCalendar.WinUI3", "SimpleCalendar.WinUI3\SimpleCalendar.WinUI3.csproj", "{FB816F86-2E1C-4FF8-A009-41497186354F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

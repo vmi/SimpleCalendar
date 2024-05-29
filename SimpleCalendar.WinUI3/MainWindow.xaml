@@ -10,65 +10,67 @@
         xmlns:viewmodel="using:SimpleCalendar.WinUI3.ViewModels"
         Title="Simple Calendar"
         mc:Ignorable="d">
-    <Grid Name="CalendarRoot"
+    <Border BorderThickness="1" BorderBrush="Gray" Name="CalendarRoot">
+        <Grid
           d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
           helper:DataContextHelper.DataContext="viewmodel:MainWindowViewModel"
           helper:GridHelper.Margin="0,0,20,0">
-        <Grid.Resources>
-            <ResourceDictionary Source="MainWindowStyles.xaml" />
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-        </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <ResourceDictionary Source="MainWindowStyles.xaml" />
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
 
-        <view:CalendarMonthView Grid.Row="0"
+            <view:CalendarMonthView Grid.Row="0"
                                 Grid.Column="0"
                                 Offset="-4" />
-        <view:CalendarMonthView Grid.Row="0"
+            <view:CalendarMonthView Grid.Row="0"
                                 Grid.Column="1"
                                 Offset="-3" />
-        <view:CalendarMonthView Grid.Row="0"
+            <view:CalendarMonthView Grid.Row="0"
                                 Grid.Column="2"
                                 Offset="-2" />
 
-        <view:CalendarMonthView Grid.Row="1"
+            <view:CalendarMonthView Grid.Row="1"
                                 Grid.Column="0"
                                 Offset="-1" />
-        <view:CalendarMonthView Grid.Row="1"
+            <view:CalendarMonthView Grid.Row="1"
                                 Grid.Column="1"
                                 Offset="0" />
-        <view:CalendarMonthView Grid.Row="1"
+            <view:CalendarMonthView Grid.Row="1"
                                 Grid.Column="2"
                                 Offset="1" />
 
-        <view:CalendarMonthView Grid.Row="2"
+            <view:CalendarMonthView Grid.Row="2"
                                 Grid.Column="0"
                                 Offset="2" />
-        <view:CalendarMonthView Grid.Row="2"
+            <view:CalendarMonthView Grid.Row="2"
                                 Grid.Column="1"
                                 Offset="3" />
-        <view:CalendarMonthView Grid.Row="2"
+            <view:CalendarMonthView Grid.Row="2"
                                 Grid.Column="2"
                                 Offset="4" />
 
-        <view:CalendarMonthView Grid.Row="3"
+            <view:CalendarMonthView Grid.Row="3"
                                 Grid.Column="0"
                                 Offset="5" />
-        <view:CalendarMonthView Grid.Row="3"
+            <view:CalendarMonthView Grid.Row="3"
                                 Grid.Column="1"
                                 Offset="6" />
-        <view:CalendarMonthView Grid.Row="3"
+            <view:CalendarMonthView Grid.Row="3"
                                 Grid.Column="2"
                                 Offset="7" />
-    </Grid>
+        </Grid>
+    </Border>
     <!--
     <Window.InputBindings>
         <KeyBinding Key="Home" Command="{Binding ResetPageCommand}" />
