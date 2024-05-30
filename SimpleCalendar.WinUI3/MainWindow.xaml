@@ -10,7 +10,7 @@
                 xmlns:winex="using:WinUIEx"
                 Title="Simple Calendar"
                 mc:Ignorable="d">
-    <Border BorderBrush="Gray" BorderThickness="1">
+    <Border BorderBrush="Gray" BorderThickness="1" Background="White">
         <Grid Name="CalendarRoot"
               d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
               helper:DataContextHelper.DataContext="viewmodel:MainWindowViewModel"

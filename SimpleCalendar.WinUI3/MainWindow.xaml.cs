@@ -46,7 +46,6 @@ namespace SimpleCalendar.WinUI3
             //_localConfigService = ServiceRegistry.GetService<LocalConfigService>()!;
             InitializeComponent();
             DisableTitleBar(this);
-
             // 動作検証用 (ここから)
             Activated += (_, e) => Debug.WriteLine($"[MainWindow:Activated] State={e.WindowActivationState}");
             Closed += (_, e) => Debug.WriteLine($"[MainWindow:Closed]");
@@ -62,13 +61,12 @@ namespace SimpleCalendar.WinUI3
             {
                 // 動作検証用 (ここから)
                 elem.SizeChanged += (sender, e) => { Debug.WriteLine($"[WindowContent:SizeChanged] PreviousSize={Str(e.PreviousSize)}, NewSize={Str(e.NewSize)}"); };
+                elem.PointerEntered += (sender, e) => { Debug.WriteLine($"[WindowContent:PointerEntered]"); };
+                elem.PointerExited += (sender, e) => { Debug.WriteLine($"[WindowContent:PointerExited]"); };
                 // 動作検証用 (ここまで)
 
                 elem.LayoutUpdated += Content_LayoutUpdated;
-            }
-            if (Content is UIElement c)
-            {
-                c.PointerPressed += (sender, e) =>
+                elem.PointerPressed += (sender, e) =>
                 {
                     Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
                     if (props.IsLeftButtonPressed)
@@ -79,7 +77,7 @@ namespace SimpleCalendar.WinUI3
                         PInvoke.GetCursorPos(out _startCsrPos);
                     }
                 };
-                c.PointerMoved += (sender, e) =>
+                elem.PointerMoved += (sender, e) =>
                 {
                     Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
                     if (props.IsLeftButtonPressed && _isDragging)
@@ -91,7 +89,7 @@ namespace SimpleCalendar.WinUI3
                         AppWindow.Move(pos);
                     }
                 };
-                c.PointerReleased += (sender, e) =>
+                elem.PointerReleased += (sender, e) =>
                 {
                     Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
                     if (!props.IsLeftButtonPressed)
