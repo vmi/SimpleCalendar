@@ -24,6 +24,9 @@ WPFアプリケーション作成の習作として作成したもの。
     * 既存コントロールの拡張
     * ユーザーコントロール(UserControl)の作成
     * ResouceDictionaryの外部ファイル化
+* WinUI3
+    * XAMLで画面を作る
+    * WPFとの差異(確認できた範囲はごく狭いが意外と多い)
 * MVVM
     * ViewとViewModelの連携 (ViewModelとModelの連携はまだ)
         * 依存プロパティの作り方
@@ -130,6 +133,9 @@ WPF/XAML
 * [コントロールのスタイルを作成する方法 (WPF .NET)](https://learn.microsoft.com/ja-jp/dotnet/desktop/wpf/controls/how-to-create-apply-style?view=netdesktop-8.0)
 * [\[C#/WPF\] コンバーターの書き方](https://qiita.com/tera1707/items/47d1f1766cbe798b0c13)
 * WPFデザインモードの判定: [DesignerProperties.GetIsInDesignMode(DependencyObject) Method](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.designerproperties.getisindesignmode?view=windowsdesktop-8.0)
+
+WinUI3/XAML
+-----------
 
 MVVM
 ----

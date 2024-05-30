@@ -179,5 +179,33 @@
 
 * [Windows10 バージョン一覧](https://ite-notes.com/os-windows10-1/)
 
+2024-05-30
+----------
+
+* [SizeToContentエミュレーション暫定版] WinUI3でWPFの `SizeToContent="WidthAndHeight"` を実現するには、Window.WindowContentのLayoutUpdatedイベントで、以下の情報を考慮してWindowのリサイズを行う。(※スケーリングを考慮する必要性については未確認)
+    * AppWindow.Size (int32, int32)
+    * AppWindow.ClientSize (int32, int32)
+    * WindowContent.DesiredSize (double, double)
+
+```
+[MainWindow:Activated] State=CodeActivated
+[MainWindow:VisibilityChanged] Visible=True
+[MainWindow:ZOrderChanged] BelowWindowId=Microsoft.UI.WindowId, Top=False, Bottom=False
+[WindowContent:SizeChanged] PreviousSize=(0, 0), NewSize=(1351, 775)
+[WindowContent:LayoutUpdated] AppWindow[Size=(1365, 789), ClientSize=(1365, 789)], WindowContent[Size=(NaN, NaN), Actual=(1351, 775), Desired=(590, 610), Render=(1351, 775)]
+[MainWindow:SizeChanged] Size=(590, 610)
+[WindowContent:LayoutUpdated] Resize=(590, 610)
+[WindowContent:LayoutUpdated] AppWindow[Size=(590, 610), ClientSize=(590, 610)], WindowContent[Size=(NaN, NaN), Actual=(1351, 775), Desired=(630, 610), Render=(1351, 775)]
+[MainWindow:SizeChanged] Size=(630, 610)
+[WindowContent:LayoutUpdated] Resize=(630, 610)
+[MainWindow:Activated] State=Deactivated
+[WindowContent:SizeChanged] PreviousSize=(1351, 775), NewSize=(630, 610)
+[WindowContent:LayoutUpdated] AppWindow[Size=(630, 610), ClientSize=(630, 610)], WindowContent[Size=(NaN, NaN), Actual=(630, 610), Desired=(630, 610), Render=(630, 610)]
+[WindowContent:LayoutUpdated] AppWindow[Size=(630, 610), ClientSize=(630, 610)], WindowContent[Size=(NaN, NaN), Actual=(630, 610), Desired=(630, 610), Render=(630, 610)]
+[MainWindow:ZOrderChanged] BelowWindowId=Microsoft.UI.WindowId, Top=False, Bottom=False
+[MainWindow:Activated] State=CodeActivated
+```
+
+* [Window.DragMove()暫定版] 検証中。
 
 以上
