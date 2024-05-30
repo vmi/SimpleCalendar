@@ -207,5 +207,10 @@
 ```
 
 * [Window.DragMove()暫定版] 検証中。
+    * UIElement.PointerPressed が、Gridのボーダー部分を拾えない。
+        * 他のエレメントにもイベントハンドラを登録する必要がある???
+
+* [IDisposable インターフェイス](https://learn.microsoft.com/ja-jp/dotnet/api/system.idisposable?view=net-8.0)の実装方式を確認。
+    * 意外と面倒なので、実装時に再確認。
 
 以上
