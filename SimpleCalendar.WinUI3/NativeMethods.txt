@@ -34,3 +34,14 @@ PhysicalToLogicalPointForPerMonitorDPI
 SystemParametersInfoForDpi
 GetWindowLongPtr
 SetWindowLongPtr
+SetWindowSubclass
+DefSubclassProc
+RemoveWindowSubclass
+WM_LBUTTONUP
+WM_MOUSEMOVE
+WM_LBUTTONDOWN
+SetCapture
+GetCapture
+GetCursorPos
+SetWindowPos
+ReleaseCapture

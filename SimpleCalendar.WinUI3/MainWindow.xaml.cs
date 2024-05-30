@@ -5,9 +5,12 @@ using System.Runtime.Versioning;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using SimpleCalendar.WinUI3.Utilities;
-using Windows.Foundation;
 using Windows.Graphics;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
 using WinUIEx;
+using static SimpleCalendar.WinUI3.Utilities.WindowHelper;
 
 namespace SimpleCalendar.WinUI3
 {
@@ -32,16 +35,19 @@ namespace SimpleCalendar.WinUI3
 
         //private bool _isNotificationIconAdded = false;
 
-        private static string Str(SizeInt32 size) => WindowHelper.Str(size);
-        private static string Str(Size size) => WindowHelper.Str(size);
+        private readonly WndProcRegistrar _wndProcRegistrar;
+        private bool _isDragging = false;
+        private PointInt32 _startWinPos;
+        private System.Drawing.Point _startCsrPos;
 
         public MainWindow()
         {
-
+            _wndProcRegistrar = new(this, WndProc, 0, 0);
             //_localConfigService = ServiceRegistry.GetService<LocalConfigService>()!;
             InitializeComponent();
-            WindowHelper.DisableTitleBar(this);
-            // 動作検証用
+            DisableTitleBar(this);
+
+            // 動作検証用 (ここから)
             Activated += (_, e) => Debug.WriteLine($"[MainWindow:Activated] State={e.WindowActivationState}");
             Closed += (_, e) => Debug.WriteLine($"[MainWindow:Closed]");
             PositionChanged += (_, e) => Debug.WriteLine($"[MainWindow:PositionChanged] Position=({e.X}, {e.Y})");
@@ -50,13 +56,52 @@ namespace SimpleCalendar.WinUI3
             VisibilityChanged += (_, e) => Debug.WriteLine($"[MainWindow:VisibilityChanged] Visible={e.Visible}");
             WindowStateChanged += (_, e) => Debug.WriteLine($"[MainWindow:WindowStateChanged] State={e}");
             ZOrderChanged += (_, e) => Debug.WriteLine($"[MainWindow:ZOrderChanged] BelowWindowId={e.ZOrderBelowWindowId.Value}, Top={e.IsZOrderAtTop}, Bottom={e.IsZOrderAtBottom}");
+            // 動作検証用 (ここまで)
+
             if (WindowContent is FrameworkElement elem)
             {
+                // 動作検証用 (ここから)
                 elem.SizeChanged += (sender, e) => { Debug.WriteLine($"[WindowContent:SizeChanged] PreviousSize={Str(e.PreviousSize)}, NewSize={Str(e.NewSize)}"); };
+                // 動作検証用 (ここまで)
+
                 elem.LayoutUpdated += Content_LayoutUpdated;
-
             }
-
+            if (Content is UIElement c)
+            {
+                c.PointerPressed += (sender, e) =>
+                {
+                    Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
+                    if (props.IsLeftButtonPressed)
+                    {
+                        ((UIElement)sender).CapturePointer(e.Pointer);
+                        _isDragging = true;
+                        _startWinPos = AppWindow.Position;
+                        PInvoke.GetCursorPos(out _startCsrPos);
+                    }
+                };
+                c.PointerMoved += (sender, e) =>
+                {
+                    Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
+                    if (props.IsLeftButtonPressed && _isDragging)
+                    {
+                        PInvoke.GetCursorPos(out System.Drawing.Point curCsrPos);
+                        int dX = curCsrPos.X - _startCsrPos.X;
+                        int dY = curCsrPos.Y - _startCsrPos.Y;
+                        PointInt32 pos = new PointInt32(_startWinPos.X + dX, _startWinPos.Y + dY);
+                        AppWindow.Move(pos);
+                    }
+                };
+                c.PointerReleased += (sender, e) =>
+                {
+                    Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
+                    if (!props.IsLeftButtonPressed)
+                    {
+                        ((UIElement)sender).ReleasePointerCapture(e.Pointer);
+                        _isDragging = false;
+                    }
+                };
+            }
+            Closed += MainWindow_Closed;
 
             //            this.VisibilityChanged += MainWindow_VisibilityChanged;
             //Loaded += MainWindow_Loaded; // メインウィンドウ初期化時に通知領域にアイコンを登録
@@ -69,8 +114,56 @@ namespace SimpleCalendar.WinUI3
             //StateChanged += MainWindow_StateChanged; // 最小化時にHide()を実行してタスクバーから見えなくする
         }
 
+        private System.Drawing.Point _ptStart = new();
+
+        private LRESULT WndProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam, nuint uIdSubclass, nuint dwRefData)
+        {
+            if (MsgToString.TryGetValue(uMsg, out string name))
+            {
+                Debug.WriteLine($"Message=[{name}]");
+            }
+            else
+            {
+                Debug.WriteLine($"Message=[{uMsg}]");
+            }
+            switch (uMsg)
+            {
+                case PInvoke.WM_LBUTTONDOWN:
+                    // 左ボタンが押された場合
+                    PInvoke.SetCapture(hWnd);
+                    (_ptStart.X, _ptStart.Y) = GET_XY_LPARAM(lParam);
+                    Debug.WriteLine($"[LBUTTONDOWN] ({_ptStart.X}, {_ptStart.Y})");
+                    return default;
+
+                case PInvoke.WM_MOUSEMOVE:
+                    // マウスが移動した場合
+                    if (PInvoke.GetCapture() == hWnd)
+                    {
+                        // ウィンドウをドラッグする
+                        PInvoke.GetCursorPos(out System.Drawing.Point ptCurrent);
+                        int x = ptCurrent.X - _ptStart.X;
+                        int y = ptCurrent.Y - _ptStart.Y;
+                        PInvoke.SetWindowPos(hWnd, HWND.Null,
+                            x, y, 0, 0,
+                            SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+                        Debug.WriteLine($"[MOUSEMOVE] Current=({ptCurrent.X}, {ptCurrent.Y}) => SetWindowPos({x}, {y})");
+                    }
+                    return default;
+
+                case PInvoke.WM_LBUTTONUP:
+                    // 左ボタンが離された場合
+                    BOOL result = PInvoke.ReleaseCapture();
+                    Debug.WriteLine($"[LBUTTONUP] ReleaseCapture={result.Value}");
+                    return default;
+
+                default:
+                    return PInvoke.DefSubclassProc(hWnd, uMsg, wParam, lParam);
+            }
+        }
+
         private void Content_LayoutUpdated(object sender, object e)
         {
+            if (AppWindow == null) return;
 
             SizeInt32 size = AppWindow.Size;
             SizeInt32 cSize = AppWindow.ClientSize;
@@ -78,8 +171,8 @@ namespace SimpleCalendar.WinUI3
             double w = elem.Width;
             double h = elem.Height;
             Vector2 aSize = elem.ActualSize;
-            Size dSize = elem.DesiredSize;
-            Size rSize = elem.RenderSize;
+            Windows.Foundation.Size dSize = elem.DesiredSize;
+            Windows.Foundation.Size rSize = elem.RenderSize;
             Debug.WriteLine($"[WindowContent:LayoutUpdated] AppWindow[Size={Str(size)}, ClientSize={Str(cSize)}], WindowContent[Size=({w}, {h}), Actual=({aSize.X}, {aSize.Y}), Desired={Str(dSize)}, Render={Str(rSize)}]");
             if (dSize.Width > 0 && (dSize.Width != cSize.Width || dSize.Height != cSize.Height))
             {
@@ -143,8 +236,9 @@ namespace SimpleCalendar.WinUI3
         //    }
         //}
 
-        private void MainWindow_Closed(object sender, EventArgs e)
+        private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
+            _wndProcRegistrar.Dispose();
             //if (_notifyIconManager != null)
             //{
             //    _notifyIconManager.Delete();
