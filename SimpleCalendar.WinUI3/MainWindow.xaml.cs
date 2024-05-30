@@ -14,7 +14,7 @@ namespace SimpleCalendar.WinUI3
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    [SupportedOSPlatform("windows")]
+    [SupportedOSPlatform("windows10.0.17763.0")]
     public sealed partial class MainWindow : WindowEx
     {
         //private const uint NotificationIconId = 1;
@@ -32,25 +32,31 @@ namespace SimpleCalendar.WinUI3
 
         //private bool _isNotificationIconAdded = false;
 
+        private static string Str(SizeInt32 size) => WindowHelper.Str(size);
+        private static string Str(Size size) => WindowHelper.Str(size);
+
         public MainWindow()
         {
 
             //_localConfigService = ServiceRegistry.GetService<LocalConfigService>()!;
             InitializeComponent();
             WindowHelper.DisableTitleBar(this);
+            // 動作検証用
+            Activated += (_, e) => Debug.WriteLine($"[MainWindow:Activated] State={e.WindowActivationState}");
+            Closed += (_, e) => Debug.WriteLine($"[MainWindow:Closed]");
+            PositionChanged += (_, e) => Debug.WriteLine($"[MainWindow:PositionChanged] Position=({e.X}, {e.Y})");
+            SizeChanged += (_, e) => Debug.WriteLine($"[MainWindow:SizeChanged] Size={Str(e.Size)}");
+            PresenterChanged += (_, e) => Debug.WriteLine($"[MainWindow:PresenterChanged] Kind={e.Kind}");
+            VisibilityChanged += (_, e) => Debug.WriteLine($"[MainWindow:VisibilityChanged] Visible={e.Visible}");
+            WindowStateChanged += (_, e) => Debug.WriteLine($"[MainWindow:WindowStateChanged] State={e}");
+            ZOrderChanged += (_, e) => Debug.WriteLine($"[MainWindow:ZOrderChanged] BelowWindowId={e.ZOrderBelowWindowId.Value}, Top={e.IsZOrderAtTop}, Bottom={e.IsZOrderAtBottom}");
             if (WindowContent is FrameworkElement elem)
             {
-                //elem.Measure(new Size() { Width = Double.PositiveInfinity, Height = Double.PositiveInfinity });
-                //Size dSize = elem.DesiredSize;
-                //Debug.WriteLine($"First dSize: {dSize.Width}, {dSize.Height}");
-                elem.SizeChanged += Content_SizeChanged;
+                elem.SizeChanged += (sender, e) => { Debug.WriteLine($"[WindowContent:SizeChanged] PreviousSize={Str(e.PreviousSize)}, NewSize={Str(e.NewSize)}"); };
+                elem.LayoutUpdated += Content_LayoutUpdated;
 
             }
-            this.SizeChanged += (_, e) =>
-            {
-                Debug.WriteLine($"Window: Event({e.Size.Width}, {e.Size.Height}), Window({Width}, {Height})");
-            };
-            //Activated += MainWindow_Activated;
+
 
             //            this.VisibilityChanged += MainWindow_VisibilityChanged;
             //Loaded += MainWindow_Loaded; // メインウィンドウ初期化時に通知領域にアイコンを登録
@@ -63,38 +69,32 @@ namespace SimpleCalendar.WinUI3
             //StateChanged += MainWindow_StateChanged; // 最小化時にHide()を実行してタスクバーから見えなくする
         }
 
-        private void Content_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void Content_LayoutUpdated(object sender, object e)
         {
-            Size ps = e.PreviousSize;
-            Size ns = e.NewSize;
+
             SizeInt32 size = AppWindow.Size;
             SizeInt32 cSize = AppWindow.ClientSize;
-#pragma warning disable CA1416 // プラットフォームの互換性を検証
-            Debug.WriteLine($"SizeChanged: {ps}=>{ns} / Size=({size.Width}, {size.Height}), ClientSize=({cSize.Width}, {cSize.Height})");
-#pragma warning restore CA1416 // プラットフォームの互換性を検証
-            if (sender is FrameworkElement elem)
+            FrameworkElement elem = (FrameworkElement)WindowContent;
+            double w = elem.Width;
+            double h = elem.Height;
+            Vector2 aSize = elem.ActualSize;
+            Size dSize = elem.DesiredSize;
+            Size rSize = elem.RenderSize;
+            Debug.WriteLine($"[WindowContent:LayoutUpdated] AppWindow[Size={Str(size)}, ClientSize={Str(cSize)}], WindowContent[Size=({w}, {h}), Actual=({aSize.X}, {aSize.Y}), Desired={Str(dSize)}, Render={Str(rSize)}]");
+            if (dSize.Width > 0 && (dSize.Width != cSize.Width || dSize.Height != cSize.Height))
             {
-                Vector2 aSize = elem.ActualSize;
-                Size dSize = elem.DesiredSize;
-                Size rSize = elem.RenderSize;
-                double w = elem.Width;
-                double h = elem.Height;
-                Debug.WriteLine($"Actual: {aSize}, Desired: {dSize}, Render: {rSize}, Size: {w}, {h}");
-
-                if (dSize.Width > 0 && (aSize.X != dSize.Width || aSize.Y != dSize.Height))
+                int wOffset = size.Width - cSize.Width;
+                int hOffset = size.Height - cSize.Height;
+                PointInt32 pos = AppWindow.Position;
+                RectInt32 rect = new()
                 {
-                    var pos = AppWindow.Position;
-                    var wOffset = size.Width - cSize.Width + 40;
-                    var hOffset = size.Height - cSize.Height;
-                    RectInt32 rect = new()
-                    {
-                        X = pos.X,
-                        Y = pos.Y,
-                        Width = (int)(dSize.Width + wOffset),
-                        Height = (int)(dSize.Height + hOffset)
-                    };
-                    DispatcherQueue.TryEnqueue(() => AppWindow.MoveAndResize(rect));
-                }
+                    X = pos.X,
+                    Y = pos.Y,
+                    Width = (int)(dSize.Width + wOffset),
+                    Height = (int)(dSize.Height + hOffset)
+                };
+                AppWindow.MoveAndResize(rect);
+                Debug.WriteLine($"[WindowContent:LayoutUpdated] Resize=({rect.Width}, {rect.Height})");
             }
         }
 

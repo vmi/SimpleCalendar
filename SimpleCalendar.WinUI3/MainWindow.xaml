@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <winex:WindowEx x:Class="SimpleCalendar.WinUI3.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:winex="using:WinUIEx"
-        xmlns:helper="using:SimpleCalendar.WinUI3.Views.Helpers"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:view="using:SimpleCalendar.WinUI3.Views"
-        xmlns:viewmodel="using:SimpleCalendar.WinUI3.ViewModels"
-        Title="Simple Calendar"
-        mc:Ignorable="d">
-    <Border BorderThickness="1" BorderBrush="Gray" Name="CalendarRoot">
-        <Grid
-          d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
-          helper:DataContextHelper.DataContext="viewmodel:MainWindowViewModel"
-          helper:GridHelper.Margin="0,0,20,0">
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:helper="using:SimpleCalendar.WinUI3.Views.Helpers"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:view="using:SimpleCalendar.WinUI3.Views"
+                xmlns:viewmodel="using:SimpleCalendar.WinUI3.ViewModels"
+                xmlns:winex="using:WinUIEx"
+                Title="Simple Calendar"
+                mc:Ignorable="d">
+    <Border BorderBrush="Gray" BorderThickness="1">
+        <Grid Name="CalendarRoot"
+              d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
+              helper:DataContextHelper.DataContext="viewmodel:MainWindowViewModel"
+              helper:GridHelper.Margin="0,0,20,0">
             <Grid.Resources>
                 <ResourceDictionary Source="MainWindowStyles.xaml" />
             </Grid.Resources>
@@ -30,45 +30,21 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <view:CalendarMonthView Grid.Row="0"
-                                Grid.Column="0"
-                                Offset="-4" />
-            <view:CalendarMonthView Grid.Row="0"
-                                Grid.Column="1"
-                                Offset="-3" />
-            <view:CalendarMonthView Grid.Row="0"
-                                Grid.Column="2"
-                                Offset="-2" />
+            <view:CalendarMonthView Grid.Row="0" Grid.Column="0" Offset="-4" />
+            <view:CalendarMonthView Grid.Row="0" Grid.Column="1" Offset="-3" />
+            <view:CalendarMonthView Grid.Row="0" Grid.Column="2" Offset="-2" />
 
-            <view:CalendarMonthView Grid.Row="1"
-                                Grid.Column="0"
-                                Offset="-1" />
-            <view:CalendarMonthView Grid.Row="1"
-                                Grid.Column="1"
-                                Offset="0" />
-            <view:CalendarMonthView Grid.Row="1"
-                                Grid.Column="2"
-                                Offset="1" />
+            <view:CalendarMonthView Grid.Row="1" Grid.Column="0" Offset="-1" />
+            <view:CalendarMonthView Grid.Row="1" Grid.Column="1" Offset="0" />
+            <view:CalendarMonthView Grid.Row="1" Grid.Column="2" Offset="1" />
 
-            <view:CalendarMonthView Grid.Row="2"
-                                Grid.Column="0"
-                                Offset="2" />
-            <view:CalendarMonthView Grid.Row="2"
-                                Grid.Column="1"
-                                Offset="3" />
-            <view:CalendarMonthView Grid.Row="2"
-                                Grid.Column="2"
-                                Offset="4" />
+            <view:CalendarMonthView Grid.Row="2" Grid.Column="0" Offset="2" />
+            <view:CalendarMonthView Grid.Row="2" Grid.Column="1" Offset="3" />
+            <view:CalendarMonthView Grid.Row="2" Grid.Column="2" Offset="4" />
 
-            <view:CalendarMonthView Grid.Row="3"
-                                Grid.Column="0"
-                                Offset="5" />
-            <view:CalendarMonthView Grid.Row="3"
-                                Grid.Column="1"
-                                Offset="6" />
-            <view:CalendarMonthView Grid.Row="3"
-                                Grid.Column="2"
-                                Offset="7" />
+            <view:CalendarMonthView Grid.Row="3" Grid.Column="0" Offset="5" />
+            <view:CalendarMonthView Grid.Row="3" Grid.Column="1" Offset="6" />
+            <view:CalendarMonthView Grid.Row="3" Grid.Column="2" Offset="7" />
         </Grid>
     </Border>
     <!--

@@ -1,5 +1,7 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Windows.Foundation;
+using Windows.Graphics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -24,15 +26,9 @@ namespace SimpleCalendar.WinUI3.Utilities
             }
         }
 
-        public static void F(nint hwndi)
-        {
-            HWND hwnd = new(hwndi);
-            var dpi = PInvoke.GetDpiForWindow(hwnd);
-            var cxFrame = PInvoke.GetSystemMetricsForDpi(SYSTEM_METRICS_INDEX.SM_CXFRAME, dpi);
-            var cyFrame = PInvoke.GetSystemMetricsForDpi(SYSTEM_METRICS_INDEX.SM_CYFRAME, dpi);
-            var cxBorder = PInvoke.GetSystemMetricsForDpi(SYSTEM_METRICS_INDEX.SM_CXBORDER, dpi);
-            var cyBorder = PInvoke.GetSystemMetricsForDpi(SYSTEM_METRICS_INDEX.SM_CYBORDER, dpi);
+        public static Size Size(SizeInt32 size) => new(size.Width, size.Height);
+        public static string Str(Size size) => $"({size.Width}, {size.Height})";
+        public static string Str(SizeInt32 size) => Str(Size(size));
 
-        }
     }
 }
