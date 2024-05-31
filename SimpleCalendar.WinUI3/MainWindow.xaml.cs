@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.Numerics;
 using System.Runtime.Versioning;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -8,7 +7,6 @@ using SimpleCalendar.WinUI3.Utilities;
 using Windows.Graphics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
-using Windows.Win32.UI.WindowsAndMessaging;
 using WinUIEx;
 using static SimpleCalendar.WinUI3.Utilities.WindowHelper;
 
@@ -112,10 +110,9 @@ namespace SimpleCalendar.WinUI3
             //StateChanged += MainWindow_StateChanged; // 最小化時にHide()を実行してタスクバーから見えなくする
         }
 
-        private System.Drawing.Point _ptStart = new();
-
         private LRESULT WndProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam, nuint uIdSubclass, nuint dwRefData)
         {
+            // 動作検証用 (ここから)
             if (MsgToString.TryGetValue(uMsg, out string name))
             {
                 Debug.WriteLine($"Message=[{name}]");
@@ -124,36 +121,10 @@ namespace SimpleCalendar.WinUI3
             {
                 Debug.WriteLine($"Message=[{uMsg}]");
             }
+            // 動作検証用 (ここまで)
+
             switch (uMsg)
             {
-                case PInvoke.WM_LBUTTONDOWN:
-                    // 左ボタンが押された場合
-                    PInvoke.SetCapture(hWnd);
-                    (_ptStart.X, _ptStart.Y) = GET_XY_LPARAM(lParam);
-                    Debug.WriteLine($"[LBUTTONDOWN] ({_ptStart.X}, {_ptStart.Y})");
-                    return default;
-
-                case PInvoke.WM_MOUSEMOVE:
-                    // マウスが移動した場合
-                    if (PInvoke.GetCapture() == hWnd)
-                    {
-                        // ウィンドウをドラッグする
-                        PInvoke.GetCursorPos(out System.Drawing.Point ptCurrent);
-                        int x = ptCurrent.X - _ptStart.X;
-                        int y = ptCurrent.Y - _ptStart.Y;
-                        PInvoke.SetWindowPos(hWnd, HWND.Null,
-                            x, y, 0, 0,
-                            SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
-                        Debug.WriteLine($"[MOUSEMOVE] Current=({ptCurrent.X}, {ptCurrent.Y}) => SetWindowPos({x}, {y})");
-                    }
-                    return default;
-
-                case PInvoke.WM_LBUTTONUP:
-                    // 左ボタンが離された場合
-                    BOOL result = PInvoke.ReleaseCapture();
-                    Debug.WriteLine($"[LBUTTONUP] ReleaseCapture={result.Value}");
-                    return default;
-
                 default:
                     return PInvoke.DefSubclassProc(hWnd, uMsg, wParam, lParam);
             }
@@ -166,24 +137,17 @@ namespace SimpleCalendar.WinUI3
             SizeInt32 size = AppWindow.Size;
             SizeInt32 cSize = AppWindow.ClientSize;
             FrameworkElement elem = (FrameworkElement)WindowContent;
-            double w = elem.Width;
-            double h = elem.Height;
-            Vector2 aSize = elem.ActualSize;
+            //Vector2 aSize = elem.ActualSize;
             Windows.Foundation.Size dSize = elem.DesiredSize;
-            Windows.Foundation.Size rSize = elem.RenderSize;
-            Debug.WriteLine($"[WindowContent:LayoutUpdated] AppWindow[Size={Str(size)}, ClientSize={Str(cSize)}], WindowContent[Size=({w}, {h}), Actual=({aSize.X}, {aSize.Y}), Desired={Str(dSize)}, Render={Str(rSize)}]");
+            //Windows.Foundation.Size rSize = elem.RenderSize;
+            //Debug.WriteLine($"[WindowContent:LayoutUpdated] AppWindow[Size={Str(size)}, ClientSize={Str(cSize)}], WindowContent[Actual=({aSize.X}, {aSize.Y}), Desired={Str(dSize)}, Render={Str(rSize)}]");
+            Debug.WriteLine($"[WindowContent:LayoutUpdated] AppWindow[Size={Str(size)}, ClientSize={Str(cSize)}], WindowContent.Desired={Str(dSize)}");
             if (dSize.Width > 0 && (dSize.Width != cSize.Width || dSize.Height != cSize.Height))
             {
+                PointInt32 pos = AppWindow.Position;
                 int wOffset = size.Width - cSize.Width;
                 int hOffset = size.Height - cSize.Height;
-                PointInt32 pos = AppWindow.Position;
-                RectInt32 rect = new()
-                {
-                    X = pos.X,
-                    Y = pos.Y,
-                    Width = (int)(dSize.Width + wOffset),
-                    Height = (int)(dSize.Height + hOffset)
-                };
+                RectInt32 rect = new(pos.X, pos.Y, (int)dSize.Width + wOffset, (int)dSize.Height + hOffset);
                 AppWindow.MoveAndResize(rect);
                 Debug.WriteLine($"[WindowContent:LayoutUpdated] Resize=({rect.Width}, {rect.Height})");
             }
