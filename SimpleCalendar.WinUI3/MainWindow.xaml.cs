@@ -29,9 +29,6 @@ namespace SimpleCalendar.WinUI3
         //private HwndSource? _source;
         //private HwndSourceHook? _sourceHook;
 
-        //private Window _help;
-        //private Window _settingsView;
-
         //private bool _isNotificationIconAdded = false;
 
         private readonly LocalConfigService _localConfigService;
@@ -42,6 +39,9 @@ namespace SimpleCalendar.WinUI3
         private PointInt32 _startWinPos;
         private System.Drawing.Point _startCsrPos;
         private readonly DisplayAreas _displayAreas = ServiceRegistry.GetService<DisplayAreas>();
+
+        private WindowEx _help;
+        private WindowEx _settingsView;
 
         public MainWindow()
         {
@@ -353,6 +353,31 @@ namespace SimpleCalendar.WinUI3
                 adjusted = true;
             }
             return adjusted;
+        }
+
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            if (_settingsView == null)
+            {
+                //_settingsView = new SettingsView();
+            }
+            //_settingsView.Show();
+
+        }
+        private void Help_Click(object sender, RoutedEventArgs e)
+        {
+            if (_help == null)
+            {
+                //_help = new Help();
+            }
+            //_help.Show();
+
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow_Closed(sender, default);
         }
 
         //private void Help_Click(object sender, RoutedEventArgs e)

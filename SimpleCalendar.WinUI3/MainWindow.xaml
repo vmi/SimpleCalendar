@@ -47,6 +47,13 @@
             <view:CalendarMonthView Grid.Row="3" Grid.Column="1" Offset="6" />
             <view:CalendarMonthView Grid.Row="3" Grid.Column="2" Offset="7" />
         </Grid>
+        <Border.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Text="設定" Click="Settings_Click"/>
+                <MenuFlyoutItem Text="ヘルプ" Click="Help_Click"/>
+                <MenuFlyoutItem Text="終了" Click="Exit_Click"/>
+            </MenuFlyout>
+        </Border.ContextFlyout>
     </Border>
     <!--
     <Window.InputBindings>
