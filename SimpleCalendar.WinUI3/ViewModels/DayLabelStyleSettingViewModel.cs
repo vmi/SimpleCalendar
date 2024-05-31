@@ -18,6 +18,7 @@ namespace SimpleCalendar.WinUI3.ViewModels
         public Brush LightGreen { get; } = new SolidColorBrush(Colors.LightGreen);
         public Brush ControlTextBrush { get; } = (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"];
         public Brush DefaultBackgroundBrush { get; } = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"];
+        public Brush DefaultBorderBrush { get; } = (Brush)Application.Current.Resources["ControlElevationBorderBrush"];
 
         private Brush _sundayBrush;
         public Brush SundayBrush { get => _sundayBrush; private set => SetProperty(ref _sundayBrush, value); }

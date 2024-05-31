@@ -13,7 +13,7 @@
     <Border d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
             helper:DataContextHelper.DataContext="viewmodel:MainWindowViewModel"
             Background="{Binding SettingsViewModel.DayLabelStyleSettingModel.DefaultBackgroundBrush}"
-            BorderBrush="Gray"
+            BorderBrush="{Binding SettingsViewModel.DayLabelStyleSettingModel.DefaultBorderBrush}"
             BorderThickness="1">
         <Grid Name="CalendarRoot" helper:GridHelper.Margin="0,0,20,0">
             <Grid.Resources>
