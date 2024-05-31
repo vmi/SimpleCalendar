@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.UI.Windowing;
 using SimpleCalendar.WinUI3.Utilities;
 
 namespace SimpleCalendar.WinUI3.Services
@@ -47,19 +45,9 @@ namespace SimpleCalendar.WinUI3.Services
 
         private int _savedCount = 0;
 
-        public LoadStatus LoadStatus { get; private set; } = LoadStatus.NotLoaded;
+        private DisplayAreas _displayAreas = ServiceRegistry.GetService<DisplayAreas>();
 
-        private static string GenKey()
-        {
-            IEnumerable<string> keyItems = DisplayArea.FindAll()
-                .OrderBy(displayArea => displayArea.DisplayId)
-                .Select(displayArea =>
-                {
-                    var ob = displayArea.OuterBounds;
-                    return $"{displayArea.DisplayId}[{ob.X};{ob.Y};{ob.Width};{ob.Height}]";
-                });
-            return string.Join("+", keyItems);
-        }
+        public LoadStatus LoadStatus { get; private set; } = LoadStatus.NotLoaded;
 
         private static string parseColumn(string value, string defaultValue)
         {
@@ -113,7 +101,7 @@ namespace SimpleCalendar.WinUI3.Services
                             goto case 3;
                     }
                 });
-                if (handler != null && _configs.TryGetValue(GenKey(), out LocalConfigEntry entry))
+                if (handler != null && _configs.TryGetValue(_displayAreas.ScreenId, out LocalConfigEntry entry))
                 {
                     handler.Invoke(entry);
                 }
@@ -142,7 +130,7 @@ namespace SimpleCalendar.WinUI3.Services
             lock (this)
             {
                 if (LoadStatus != LoadStatus.Loaded) { return; }
-                string key = GenKey();
+                string key = _displayAreas.ScreenId;
                 if (_configs.TryGetValue(key, out LocalConfigEntry entry))
                 {
                     if (entry.Left == left && entry.Top == top)

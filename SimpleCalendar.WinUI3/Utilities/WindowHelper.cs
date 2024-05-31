@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Windows.Foundation;
@@ -348,7 +349,113 @@ namespace SimpleCalendar.WinUI3.Utilities
         }
 
         ~WndProcRegistrar() { Dispose(false); }
-
     }
 
+    public class CRectInt32(RectInt32 value) : IEquatable<CRectInt32>, IComparable<CRectInt32>
+    {
+        public readonly RectInt32 Value = value;
+
+        public int CompareTo(CRectInt32 other)
+        {
+            int ct = Value.X.CompareTo(other.Value.X);
+            if (ct == 0)
+            {
+                ct = Value.Y.CompareTo(other.Value.Y);
+            }
+            return ct;
+        }
+
+        public bool Equals(CRectInt32 other) => Value.Equals(other.Value);
+
+        public override int GetHashCode() => Value.GetHashCode();
+    }
+
+    // DisplayArea.FindAll() が「Specified cast is not valid」を発生させて使いものにならないので、ワークアラウンドを実装。
+    // 参考: https://github.com/microsoft/microsoft-ui-xaml/issues/6454#issuecomment-1068976166
+    public class DisplayAreas : IDisposable
+    {
+        private readonly SortedList<CRectInt32, DisplayArea> _displayAreas = [];
+        private DisplayAreaWatcher _watcher;
+
+        public RectInt32 VirtualWorkAreaRect { get; private set; }
+
+        public string ScreenId { get; private set; }
+
+        public bool IsActive => _displayAreas.Count > 0;
+
+        public DisplayAreas()
+        {
+            _watcher = DisplayArea.CreateWatcher();
+            _watcher.Added += Display_Added;
+            _watcher.Removed += Display_Removed;
+            _watcher.Start();
+        }
+
+        private void Display_Added(DisplayAreaWatcher sender, DisplayArea args)
+        {
+            _displayAreas.Add(new(args.WorkArea), args);
+            CalcVirtualScreenRectAndScreenId();
+        }
+
+        private void Display_Removed(DisplayAreaWatcher sender, DisplayArea args)
+        {
+            _displayAreas.Remove(new(args.WorkArea));
+            CalcVirtualScreenRectAndScreenId();
+        }
+
+        private static string Str(DisplayArea da)
+        {
+            RectInt32 ob = da.OuterBounds;
+            string marker = da.IsPrimary ? "Primary" : "";
+            return $"{marker}[{ob.X};{ob.Y};{ob.Width};{ob.Height}]";
+        }
+
+        private void CalcVirtualScreenRectAndScreenId()
+        {
+            var e = _displayAreas.GetEnumerator();
+            if (!e.MoveNext()) return;
+            (CRectInt32 crect, var da) = e.Current;
+            RectInt32 vRect = crect.Value;
+            StringBuilder sb = new();
+            sb.Append(Str(da));
+            while (e.MoveNext())
+            {
+                (crect, da) = e.Current;
+                RectInt32 rect = crect.Value;
+                sb.Append('+').Append(Str(da));
+                if (rect.X < vRect.X)
+                {
+                    vRect.Width += vRect.X - rect.X;
+                    vRect.X = rect.X;
+                }
+                if (rect.Y < vRect.Y)
+                {
+                    vRect.Height += vRect.Y - rect.Y;
+                    vRect.Y = rect.Y;
+                }
+                var vRight = vRect.X + vRect.Width;
+                var vBottom = vRect.Y + vRect.Height;
+                var right = rect.X + rect.Width;
+                var bottom = rect.Y + rect.Height;
+                if (vRight < right)
+                {
+                    vRect.Width += right - vRight;
+                }
+                if (vBottom < bottom)
+                {
+                    vRect.Height -= bottom - vBottom;
+                }
+            }
+            VirtualWorkAreaRect = vRect;
+            ScreenId = sb.ToString();
+        }
+
+        public void Dispose()
+        {
+            _watcher.Stop();
+            _watcher = null;
+            _displayAreas.Clear();
+            GC.SuppressFinalize(this);
+        }
+    }
 }

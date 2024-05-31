@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleCalendar.WinUI3.Models;
 using SimpleCalendar.WinUI3.Services;
+using SimpleCalendar.WinUI3.Utilities;
 using SimpleCalendar.WinUI3.ViewModels;
 
 namespace SimpleCalendar.WinUI3
@@ -24,6 +25,7 @@ namespace SimpleCalendar.WinUI3
                 .AddSingleton<MainWindowViewModel>()
                 .AddTransient<CalendarMonthViewModel>()
                 .AddSingleton<SettingsViewModel>()
+                .AddSingleton<DisplayAreas>()
                 .BuildServiceProvider());
         }
 

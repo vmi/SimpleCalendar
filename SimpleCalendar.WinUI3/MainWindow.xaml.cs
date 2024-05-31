@@ -1,9 +1,11 @@
-using System;
 using System.Diagnostics;
 using System.Runtime.Versioning;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using SimpleCalendar.WinUI3.Services;
 using SimpleCalendar.WinUI3.Utilities;
+using SimpleCalendar.WinUI3.ViewModels;
 using Windows.Graphics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -23,7 +25,6 @@ namespace SimpleCalendar.WinUI3
         //private const string ICON_NAME = "icon256.ico";
         //private const uint WMAPP_NOTIFYCALLBACK = NotifyIconManager.WM_APP + 1;
 
-        //private readonly LocalConfigService _localConfigService;
         //private NotifyIconManager _notifyIconManager;
         //private HwndSource? _source;
         //private HwndSourceHook? _sourceHook;
@@ -33,17 +34,23 @@ namespace SimpleCalendar.WinUI3
 
         //private bool _isNotificationIconAdded = false;
 
+        private readonly LocalConfigService _localConfigService;
         private readonly WndProcRegistrar _wndProcRegistrar;
+        private bool _isInitialized = false;
+        private bool _isWindowSizeAdjusted = false;
         private bool _isDragging = false;
         private PointInt32 _startWinPos;
         private System.Drawing.Point _startCsrPos;
+        private DisplayAreas _displayAreas = ServiceRegistry.GetService<DisplayAreas>();
 
         public MainWindow()
         {
+            _localConfigService = ServiceRegistry.GetService<LocalConfigService>()!;
+
             _wndProcRegistrar = new(this, WndProc, 0, 0);
-            //_localConfigService = ServiceRegistry.GetService<LocalConfigService>()!;
+
             InitializeComponent();
-            DisableTitleBar(this);
+
             // 動作検証用 (ここから)
             Activated += (_, e) => Debug.WriteLine($"[MainWindow:Activated] State={e.WindowActivationState}");
             Closed += (_, e) => Debug.WriteLine($"[MainWindow:Closed]");
@@ -55,59 +62,37 @@ namespace SimpleCalendar.WinUI3
             ZOrderChanged += (_, e) => Debug.WriteLine($"[MainWindow:ZOrderChanged] BelowWindowId={e.ZOrderBelowWindowId.Value}, Top={e.IsZOrderAtTop}, Bottom={e.IsZOrderAtBottom}");
             // 動作検証用 (ここまで)
 
-            if (WindowContent is FrameworkElement elem)
+            DisableTitleBar(this);
+            Activated += MainWindow_Activated; // メインウィンドウ初期化時に通知領域にアイコンを登録(未実装) & アクティブ化時に「今日」を最新化する
+            Closed += MainWindow_Closed; // メインウィンドウクローズ時に通知領域からアイコンを削除(未実装)
+            PositionChanged += MainWindow_PositionChanged;
+            WindowStateChanged += MainWindow_WindowStateChanged; // 最小化時にタスクバーから非表示(未実装)
+
+
+            if (WindowContent is FrameworkElement content)
             {
                 // 動作検証用 (ここから)
-                elem.SizeChanged += (sender, e) => { Debug.WriteLine($"[WindowContent:SizeChanged] PreviousSize={Str(e.PreviousSize)}, NewSize={Str(e.NewSize)}"); };
-                elem.PointerEntered += (sender, e) => { Debug.WriteLine($"[WindowContent:PointerEntered]"); };
-                elem.PointerExited += (sender, e) => { Debug.WriteLine($"[WindowContent:PointerExited]"); };
+                content.SizeChanged += (sender, e) => { Debug.WriteLine($"[WindowContent:SizeChanged] PreviousSize={Str(e.PreviousSize)}, NewSize={Str(e.NewSize)}"); };
+                content.PointerEntered += (sender, e) => { Debug.WriteLine($"[WindowContent:PointerEntered]"); };
+                content.PointerExited += (sender, e) => { Debug.WriteLine($"[WindowContent:PointerExited]"); };
                 // 動作検証用 (ここまで)
 
-                elem.LayoutUpdated += Content_LayoutUpdated;
-                elem.PointerPressed += (sender, e) =>
-                {
-                    Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
-                    if (props.IsLeftButtonPressed)
-                    {
-                        ((UIElement)sender).CapturePointer(e.Pointer);
-                        _isDragging = true;
-                        _startWinPos = AppWindow.Position;
-                        PInvoke.GetCursorPos(out _startCsrPos);
-                    }
-                };
-                elem.PointerMoved += (sender, e) =>
-                {
-                    Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
-                    if (props.IsLeftButtonPressed && _isDragging)
-                    {
-                        PInvoke.GetCursorPos(out System.Drawing.Point curCsrPos);
-                        int dX = curCsrPos.X - _startCsrPos.X;
-                        int dY = curCsrPos.Y - _startCsrPos.Y;
-                        PointInt32 pos = new PointInt32(_startWinPos.X + dX, _startWinPos.Y + dY);
-                        AppWindow.Move(pos);
-                    }
-                };
-                elem.PointerReleased += (sender, e) =>
-                {
-                    Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
-                    if (!props.IsLeftButtonPressed)
-                    {
-                        ((UIElement)sender).ReleasePointerCapture(e.Pointer);
-                        _isDragging = false;
-                    }
-                };
-            }
-            Closed += MainWindow_Closed;
+                // SizeToContentエミュレーション。一瞬リサイズ前のウィンドウが表示されるが、回避策不明。
+                content.LayoutUpdated += Content_LayoutUpdated;
 
-            //            this.VisibilityChanged += MainWindow_VisibilityChanged;
-            //Loaded += MainWindow_Loaded; // メインウィンドウ初期化時に通知領域にアイコンを登録
-            //Closed += MainWindow_Closed; // メインウィンドウクローズ時に通知領域からアイコンを削除
-            //Activated += MainWindow_Activated; // アクティブ化時に「今日」を最新化する
-            //CalendarRoot.Loaded += CalendarRoot_Loaded; // 画面に表示されている「月」の行数および列数を登録
-            //MouseLeftButtonDown += MainWindow_MouseLeftButtonDown; // ウィンドウ自体を掴んで移動可能にする
-            //LocationChanged += MainWindow_LocationChanged; // 画面外に移動できないようにする(暫定実装)
-            ///MouseWheel += MainWindow_MouseWheel; // マウスホイールの回転で画面を前後に移動させる (XAMLのInputBindingsがマウスホイールの回転に対応していない)
-            //StateChanged += MainWindow_StateChanged; // 最小化時にHide()を実行してタスクバーから見えなくする
+                // 画面に表示されている「月」の行数および列数を登録
+                content.Loaded += Content_Loaded;
+
+                // ウィンドウ自体を掴んで移動可能にする。
+                // マウス操作系はWndProcで拾えない(おそらく子のUIElementに食われている)ので、
+                // WindowContentのマウス操作イベントにハンドラを登録。参考:
+                // https://github.com/castorix/WinUI3_Transparent/blob/6c678cfdcf77340f17912cf9163eff94520cced7/MainWindow.xaml.cs#L232
+                content.PointerPressed += Content_PointerPressed;
+                content.PointerMoved += Content_PointerMoved;
+                content.PointerReleased += Content_PointerReleased;
+
+                content.PointerWheelChanged += Content_PointerWheelChanged;
+            }
         }
 
         private LRESULT WndProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam, nuint uIdSubclass, nuint dwRefData)
@@ -123,63 +108,56 @@ namespace SimpleCalendar.WinUI3
             }
             // 動作検証用 (ここまで)
 
+            // 通知アイコン対応時に復旧
+            //private nint WndProc(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
+            //{
+            //    switch ((uint)msg)
+            //    {
+            //        case WMAPP_NOTIFYCALLBACK:
+            //            //_notifyIconManager?.NotifyCallback(hwnd, wParam, lParam);
+            //            break;
+            //    }
+            //    return nint.Zero;
+            //}
+
             switch (uMsg)
             {
                 default:
                     return PInvoke.DefSubclassProc(hWnd, uMsg, wParam, lParam);
             }
         }
-
-        private void Content_LayoutUpdated(object sender, object e)
+        private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
-            if (AppWindow == null) return;
-
-            SizeInt32 size = AppWindow.Size;
-            SizeInt32 cSize = AppWindow.ClientSize;
-            FrameworkElement elem = (FrameworkElement)WindowContent;
-            //Vector2 aSize = elem.ActualSize;
-            Windows.Foundation.Size dSize = elem.DesiredSize;
-            //Windows.Foundation.Size rSize = elem.RenderSize;
-            //Debug.WriteLine($"[WindowContent:LayoutUpdated] AppWindow[Size={Str(size)}, ClientSize={Str(cSize)}], WindowContent[Actual=({aSize.X}, {aSize.Y}), Desired={Str(dSize)}, Render={Str(rSize)}]");
-            Debug.WriteLine($"[WindowContent:LayoutUpdated] AppWindow[Size={Str(size)}, ClientSize={Str(cSize)}], WindowContent.Desired={Str(dSize)}");
-            if (dSize.Width > 0 && (dSize.Width != cSize.Width || dSize.Height != cSize.Height))
+            MainWindowViewModel vm = CalendarRoot.DataContext as MainWindowViewModel;
+            if (!_isInitialized)
             {
-                PointInt32 pos = AppWindow.Position;
-                int wOffset = size.Width - cSize.Width;
-                int hOffset = size.Height - cSize.Height;
-                RectInt32 rect = new(pos.X, pos.Y, (int)dSize.Width + wOffset, (int)dSize.Height + hOffset);
-                AppWindow.MoveAndResize(rect);
-                Debug.WriteLine($"[WindowContent:LayoutUpdated] Resize=({rect.Width}, {rect.Height})");
+                vm?.SettingsViewModel.UpdateHolidaysCommand.Execute(this);
+                RegisterNotifyIcon();
+                _isInitialized = true;
             }
+            vm?.UpdateTodayCommand.Execute(null);
         }
 
-        //private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //if (DesignerProperties.GetIsInDesignMode(this)) { return; }
-        //if (CalendarRoot.DataContext is MainWindowViewModel vm)
-        //{
-        //    vm.SettingsViewModel.UpdateHolidaysCommand.Execute(this);
-        //}
-        //  RegisterNotifyIcon();
-        //}
+        private void RegisterNotifyIcon()
+        {
+            // 通知アイコン対応時に復旧
 
-        //private void RegisterNotifyIcon()
-        //{
-        //    Icon icon = AssemblyHelper.Instance.LoadIcon(ICON_NAME);
-        //    if (icon == null)
-        //    {
-        //        Debug.WriteLine($"Missing icon resouce: {ICON_NAME}");
-        //        return;
-        //    }
-        //    //nint hwnd = new WindowInteropHelper(this).Handle;
-        //    //_notifyIconManager = new(hwnd, id: NotificationIconId);
-        //    //_source = HwndSource.FromHwnd(hwnd);
-        //    //_sourceHook = new HwndSourceHook(WndProc);
-        //    //_source.AddHook(_sourceHook);
-        //    //_notifyIconManager.Select = NotifyIcon_Select;
-        //    //_isNotificationIconAdded = _notifyIconManager.Add(icon, tip: "Simple Calendar", callbackMessage: WMAPP_NOTIFYCALLBACK);
-        //}
+            //    Icon icon = AssemblyHelper.Instance.LoadIcon(ICON_NAME);
+            //    if (icon == null)
+            //    {
+            //        Debug.WriteLine($"Missing icon resouce: {ICON_NAME}");
+            //        return;
+            //    }
+            //    //nint hwnd = new WindowInteropHelper(this).Handle;
+            //    //_notifyIconManager = new(hwnd, id: NotificationIconId);
+            //    //_source = HwndSource.FromHwnd(hwnd);
+            //    //_sourceHook = new HwndSourceHook(WndProc);
+            //    //_source.AddHook(_sourceHook);
+            //    //_notifyIconManager.Select = NotifyIcon_Select;
+            //    //_isNotificationIconAdded = _notifyIconManager.Add(icon, tip: "Simple Calendar", callbackMessage: WMAPP_NOTIFYCALLBACK);
+        }
 
+        // 通知アイコン対応時に復旧
         //private void NotifyIcon_Select(nint hwnd)
         //{
         //    switch (WindowState)
@@ -201,6 +179,8 @@ namespace SimpleCalendar.WinUI3
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
             _wndProcRegistrar.Dispose();
+
+            // 通知アイコン対応時に復旧
             //if (_notifyIconManager != null)
             //{
             //    _notifyIconManager.Delete();
@@ -209,125 +189,171 @@ namespace SimpleCalendar.WinUI3
             //    _source = null;
             //    _sourceHook = null;
             //}
+
+            Application.Current.Exit();
         }
 
-        //private nint WndProc(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
-        //{
-        //    switch ((uint)msg)
-        //    {
-        //        case WMAPP_NOTIFYCALLBACK:
-        //            //_notifyIconManager?.NotifyCallback(hwnd, wParam, lParam);
-        //            break;
-        //    }
-        //    return nint.Zero;
-        //}
-
-        private void MainWindow_StateChanged(object sender, EventArgs e)
+        private void MainWindow_PositionChanged(object sender, PointInt32 e)
         {
-            //if (WindowState == WindowState.Minimized && _isNotificationIconAdded)
-            //{
-            //    Hide();
-            //}
-        }
-
-        /*private void MainWindow_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (DataContext is MainWindowViewModel curMon)
+            switch (_localConfigService.LoadStatus)
             {
-                int delta = e.Delta;
+                case LoadStatus.NotLoaded:
+                    // no operation.
+                    break;
+                case LoadStatus.Loading:
+                    // no operation.
+                    break;
+                case LoadStatus.Loaded:
+                    PointInt32 pos = AppWindow.Position;
+                    _localConfigService.Save(pos.X, pos.Y);
+                    break;
+            }
+        }
+
+        private void MainWindow_WindowStateChanged(object sender, WindowState e)
+        {
+            // 通知アイコン実装後に有効化
+            //
+            // if (WindowState == WindowState.Minimized && _isNotificationIconAdded)
+            // {
+            //     Hide();
+            // }
+        }
+
+        private void Content_LayoutUpdated(object sender, object e)
+        {
+            if (AppWindow == null) return;
+
+            if (_isWindowSizeAdjusted)
+            {
+                if (_localConfigService.LoadStatus == LoadStatus.NotLoaded)
+                {
+                    _localConfigService.Load(entry =>
+                    {
+                        PointInt32 pos = new((int)entry.Left, (int)entry.Top);
+                        SizeInt32 size = AppWindow.Size;
+                        AdjustWindowPosition(ref pos, size);
+                        AppWindow.Move(pos);
+                        Debug.WriteLine($"Loaded: ({entry.Left}, {entry.Top})");
+                    });
+                }
+                return;
+            }
+
+            SizeInt32 size = AppWindow.Size;
+            SizeInt32 cSize = AppWindow.ClientSize;
+            FrameworkElement elem = (FrameworkElement)WindowContent;
+            Windows.Foundation.Size dSize = elem.DesiredSize;
+            Debug.WriteLine($"[WindowContent:LayoutUpdated] AppWindow[Size={Str(size)}, ClientSize={Str(cSize)}], WindowContent.Desired={Str(dSize)}");
+            if (dSize.Width > 0)
+            {
+                if (dSize.Width == cSize.Width && dSize.Height == cSize.Height)
+                {
+                    _isWindowSizeAdjusted = true;
+                }
+                else
+                {
+                    PointInt32 pos = AppWindow.Position;
+                    int wOffset = size.Width - cSize.Width;
+                    int hOffset = size.Height - cSize.Height;
+                    RectInt32 rect = new(pos.X, pos.Y, (int)dSize.Width + wOffset, (int)dSize.Height + hOffset);
+                    AppWindow.MoveAndResize(rect);
+                    Debug.WriteLine($"[WindowContent:LayoutUpdated] Resize=({rect.Width}, {rect.Height})");
+                }
+            }
+        }
+
+        private void Content_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (CalendarRoot.DataContext is MainWindowViewModel vm)
+            {
+                vm.RowCount = CalendarRoot.ColumnDefinitions.Count;
+                vm.ColumnCount = CalendarRoot.ColumnDefinitions.Count;
+            }
+        }
+
+        private void Content_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
+            if (props.IsLeftButtonPressed)
+            {
+                ((UIElement)sender).CapturePointer(e.Pointer);
+                _isDragging = true;
+                _startWinPos = AppWindow.Position;
+                PInvoke.GetCursorPos(out _startCsrPos);
+            }
+        }
+
+        private void Content_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
+            if (props.IsLeftButtonPressed && _isDragging)
+            {
+                PInvoke.GetCursorPos(out System.Drawing.Point curCsrPos);
+                int dX = curCsrPos.X - _startCsrPos.X;
+                int dY = curCsrPos.Y - _startCsrPos.Y;
+                PointInt32 pos = new(_startWinPos.X + dX, _startWinPos.Y + dY);
+                SizeInt32 size = AppWindow.Size;
+                AdjustWindowPosition(ref pos, size);
+                AppWindow.Move(pos);
+            }
+        }
+
+        private void Content_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            Microsoft.UI.Input.PointerPointProperties props = e.GetCurrentPoint((UIElement)sender).Properties;
+            if (!props.IsLeftButtonPressed)
+            {
+                ((UIElement)sender).ReleasePointerCapture(e.Pointer);
+                _isDragging = false;
+            }
+        }
+        private void Content_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            if (CalendarRoot.DataContext is MainWindowViewModel vm)
+            {
+                Microsoft.UI.Input.PointerPoint pp = e.GetCurrentPoint((UIElement)sender);
+                int delta = pp.Properties.MouseWheelDelta;
                 if (delta < 0)
                 {
-                    curMon.NextLineCommand.Execute(null);
+                    vm.NextLineCommand.Execute(null);
                 }
                 else if (delta > 0)
                 {
-                    curMon.PrevLineCommand.Execute(null);
+                    vm.PrevLineCommand.Execute(null);
                 }
             }
-        }*/
+        }
 
-        //private void MainWindow_LocationChanged(object? sender, EventArgs e)
-        //{
-        //    switch (_localConfigService.LoadStatus)
-        //    {
-        //        case LoadStatus.NotLoaded:
-        //            _localConfigService.Load(entry =>
-        //            {
-        //                Left = entry.Left;
-        //                Top = entry.Top;
-        //                Debug.WriteLine($"Loaded: ({Left}, {Top})");
-        //            });
-        //            break;
-        //        case LoadStatus.Loading:
-        //            // no operation.
-        //            break;
-        //        case LoadStatus.Loaded:
-        //            AdjustWindowPosition();
-        //            _localConfigService.Save(Left, Top);
-        //            break;
-        //    }
-        //}
+        private bool AdjustWindowPosition(ref PointInt32 pos, SizeInt32 size)
+        {
+            if (!_displayAreas.IsActive) return false;
 
-        //private void AdjustWindowPosition()
-        //{
-        //    //double vl = SystemParameters.VirtualScreenLeft;
-        //    //double vt = SystemParameters.VirtualScreenTop;
-        //    //double vw = SystemParameters.VirtualScreenWidth;
-        //    //double vh = SystemParameters.VirtualScreenHeight;
-        //    //Rect wa = SystemParameters.WorkArea;
-        //    //double pw = SystemParameters.PrimaryScreenWidth;
-        //    //double ph = SystemParameters.PrimaryScreenHeight;
-        //    //double leftMin = vl < 0 ? vl : wa.Left;
-        //    //double rightMax = vl + vw > pw ? vl + vw : wa.Right;
-        //    //double topMin = vt < 0 ? vt : wa.Top;
-        //    //double bottomMax = vt + vh > ph ? vt + vh : wa.Bottom;
-        //    //if (Left < leftMin)
-        //    //{
-        //    //    Left = leftMin;
-        //    //}
-        //    //else if (Left + ActualWidth > rightMax)
-        //    //{
-        //    //    Left = rightMax - ActualWidth;
-        //    //}
-        //    //if (Top < topMin)
-        //    //{
-        //    //    Top = topMin;
-        //    //}
-        //    //else if (Top + ActualHeight > bottomMax)
-        //    //{
-        //    //    Top = bottomMax - ActualHeight;
-        //    //}
-        //}
-
-        //private void CalendarRoot_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    //if (sender is Grid grid && DataContext is MainWindowViewModel curMon)
-        //    //{
-        //    //    curMon.RowCount = grid.ColumnDefinitions.Count;
-        //    //    curMon.ColumnCount = grid.ColumnDefinitions.Count;
-        //    //}
-        //}
-
-        //private void MainWindow_Activated(object sender, EventArgs e)
-        //{
-        //    //if (CalendarRoot.DataContext is MainWindowViewModel curMon)
-        //    //{
-        //    //    curMon.UpdateTodayCommand.Execute(null);
-        //    //}
-        //}
-
-        //private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    //if (e.ChangedButton == MouseButton.Left)
-        //    //{
-        //    //    DragMove();
-        //    //}
-        //}
-
-        //private void Exit_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Application.Current.Exit();
-        //}
+            Debug.WriteLine($"");
+            bool adjusted = false;
+            RectInt32 wa = _displayAreas.VirtualWorkAreaRect;
+            if (pos.X < wa.X)
+            {
+                pos.X = wa.X;
+                adjusted = true;
+            }
+            else if (wa.X + wa.Width < pos.X + size.Width)
+            {
+                pos.X = wa.X + wa.Width - size.Width;
+                adjusted = true;
+            }
+            if (pos.Y < wa.Y)
+            {
+                pos.Y = wa.Y;
+                adjusted = true;
+            }
+            else if (wa.Y + wa.Height < pos.Y + size.Height)
+            {
+                pos.Y = wa.Y + wa.Height - size.Height;
+                adjusted = true;
+            }
+            return adjusted;
+        }
 
         //private void Help_Click(object sender, RoutedEventArgs e)
         //{
