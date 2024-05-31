@@ -112,7 +112,7 @@ namespace SimpleCalendar.WinUI3.Views.Controls
                 }
                 else
                 {
-                    dayLabel.Background = DayLabelStyleSettingViewModel.DefaultBackgroundBrush;
+                    dayLabel.Background = calMon.DayLabelStyleSetting.DefaultBackgroundBrush;
                 }
             }
         }

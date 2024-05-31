@@ -7,7 +7,7 @@ namespace SimpleCalendar.WinUI3.ViewModels
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        public readonly SettingsViewModel SettingsViewModel;
+        public SettingsViewModel SettingsViewModel { get; }
 
         private DateOnly _today;
 

@@ -10,69 +10,63 @@ namespace SimpleCalendar.WinUI3.ViewModels
 {
     public partial class DayLabelStyleSettingViewModel : ObservableObject
     {
-        //private readonly BrushConverter _brushConverter = new();
-        public static readonly Brush Red;
-        public static readonly Brush Blue;
-        public static readonly Brush Magenta;
-        public static readonly Brush OrangeRed;
-        public static readonly Brush LightSkyBlue;
-        public static readonly Brush LightGreen;
-        public static readonly Brush ControlTextBrush;
-        public static readonly Brush DefaultBackgroundBrush;
+        public Brush Red { get; } = new SolidColorBrush(Colors.Red);
+        public Brush Blue { get; } = new SolidColorBrush(Colors.Blue);
+        public Brush Magenta { get; } = new SolidColorBrush(Colors.Magenta);
+        public Brush OrangeRed { get; } = new SolidColorBrush(Colors.OrangeRed);
+        public Brush LightSkyBlue { get; } = new SolidColorBrush(Colors.LightSkyBlue);
+        public Brush LightGreen { get; } = new SolidColorBrush(Colors.LightGreen);
+        public Brush ControlTextBrush { get; } = (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+        public Brush DefaultBackgroundBrush { get; } = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"];
 
-        static DayLabelStyleSettingViewModel()
-        {
-            Red = new SolidColorBrush(Colors.Red);
-            Blue = new SolidColorBrush(Colors.Blue);
-            Magenta = new SolidColorBrush(Colors.Magenta);
-            OrangeRed = new SolidColorBrush(Colors.OrangeRed);
-            LightSkyBlue = new SolidColorBrush(Colors.LightSkyBlue);
-            LightGreen = new SolidColorBrush(Colors.LightGreen);
-            ControlTextBrush = (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"];
-            DefaultBackgroundBrush = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"];
-        }
-
-        private Brush _sundayBrush = Red;
+        private Brush _sundayBrush;
         public Brush SundayBrush { get => _sundayBrush; private set => SetProperty(ref _sundayBrush, value); }
 
-        private Brush _mondayBrush = ControlTextBrush;
+        private Brush _mondayBrush;
         public Brush MondayBrush { get => _mondayBrush; private set => SetProperty(ref _mondayBrush, value); }
 
-        private Brush _tuesdayBrush = ControlTextBrush;
+        private Brush _tuesdayBrush;
         public Brush TuesdayBrush { get => _tuesdayBrush; private set => SetProperty(ref _tuesdayBrush, value); }
 
-        private Brush _wednesdayBrush = ControlTextBrush;
+        private Brush _wednesdayBrush;
         public Brush WednesdayBrush { get => _wednesdayBrush; private set => SetProperty(ref _wednesdayBrush, value); }
 
-        private Brush _thursdayBrush = ControlTextBrush;
+        private Brush _thursdayBrush;
         public Brush ThursdayBrush { get => _thursdayBrush; private set => SetProperty(ref _thursdayBrush, value); }
 
-        private Brush _fridayBrush = ControlTextBrush;
+        private Brush _fridayBrush;
         public Brush FridayBrush { get => _fridayBrush; private set => SetProperty(ref _fridayBrush, value); }
 
-        private Brush _saturdayBrush = Blue;
+        private Brush _saturdayBrush;
         public Brush SaturdayBrush { get => _saturdayBrush; private set => SetProperty(ref _saturdayBrush, value); }
 
-        private Brush _holidayBrush = Magenta;
+        private Brush _holidayBrush;
         public Brush HolidayBrush { get => _holidayBrush; private set => SetProperty(ref _holidayBrush, value); }
 
-        private Brush _specialday1Brush = OrangeRed;
+        private Brush _specialday1Brush;
         public Brush Specialday1Brush { get => _specialday1Brush; private set => SetProperty(ref _specialday1Brush, value); }
 
-        private Brush _specialday2Brush = OrangeRed;
+        private Brush _specialday2Brush;
         public Brush Specialday2Brush { get => _specialday2Brush; private set => SetProperty(ref _specialday2Brush, value); }
 
-        private Brush _specialday3Brush = OrangeRed;
+        private Brush _specialday3Brush;
         public Brush Specialday3Brush { get => _specialday3Brush; private set => SetProperty(ref _specialday3Brush, value); }
 
-        private Brush _todayBrush = LightSkyBlue;
+        private Brush _todayBrush;
         public Brush TodayBrush { get => _todayBrush; private set => SetProperty(ref _todayBrush, value); }
 
-        private Brush _mouseOverBrush = LightGreen;
+        private Brush _mouseOverBrush;
         public Brush MouseOverBrush { get => _mouseOverBrush; private set => SetProperty(ref _mouseOverBrush, value); }
 
         public DayLabelStyleSettingViewModel()
         {
+            SundayBrush = Red;
+            MondayBrush = ControlTextBrush;
+            TuesdayBrush = ControlTextBrush;
+            WednesdayBrush = ControlTextBrush;
+            ThursdayBrush = ControlTextBrush;
+            FridayBrush = ControlTextBrush;
+            SaturdayBrush = Blue;
             LoadSetting();
         }
 

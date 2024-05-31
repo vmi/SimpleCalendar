@@ -19,10 +19,11 @@ namespace SimpleCalendar.WinUI3.ViewModels
 
     public partial class SettingsViewModel
     {
-        private DayItemInformationModel _dayItemInformationModel;
-        private DayLabelStyleSettingViewModel _dayLabelStyleSettingModel;
+        private readonly DayItemInformationModel _dayItemInformationModel;
         private readonly FileSystemWatcher _watcher;
         private int _reloadCount = 0;
+
+        public DayLabelStyleSettingViewModel DayLabelStyleSettingModel { get; }
 
         public ObservableCollection<LogEntry> LogEntries { get; } = [];
 
@@ -30,7 +31,7 @@ namespace SimpleCalendar.WinUI3.ViewModels
         {
             //BindingOperations.EnableCollectionSynchronization(LogEntries, new object());
             _dayItemInformationModel = dayItemInformationModel;
-            _dayLabelStyleSettingModel = dayLabelStyleSettingViewModel;
+            DayLabelStyleSettingModel = dayLabelStyleSettingViewModel;
             _watcher = new FileSystemWatcher(Path.Combine(SettingFiles.UserSettingBaseDir, SettingFiles.AppName));
             _watcher.Filters.Add(SettingFiles.Holidays.SettingFilename);
             _watcher.Filters.Add(SettingFiles.Specialdays.SettingFilename);
@@ -56,7 +57,7 @@ namespace SimpleCalendar.WinUI3.ViewModels
                 if (c == _reloadCount)
                 {
                     _dayItemInformationModel.LoadSettings();
-                    _dayLabelStyleSettingModel.LoadSetting();
+                    DayLabelStyleSettingModel.LoadSetting();
                     Log($"設定ファイルを再読み込みしました");
                 }
             });
@@ -77,7 +78,7 @@ namespace SimpleCalendar.WinUI3.ViewModels
                     Log("祝日ファイルを最新化しました");
                     break;
                 case Services.HolidayUpdaterStatus.ERROR:
-                    var error = args.Length >= 1 ? $" (エラー情報: {args[0]})" : "";
+                    string error = args.Length >= 1 ? $" (エラー情報: {args[0]})" : "";
                     Log($"祝日ファイルの取得に失敗しました{error}");
                     break;
             }

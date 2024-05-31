@@ -10,11 +10,12 @@
                 xmlns:winex="using:WinUIEx"
                 Title="Simple Calendar"
                 mc:Ignorable="d">
-    <Border BorderBrush="Gray" BorderThickness="1" Background="White">
-        <Grid Name="CalendarRoot"
-              d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
-              helper:DataContextHelper.DataContext="viewmodel:MainWindowViewModel"
-              helper:GridHelper.Margin="0,0,20,0">
+    <Border d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
+            helper:DataContextHelper.DataContext="viewmodel:MainWindowViewModel"
+            Background="{Binding SettingsViewModel.DayLabelStyleSettingModel.DefaultBackgroundBrush}"
+            BorderBrush="Gray"
+            BorderThickness="1">
+        <Grid Name="CalendarRoot" helper:GridHelper.Margin="0,0,20,0">
             <Grid.Resources>
                 <ResourceDictionary Source="MainWindowStyles.xaml" />
             </Grid.Resources>
