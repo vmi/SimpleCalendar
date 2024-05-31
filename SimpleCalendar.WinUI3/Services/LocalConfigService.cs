@@ -13,6 +13,8 @@ namespace SimpleCalendar.WinUI3.Services
 
         public double Left { get; set; } = 0.0;
         public double Top { get; set; } = 0.0;
+        public double Width { get; set; } = 0.0;
+        public double Height { get; set; } = 0.0;
         public string FontFamily { get; set; } = DEFAULT_FONTFAMILY;
         public int FontSize { get; set; } = DEFAULT_FONTSIZE;
     }
@@ -36,7 +38,7 @@ namespace SimpleCalendar.WinUI3.Services
 
         public static readonly string[] Header =
         [
-            "画面情報", "左", "上", "フォント名", "フォントサイズ"
+            "画面情報", "左", "上", "幅", "高", "フォント名", "フォントサイズ"
         ];
 
         private readonly SortedDictionary<string, LocalConfigEntry> _configs = [];
@@ -45,7 +47,7 @@ namespace SimpleCalendar.WinUI3.Services
 
         private int _savedCount = 0;
 
-        private DisplayAreas _displayAreas = ServiceRegistry.GetService<DisplayAreas>();
+        private readonly DisplayAreas _displayAreas = ServiceRegistry.GetService<DisplayAreas>();
 
         public LoadStatus LoadStatus { get; private set; } = LoadStatus.NotLoaded;
 
@@ -87,18 +89,24 @@ namespace SimpleCalendar.WinUI3.Services
                     _configs.Add(key, entry);
                     switch (csvLine.ColumnCount)
                     {
-                        case 1:
+                        case 2:
                             entry.Left = parseColumn(csvLine[1], 0);
                             break;
-                        case 2:
-                            entry.Top = parseColumn(csvLine[2], 0);
-                            goto case 1;
                         case 3:
-                            entry.FontFamily = parseColumn(csvLine[3], LocalConfigEntry.DEFAULT_FONTFAMILY);
+                            entry.Top = parseColumn(csvLine[2], 0);
                             goto case 2;
-                        default:
-                            entry.FontSize = parseColumn(csvLine[4], LocalConfigEntry.DEFAULT_FONTSIZE);
+                        case 4:
+                            entry.Width = parseColumn(csvLine[3], -1);
                             goto case 3;
+                        case 5:
+                            entry.Height = parseColumn(csvLine[4], -1);
+                            goto case 4;
+                        case 6:
+                            entry.FontFamily = parseColumn(csvLine[5], LocalConfigEntry.DEFAULT_FONTFAMILY);
+                            goto case 5;
+                        default:
+                            entry.FontSize = parseColumn(csvLine[6], LocalConfigEntry.DEFAULT_FONTSIZE);
+                            goto case 6;
                     }
                 });
                 if (handler != null && _configs.TryGetValue(_displayAreas.ScreenId, out LocalConfigEntry entry))

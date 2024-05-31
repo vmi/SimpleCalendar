@@ -41,7 +41,7 @@ namespace SimpleCalendar.WinUI3
         private bool _isDragging = false;
         private PointInt32 _startWinPos;
         private System.Drawing.Point _startCsrPos;
-        private DisplayAreas _displayAreas = ServiceRegistry.GetService<DisplayAreas>();
+        private readonly DisplayAreas _displayAreas = ServiceRegistry.GetService<DisplayAreas>();
 
         public MainWindow()
         {
@@ -68,7 +68,6 @@ namespace SimpleCalendar.WinUI3
             PositionChanged += MainWindow_PositionChanged;
             WindowStateChanged += MainWindow_WindowStateChanged; // 最小化時にタスクバーから非表示(未実装)
 
-
             if (WindowContent is FrameworkElement content)
             {
                 // 動作検証用 (ここから)
@@ -93,6 +92,24 @@ namespace SimpleCalendar.WinUI3
 
                 content.PointerWheelChanged += Content_PointerWheelChanged;
             }
+
+            // 前回起動時に保存した位置とサイズを復帰
+            _localConfigService.Load(entry =>
+            {
+                PointInt32 pos = new((int)entry.Left, (int)entry.Top);
+                if (entry.Width > 0)
+                {
+                    SizeInt32 size = new((int)entry.Width, (int)entry.Height);
+                    AdjustWindowPosition(ref pos, size);
+                    AppWindow.MoveAndResize(new(pos.X, pos.Y, size.Width, size.Height));
+                    Debug.WriteLine($"Loaded: ({entry.Left}, {entry.Top}, {entry.Width}, {entry.Height})");
+                }
+                else
+                {
+                    AppWindow.Move(pos);
+                    Debug.WriteLine($"Loaded: ({entry.Left}, {entry.Top})");
+                }
+            });
         }
 
         private LRESULT WndProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam, nuint uIdSubclass, nuint dwRefData)
@@ -222,23 +239,7 @@ namespace SimpleCalendar.WinUI3
 
         private void Content_LayoutUpdated(object sender, object e)
         {
-            if (AppWindow == null) return;
-
-            if (_isWindowSizeAdjusted)
-            {
-                if (_localConfigService.LoadStatus == LoadStatus.NotLoaded)
-                {
-                    _localConfigService.Load(entry =>
-                    {
-                        PointInt32 pos = new((int)entry.Left, (int)entry.Top);
-                        SizeInt32 size = AppWindow.Size;
-                        AdjustWindowPosition(ref pos, size);
-                        AppWindow.Move(pos);
-                        Debug.WriteLine($"Loaded: ({entry.Left}, {entry.Top})");
-                    });
-                }
-                return;
-            }
+            if (_isWindowSizeAdjusted || AppWindow == null) return;
 
             SizeInt32 size = AppWindow.Size;
             SizeInt32 cSize = AppWindow.ClientSize;
@@ -329,7 +330,6 @@ namespace SimpleCalendar.WinUI3
         {
             if (!_displayAreas.IsActive) return false;
 
-            Debug.WriteLine($"");
             bool adjusted = false;
             RectInt32 wa = _displayAreas.VirtualWorkAreaRect;
             if (pos.X < wa.X)
