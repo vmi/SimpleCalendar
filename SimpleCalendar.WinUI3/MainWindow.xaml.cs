@@ -97,18 +97,17 @@ namespace SimpleCalendar.WinUI3
             _localConfigService.Load(entry =>
             {
                 PointInt32 pos = new((int)entry.Left, (int)entry.Top);
-                if (entry.Width > 0)
+                SizeInt32 size = new((int)entry.Width, (int)entry.Height);
+                AdjustWindowPosition(ref pos, size);
+                if (entry.Width > 0 && entry.Height > 0)
                 {
-                    SizeInt32 size = new((int)entry.Width, (int)entry.Height);
-                    AdjustWindowPosition(ref pos, size);
                     AppWindow.MoveAndResize(new(pos.X, pos.Y, size.Width, size.Height));
-                    Debug.WriteLine($"Loaded: ({entry.Left}, {entry.Top}, {entry.Width}, {entry.Height})");
                 }
                 else
                 {
-                    AppWindow.Move(pos);
-                    Debug.WriteLine($"Loaded: ({entry.Left}, {entry.Top})");
+                    AppWindow.Move(new(pos.X, pos.Y));
                 }
+                Debug.WriteLine($"Loaded: ({entry.Left}, {entry.Top}, {entry.Width}, {entry.Height})");
             });
         }
 
@@ -222,7 +221,8 @@ namespace SimpleCalendar.WinUI3
                     break;
                 case LoadStatus.Loaded:
                     PointInt32 pos = AppWindow.Position;
-                    _localConfigService.Save(pos.X, pos.Y);
+                    SizeInt32 size = AppWindow.Size;
+                    _localConfigService.Save(pos.X, pos.Y, size.Width, size.Height);
                     break;
             }
         }
@@ -337,7 +337,7 @@ namespace SimpleCalendar.WinUI3
                 pos.X = wa.X;
                 adjusted = true;
             }
-            else if (wa.X + wa.Width < pos.X + size.Width)
+            else if (size.Width > 0 && wa.X + wa.Width < pos.X + size.Width)
             {
                 pos.X = wa.X + wa.Width - size.Width;
                 adjusted = true;
@@ -347,7 +347,7 @@ namespace SimpleCalendar.WinUI3
                 pos.Y = wa.Y;
                 adjusted = true;
             }
-            else if (wa.Y + wa.Height < pos.Y + size.Height)
+            else if (size.Height > 0 && wa.Y + wa.Height < pos.Y + size.Height)
             {
                 pos.Y = wa.Y + wa.Height - size.Height;
                 adjusted = true;

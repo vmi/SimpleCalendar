@@ -126,6 +126,8 @@ namespace SimpleCalendar.WinUI3.Services
                      key!,
                     ((int) entry!.Left).ToString(),
                     ((int) entry!.Top).ToString(),
+                    ((int) entry!.Width).ToString(),
+                    ((int) entry!.Height).ToString(),
                     entry!.FontFamily,
                     entry!.FontSize.ToString()
                 ];
@@ -133,7 +135,7 @@ namespace SimpleCalendar.WinUI3.Services
             }
         }
 
-        public void Save(double left, double top)
+        public void Save(double left, double top, double width, double height)
         {
             lock (this)
             {
@@ -153,6 +155,8 @@ namespace SimpleCalendar.WinUI3.Services
                 }
                 entry.Left = left;
                 entry.Top = top;
+                entry.Width = width;
+                entry.Height = height;
                 _saveStatus = SaveStatus.NotSaved;
                 Debug.WriteLine($"Saving: ({entry.Left}, {entry.Top})");
                 Task.Delay(SAVE_DELEY).ContinueWith(task =>
