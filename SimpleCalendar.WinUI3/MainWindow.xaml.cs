@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Versioning;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -7,6 +10,7 @@ using SimpleCalendar.WinUI3.Services;
 using SimpleCalendar.WinUI3.Utilities;
 using SimpleCalendar.WinUI3.ViewModels;
 using Windows.Graphics;
+using Windows.System;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using WinUIEx;
@@ -22,7 +26,7 @@ namespace SimpleCalendar.WinUI3
     {
         //private const uint NotificationIconId = 1;
 
-        //private const string ICON_NAME = "icon256.ico";
+        private const string ICON_NAME = "icon256.ico";
         //private const uint WMAPP_NOTIFYCALLBACK = NotifyIconManager.WM_APP + 1;
 
         //private NotifyIconManager _notifyIconManager;
@@ -39,6 +43,8 @@ namespace SimpleCalendar.WinUI3
         private PointInt32 _startWinPos;
         private System.Drawing.Point _startCsrPos;
         private readonly DisplayAreas _displayAreas = ServiceRegistry.GetService<DisplayAreas>();
+
+        private System.Drawing.Icon _icon;
 
         private WindowEx _help;
         private WindowEx _settingsView;
@@ -62,7 +68,17 @@ namespace SimpleCalendar.WinUI3
             ZOrderChanged += (_, e) => Debug.WriteLine($"[MainWindow:ZOrderChanged] BelowWindowId={e.ZOrderBelowWindowId.Value}, Top={e.IsZOrderAtTop}, Bottom={e.IsZOrderAtBottom}");
             // 動作検証用 (ここまで)
 
+            // 外見等の設定
             DisableTitleBar(this);
+            _icon = AssemblyHelper.Instance.LoadIcon(ICON_NAME);
+            if (_icon != null)
+            {
+                // exeファイルに設定されているアイコンがタスクバーに反映されないので、明示的に設定
+                IconId iconId = Win32Interop.GetIconIdFromIcon(_icon.Handle);
+                this.SetIcon(iconId);
+            }
+
+            // Windowに紐付く各種イベントハンドラの登録
             Activated += MainWindow_Activated; // メインウィンドウ初期化時に通知領域にアイコンを登録(未実装) & アクティブ化時に「今日」を最新化する
             Closed += MainWindow_Closed; // メインウィンドウクローズ時に通知領域からアイコンを削除(未実装)
             PositionChanged += MainWindow_PositionChanged;
@@ -70,13 +86,17 @@ namespace SimpleCalendar.WinUI3
 
             if (WindowContent is FrameworkElement content)
             {
+                // コンテンツに紐付く各種イベントハンドラの登録
+
                 // 動作検証用 (ここから)
                 content.SizeChanged += (sender, e) => { Debug.WriteLine($"[WindowContent:SizeChanged] PreviousSize={Str(e.PreviousSize)}, NewSize={Str(e.NewSize)}"); };
                 content.PointerEntered += (sender, e) => { Debug.WriteLine($"[WindowContent:PointerEntered]"); };
                 content.PointerExited += (sender, e) => { Debug.WriteLine($"[WindowContent:PointerExited]"); };
                 // 動作検証用 (ここまで)
 
-                // SizeToContentエミュレーション。一瞬リサイズ前のウィンドウが表示されるが、回避策不明。
+                // SizeToContentエミュレーション。一瞬リサイズ前のウィンドウが表示されるが、根本的な対処方法不明。
+                // ワークアラウンドとして、ウィンドウサイズ確定後の値を設定ファイルに保存し、Windowのコンストラクタで
+                // this.AppWindow.Size()等を呼び出す。
                 content.LayoutUpdated += Content_LayoutUpdated;
 
                 // 画面に表示されている「月」の行数および列数を登録
@@ -86,10 +106,13 @@ namespace SimpleCalendar.WinUI3
                 // マウス操作系はWndProcで拾えない(おそらく子のUIElementに食われている)ので、
                 // WindowContentのマウス操作イベントにハンドラを登録。参考:
                 // https://github.com/castorix/WinUI3_Transparent/blob/6c678cfdcf77340f17912cf9163eff94520cced7/MainWindow.xaml.cs#L232
+                // ただし、背景色等が未設定のボーダーやパディング部分で操作を行うとイベントがロストする模様。(イベントを拾える箇所が不明)
+                // コンテンツ最背面のバックグラウンドカラーを明示的に設定すると正常動作する。(本アプリの場合、BorderにBackgroundを設定)
                 content.PointerPressed += Content_PointerPressed;
                 content.PointerMoved += Content_PointerMoved;
                 content.PointerReleased += Content_PointerReleased;
 
+                // マウスホイールで上下移動
                 content.PointerWheelChanged += Content_PointerWheelChanged;
             }
 
@@ -270,6 +293,28 @@ namespace SimpleCalendar.WinUI3
             {
                 vm.RowCount = CalendarRoot.ColumnDefinitions.Count;
                 vm.ColumnCount = CalendarRoot.ColumnDefinitions.Count;
+                RegisterKeyboardAccelerators((UIElement)sender);
+            }
+        }
+
+        private void RegisterKeyboardAccelerators(UIElement content)
+        {
+            MainWindowViewModel vm = CalendarRoot.DataContext as MainWindowViewModel;
+            IList<KeyValuePair<VirtualKey, IRelayCommand>> kaEntries = [
+                KeyValuePair.Create(VirtualKey.Home, vm.ResetPageCommand),
+                KeyValuePair.Create(VirtualKey.Left, vm.PrevMonthCommand),
+                KeyValuePair.Create(VirtualKey.Right, vm.NextMonthCommand),
+                KeyValuePair.Create(VirtualKey.Up, vm.PrevLineCommand),
+                KeyValuePair.Create(VirtualKey.Down, vm.NextLineCommand),
+                KeyValuePair.Create(VirtualKey.PageUp, vm.PrevPageCommand),
+                KeyValuePair.Create(VirtualKey.PageDown, vm.NextPageCommand),
+            ];
+            var kas = content.KeyboardAccelerators;
+            foreach (var kaEntry in kaEntries)
+            {
+                var ka = new KeyboardAccelerator() { Key = kaEntry.Key };
+                ka.Invoked += (_, _) => kaEntry.Value.Execute(this);
+                kas.Add(ka);
             }
         }
 
@@ -378,6 +423,11 @@ namespace SimpleCalendar.WinUI3
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             MainWindow_Closed(sender, default);
+        }
+
+        private void Home_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+
         }
 
         //private void Help_Click(object sender, RoutedEventArgs e)

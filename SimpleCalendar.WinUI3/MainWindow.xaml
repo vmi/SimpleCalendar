@@ -67,15 +67,4 @@
             </MenuFlyout>
         </Border.ContextFlyout>
     </Border>
-    <!--
-    <Window.InputBindings>
-        <KeyBinding Key="Home" Command="{Binding ResetPageCommand}" />
-        <KeyBinding Key="Left" Command="{Binding PrevMonthCommand}" />
-        <KeyBinding Key="Right" Command="{Binding NextMonthCommand}" />
-        <KeyBinding Key="Up" Command="{Binding PrevLineCommand}" />
-        <KeyBinding Key="Down" Command="{Binding NextLineCommand}" />
-        <KeyBinding Key="PageUp" Command="{Binding PrevPageCommand}" />
-        <KeyBinding Key="PageDown" Command="{Binding NextPageCommand}" />
-    </Window.InputBindings>
-    -->
 </winex:WindowEx>
