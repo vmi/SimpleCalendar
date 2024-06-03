@@ -3,18 +3,29 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using SimpleCalendar.WinUI3.Utilities;
+using WinUIEx;
 
 namespace SimpleCalendar.WinUI3.Views
 {
     /// <summary>
     /// SettingsView.xaml の相互作用ロジック
     /// </summary>
-    public partial class SettingsView : Window
+    public partial class SettingsView : WindowEx
     {
         public SettingsView()
         {
             InitializeComponent();
+            ExtendsContentIntoTitleBar = true;
+            if (WindowContent is FrameworkElement elem)
+            {
+                elem.Loaded += (_, _) =>
+                {
+                    var p = VisualTreeHelper.GetParent(elem);
+                };
+            }
+
             if (LogListView?.ItemsSource is INotifyCollectionChanged notify)
             {
                 notify.CollectionChanged += LogListView_CollectionChanged;

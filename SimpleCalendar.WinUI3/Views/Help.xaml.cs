@@ -1,15 +1,17 @@
-using Microsoft.UI.Xaml;
+using WinUIEx;
 
 namespace SimpleCalendar.WinUI3.Views
 {
     /// <summary>
     /// Help.xaml の相互作用ロジック
     /// </summary>
-    public partial class Help : Window
+    public partial class Help : WindowEx
     {
+        public bool IsClosed { get; private set; } = false;
         public Help()
         {
             InitializeComponent();
+            Closed += (_, _) => IsClosed = true;
 #if false
             // ヘルプはxamlファイルに直接埋め込むよう変更。
             string appDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Contents");

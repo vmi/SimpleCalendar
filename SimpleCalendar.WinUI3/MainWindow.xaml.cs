@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Input;
 using SimpleCalendar.WinUI3.Services;
 using SimpleCalendar.WinUI3.Utilities;
 using SimpleCalendar.WinUI3.ViewModels;
+using SimpleCalendar.WinUI3.Views;
 using Windows.Graphics;
 using Windows.System;
 using Windows.Win32;
@@ -46,8 +47,8 @@ namespace SimpleCalendar.WinUI3
 
         private System.Drawing.Icon _icon;
 
-        private WindowEx _help;
-        private WindowEx _settingsView;
+        private Help _help;
+        private SettingsView _settingsView;
 
         public MainWindow()
         {
@@ -405,47 +406,24 @@ namespace SimpleCalendar.WinUI3
         {
             if (_settingsView == null)
             {
-                //_settingsView = new SettingsView();
+                _settingsView = new SettingsView();
             }
-            //_settingsView.Show();
-
+            _settingsView.Show();
         }
+
         private void Help_Click(object sender, RoutedEventArgs e)
         {
-            if (_help == null)
+            if (_help == null || _help.IsClosed)
             {
-                //_help = new Help();
+                _help = new Help();
             }
-            //_help.Show();
-
+            _help.Show();
+            _help.Activate();
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             MainWindow_Closed(sender, default);
         }
-
-        private void Home_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-
-        }
-
-        //private void Help_Click(object sender, RoutedEventArgs e)
-        //{
-        //    //if (_help == null || !_help.IsLoaded)
-        //    //{
-        //    //    _help = new Help();
-        //    //}
-        //    //_help.Show();
-        //}
-
-        //private void Settings_Click(object sender, RoutedEventArgs e)
-        //{
-        //    //if (_settingsView == null || !_settingsView.IsLoaded)
-        //    //{
-        //    //    _settingsView = new SettingsView();
-        //    //}
-        //    //_settingsView.Show();
-        //}
     }
 }
