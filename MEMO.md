@@ -214,4 +214,13 @@
 * [IDisposable インターフェイス](https://learn.microsoft.com/ja-jp/dotnet/api/system.idisposable?view=net-8.0)の実装方式を確認。
     * 意外と面倒なので、実装時に再確認。
 
+2024-06-03
+----------
+
+* WPFのInputBindings/KeyBindingが無いので、KeyboardAcceleratorを登録するか、KeyDown/KeyUpイベントあたりを処理することになるが、いくつか課題がある。
+    * ボタン等のコントロールに直接貼り付けるならばXAMLで全部書けるが、カーソルキーのカスタマイズなど、特定のコントロールが処理しない操作の場合、Commandにバインドできないため、コードビハインド必須。
+        * コードビハインド必須ならばXAMLに何か書くより全部コードビハンドに書いた方がよさそう。
+    * KeyboardAcceleratorの場合、キーリピートがかかるとWPF版のようにスムーズに処理されないように見える。
+        * KeyDown/KeyUpについては未確認。
+
 以上
