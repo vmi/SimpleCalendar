@@ -13,7 +13,7 @@
         SizeToContent="WidthAndHeight"
         d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         helper:DataContextHelper.DataContext="{x:Type viewmodel:MainWindowViewModel}"
-        Icon="/Images/icon256.png">
+        Icon="/Images/calendar128.png">
     <Window.Resources>
         <ResourceDictionary Source="MainWindowStyles.xaml" />
     </Window.Resources>

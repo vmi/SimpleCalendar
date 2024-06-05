@@ -27,7 +27,7 @@ namespace SimpleCalendar.WinUI3
     {
         //private const uint NotificationIconId = 1;
 
-        private const string ICON_NAME = "icon256.ico";
+        private const string ICON_NAME = "calendar128.ico";
         //private const uint WMAPP_NOTIFYCALLBACK = NotifyIconManager.WM_APP + 1;
 
         //private NotifyIconManager _notifyIconManager;
